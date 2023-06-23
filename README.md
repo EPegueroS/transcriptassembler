@@ -34,7 +34,6 @@
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
@@ -43,6 +42,7 @@ First, prepare a samplesheet with your input data that looks as follows:
 sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 ```
+
 We provide a minimal test dataset under assets/testdata/
 
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
@@ -51,15 +51,12 @@ Each row represents a fastq file (single-end) or a pair of fastq files (paired e
 
 You can run the pipeline using the pre-defined samplesheet (or your own):
 
-
 ```bash
 nextflow run main.nf \
    -profile <docker/singularity/.../institute> \
    --input ./assets/samplesheet_test.csv \
    --outdir <OUTDIR>
 ```
-
-
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
