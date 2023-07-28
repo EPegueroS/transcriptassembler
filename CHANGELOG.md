@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Additional test data
 Updated fastqc
+sync nf-core
 
 ## v0.0.1dev - [2023-06-17]
 
