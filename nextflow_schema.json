@@ -17,6 +17,9 @@
                 "skip_umi_extract": {
                     "type": "boolean"
                 },
+                "skip_multiqc": {
+                    "type": "string"
+                },
                 "umi_discard_read": {
                     "type": "integer",
                     "default": 0
