@@ -76,6 +76,19 @@ class WorkflowTranscriptassembler {
         return reference_text
     }
 
+    //
+    // Create MultiQC tsv custom content from a list of values
+    //
+    public static String multiqcTsvFromList(tsv_data, header) {
+        def tsv_string = ""
+        if (tsv_data.size() > 0) {
+            tsv_string += "${header.join('\t')}\n"
+            tsv_string += tsv_data.join('\n')
+        }
+        return tsv_string
+    }
+
+
     public static String methodsDescriptionText(run_workflow, mqc_methods_yaml, params) {
         // Convert  to a named map so can be used as with familar NXF ${workflow} variable syntax in the MultiQC YML file
         def meta = [:]
