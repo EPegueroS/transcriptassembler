@@ -130,6 +130,19 @@ workflow TRANSCRIPTASSEMBLER {
      CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+
+
+// MODULE: MultiQC
+    //
+    if (!params.skip_multiqc) {
+        workflow_summary    = WorkflowTranscriptassembler.paramsSummaryMultiqc(workflow, summary_params)
+        ch_workflow_summary = Channel.value(workflow_summary)
+
+        methods_description    = WorkflowTranscriptassembler.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, summary_params)
+        ch_methods_description = Channel.value(methods_description)
+    }
+
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
