@@ -14,8 +14,6 @@ process MULTIQC {
     path methods_description
     path logo
     path fail_trimming_summary
-    path fail_mapping_summary
-    path fail_strand_check
     path ('fastqc/raw/*')
     path ('fastqc/trim/*')
     path ('trim_log/*')
