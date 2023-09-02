@@ -1,105 +1,73 @@
-#!/usr/bin/env nextflow
+process SPADES {
+    tag "$meta.id"
+    label 'process_high'
 
-/*
- * SPAdes Transcriptome Assembly
- * This pipeline runs SPAdes for transcriptome assembly
- */
-
-params.pairedEndReads = "${baseDir}/data/*_[1-2].fq.gz"
-params.singleEndReads = "${baseDir}/data/*.fq.gz"
-params.outdir = "results"
-
-log.info """\
-    S P A D E S   T R A N S C R I P T O M E   A S S E M B L Y
-    =========================================================
-    pairedEndReads: ${params.pairedEndReads}
-    singleEndReads: ${params.singleEndReads}
-    outdir         : ${params.outdir}
-    """
-    .stripIndent()
-
-process SPAdesTranscriptomePaired {
-    container 'pegi3s/spades'
+    conda "bioconda::spades=3.15.5"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/spades:3.15.5--h95f258a_1' :
+        'biocontainers/spades:3.15.5--h95f258a_1' }"
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(meta), path(illumina), path(pacbio), path(nanopore)
+    path yml
+    path hmm
 
     output:
-    path "spades_${sample_id}_assembly"
+    tuple val(meta), path('*.scaffolds.fa.gz')    , optional:true, emit: scaffolds
+    tuple val(meta), path('*.contigs.fa.gz')      , optional:true, emit: contigs
+    tuple val(meta), path('*.transcripts.fa.gz')  , optional:true, emit: transcripts
+    tuple val(meta), path('*.gene_clusters.fa.gz'), optional:true, emit: gene_clusters
+    tuple val(meta), path('*.assembly.gfa.gz')    , optional:true, emit: gfa
+    tuple val(meta), path('*.log')                , emit: log
+    path  "versions.yml"                          , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def maxmem = task.memory.toGiga()
+    def illumina_reads = illumina ? ( meta.single_end ? "-s $illumina" : "-1 ${illumina[0]} -2 ${illumina[1]}" ) : ""
+    def pacbio_reads = pacbio ? "--pacbio $pacbio" : ""
+    def nanopore_reads = nanopore ? "--nanopore $nanopore" : ""
+    def custom_hmms = hmm ? "--custom-hmms $hmm" : ""
+    def reads = yml ? "--dataset $yml" : "$illumina_reads $pacbio_reads $nanopore_reads"
     """
-    spades.py --rna -o spades_${sample_id}_assembly -1 ${reads[0]} -2 
-${reads[1]}
+    spades.py \\
+        $args \\
+        --threads $task.cpus \\
+        --memory $maxmem \\
+        $custom_hmms \\
+        $reads \\
+        -o ./
+    mv spades.log ${prefix}.spades.log
+
+    if [ -f scaffolds.fasta ]; then
+        mv scaffolds.fasta ${prefix}.scaffolds.fa
+        gzip -n ${prefix}.scaffolds.fa
+    fi
+    if [ -f contigs.fasta ]; then
+        mv contigs.fasta ${prefix}.contigs.fa
+        gzip -n ${prefix}.contigs.fa
+    fi
+    if [ -f transcripts.fasta ]; then
+        mv transcripts.fasta ${prefix}.transcripts.fa
+        gzip -n ${prefix}.transcripts.fa
+    fi
+    if [ -f assembly_graph_with_scaffolds.gfa ]; then
+        mv assembly_graph_with_scaffolds.gfa ${prefix}.assembly.gfa
+        gzip -n ${prefix}.assembly.gfa
+    fi
+
+    if [ -f gene_clusters.fasta ]; then
+        mv gene_clusters.fasta ${prefix}.gene_clusters.fa
+        gzip -n ${prefix}.gene_clusters.fa
+    fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        spades: \$(spades.py --version 2>&1 | sed 's/^.*SPAdes genome assembler v//; s/ .*\$//')
+    END_VERSIONS
     """
-}
-
-process SPAdesTranscriptomeSingle {
-    container 'pegi3s/spades'
-
-    input:
-    tuple val(sample_id), path(reads)
-
-    output:
-    path "spades_${sample_id}_assembly"
-
-    script:
-    """
-    spades.py --rna -o spades_${sample_id}_assembly --pe-12 ${reads}
-    """
-}
-
-workflow {
-    pairedEndReads = Channel.fromFilePairs(params.pairedEndReads, 
-checkIfExists: true)
-                           .set { read_pairs_ch }
-
-    singleEndReads = Channel.fromFilePairs(params.singleEndReads, 
-checkIfExists: true)
-                            .set { single_reads_ch }
-
-    // Initialize empty channels in case one of them is empty
-    def spades_paired_ch = null
-    def spades_single_ch = null
-
-    // Run SPAdes for paired-end reads if available
-    if (pairedEndReads != null) {
-        spades_paired_ch = pairedEndReads.map { sample_id, reads ->
-            SPAdesTranscriptomePaired(sample_id: sample_id, reads: reads)
-        }
-    }
-
-    // Run SPAdes for single-end reads if available
-    if (singleEndReads != null) {
-        spades_single_ch = singleEndReads.map { sample_id, reads ->
-            SPAdesTranscriptomeSingle(sample_id: sample_id, reads: reads)
-        }
-    }
-
-    // Merge the results from both channels
-    def merged_assembly_ch = merge(spades_paired_ch ?: [], spades_single_ch 
-?: [])
-
-    // Final SPAdes process (single output for the assembly)
-    process SPAdesFinal {
-        input:
-        path spades_assembly from merged_assembly_ch.flatMap { 
-it.spades_${sample_id}_assembly }
-
-        // Output directory for the final assembly
-        output:
-        path "final_spades_assembly"
-
-        // Script to copy the assembly to the output directory
-        script:
-        """
-        mkdir -p final_spades_assembly
-        cp -r ${spades_assembly}/* final_spades_assembly/
-        """
-    }
-}
-
-workflow.onComplete {
-    log.info ( workflow.success ? "\nDone! SPAdes assembly completed 
-successfully.\n" : "Oops... Something went wrong with SPAdes assembly." )
 }
