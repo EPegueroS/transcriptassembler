@@ -332,5 +332,11 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "trinity_mem": {
+            "type": "string",
+            "default": "12.GB"
+        }
+    }
 }
