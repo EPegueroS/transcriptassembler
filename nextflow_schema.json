@@ -32,7 +32,8 @@
                     "type": "boolean"
                 },
                 "skip_trimming": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                 },
                 "skip_qc": {
                     "type": "boolean"
@@ -311,6 +312,18 @@
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
+        },
+        "rna_assembly_options": {
+            "title": "RNA assembly options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "trinity_mem": {
+                    "type": "string",
+                    "default": "12.GB"
+                }
+            }
         }
     },
     "allOf": [
@@ -331,12 +344,9 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/rna_assembly_options"
         }
-    ],
-    "properties": {
-        "trinity_mem": {
-            "type": "string",
-            "default": "12.GB"
-        }
-    }
+    ]
 }

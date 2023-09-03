@@ -132,12 +132,11 @@ workflow TRANSCRIPTASSEMBLER {
     // MODULE: TRINITY
     //
     TRINITY (
-        FASTQ_FASTQC_UMITOOLS_FASTP.out.reads
+       ch_filtered_reads
     )
 
 
-
-     CUSTOM_DUMPSOFTWAREVERSIONS (
+    CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
