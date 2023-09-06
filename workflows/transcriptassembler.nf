@@ -37,6 +37,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { MULTIQC } from '../modules/local/multiqc'
+include { TRINITY } from '../modules/nf-core/trinity/main'
 
 
 /*
@@ -128,15 +129,20 @@ workflow TRANSCRIPTASSEMBLER {
         }
         .set { ch_fail_trimming_multiqc }
 
+    // MODULE: TRINITY
+    //
+    TRINITY (
+       ch_filtered_reads
+    )
 
-     CUSTOM_DUMPSOFTWAREVERSIONS (
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
 
-
 // MODULE: MultiQC
-    //
+//
     if (!params.skip_multiqc) {
         workflow_summary    = WorkflowTranscriptassembler.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
