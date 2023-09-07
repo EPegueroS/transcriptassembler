@@ -50,7 +50,7 @@ include { TRINITY } from '../modules/nf-core/trinity/main'
 // MODULE: Installed directly from nf-core/modules
 //
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-
+include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
@@ -134,6 +134,8 @@ workflow TRANSCRIPTASSEMBLER {
     TRINITY (
        ch_filtered_reads
     )
+    ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
+    ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
