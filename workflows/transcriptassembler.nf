@@ -140,6 +140,8 @@ workflow TRANSCRIPTASSEMBLER {
     TRANSDECODER_LONGORF (
         ch_assembled_transcript_fasta
     )
+    ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
+    ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
 
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
