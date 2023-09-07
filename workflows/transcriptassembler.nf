@@ -137,6 +137,10 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
+    TRANSDECODER_LONGORF (
+        ch_assembled_transcript_fasta
+    )
+
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
