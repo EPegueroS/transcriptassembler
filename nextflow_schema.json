@@ -5,6 +5,44 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
+        "triming_and_qc": {
+            "title": "triming_and_qc",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "with_umi": {
+                    "type": "boolean"
+                },
+                "skip_umi_extract": {
+                    "type": "boolean"
+                },
+                "skip_multiqc": {
+                    "type": "boolean"
+                },
+                "umi_discard_read": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "min_trimmed_reads": {
+                    "type": "integer",
+                    "default": 10000
+                },
+                "save_trimmed": {
+                    "type": "boolean"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "skip_qc": {
+                    "type": "boolean"
+                },
+                "skip_fastqc": {
+                    "type": "boolean"
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -175,14 +213,12 @@
                     "type": "boolean",
                     "description": "Display help text.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
-                    "default": false,
                     "hidden": true
                 },
                 "publish_dir_mode": {
@@ -206,7 +242,6 @@
                     "type": "boolean",
                     "description": "Send plain-text email instead of HTML.",
                     "fa_icon": "fas fa-remove-format",
-                    "default": false,
                     "hidden": true
                 },
                 "max_multiqc_email_size": {
@@ -221,7 +256,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "default": false,
                     "hidden": true
                 },
                 "hook_url": {
@@ -260,7 +294,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
@@ -268,7 +301,6 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
                 },
@@ -276,14 +308,28 @@
                     "type": "boolean",
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters in lenient more.",
-                    "default": false,
                     "hidden": true,
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
+                }
+            }
+        },
+        "rna_assembly_options": {
+            "title": "RNA assembly options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "trinity_mem": {
+                    "type": "string",
+                    "default": "12.GB"
                 }
             }
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/triming_and_qc"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         },
@@ -298,6 +344,9 @@
         },
         {
             "$ref": "#/definitions/generic_options"
+        },
+        {
+            "$ref": "#/definitions/rna_assembly_options"
         }
     ]
 }
