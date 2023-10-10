@@ -17,8 +17,8 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "9a4517e720bc812e95b56d23d15a1653b6db4f53",
-                        "installed_by": ["fastq_fastqc_umitools_fastp", "modules"]
+                        "git_sha": "102cc9b709a6da9f7cee2373563ab1464fca9c0a",
+                        "installed_by": ["modules", "fastq_fastqc_umitools_fastp"]
                     },
                     "multiqc": {
                         "branch": "master",
