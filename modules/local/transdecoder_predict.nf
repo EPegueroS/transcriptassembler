@@ -34,7 +34,7 @@ process TRANSDECODER_PREDICT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        transdecoder: \$(echo \$(TransDecoder.Predict --version) | sed -e "s/TransDecoder.Predict //g")
+        transdecoder_predict: \$(echo \$(TransDecoder.Predict --version) | sed -e "s/TransDecoder.Predict //g")
     END_VERSIONS
     """
 }
