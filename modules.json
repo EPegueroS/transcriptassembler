@@ -13,12 +13,12 @@
                     "fastp": {
                         "branch": "master",
                         "git_sha": "d497a4868ace3302016ea8ed4b395072d5e833cd",
-                        "installed_by": ["fastq_fastqc_umitools_fastp", "modules"]
+                        "installed_by": ["fastq_fastqc_umitools_fastp"]
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "9a4517e720bc812e95b56d23d15a1653b6db4f53",
-                        "installed_by": ["fastq_fastqc_umitools_fastp", "modules"]
+                        "git_sha": "102cc9b709a6da9f7cee2373563ab1464fca9c0a",
+                        "installed_by": ["fastq_fastqc_umitools_fastp"]
                     },
                     "multiqc": {
                         "branch": "master",
@@ -38,7 +38,7 @@
                     "umitools/extract": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["fastq_fastqc_umitools_fastp", "modules"]
+                        "installed_by": ["fastq_fastqc_umitools_fastp"]
                     }
                 }
             },
