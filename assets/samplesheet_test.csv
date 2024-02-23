@@ -1,3 +1,2 @@
 sample,fastq_1,fastq_2
 synthetic_dataset,./assets/testdata/reads1.fastq.gz,./assets/testdata/reads2.fastq.gz
-subsampled_dataset_single,./assets/testdata/SRR4238351_subsamp.fastq.gz,

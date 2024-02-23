@@ -140,10 +140,13 @@ workflow TRANSCRIPTASSEMBLER {
 
 
     BUSCO (
-       ch_assembled_transcript_fasta
-       params.busco_mode
-       params.busco_lineage    
+       ch_assembled_transcript_fasta,
+       params.busco_mode,
+       params.busco_lineage,
+       [],
+       []    
     )
+    ch_busco_dir                   = BUSCO.out.seq_dir
     ch_versions                    = ch_versions.mix(BUSCO.out.versions)  
 
 
