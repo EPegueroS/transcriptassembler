@@ -48,6 +48,7 @@ include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+include { BUSCO } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
@@ -136,6 +137,14 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
+
+
+    BUSCO (
+       ch_assembled_transcript_fasta
+       ch_busco_lineage    
+    )
+    ch_versions                    = ch_versions.mix(BUSCO.out.versions)  
+
 
     TRANSDECODER_LONGORF (
         ch_assembled_transcript_fasta
