@@ -5,6 +5,23 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
+        "rna_assembly_qc": {
+            "title": "RNA assembly QC",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "busco_mode": {
+                    "type": "string",
+                    "default": "transcriptome"
+                },
+                "busco_lineage": {
+                    "type": "string",
+                    "default": "auto"
+                }
+            },
+            "required": ["busco_mode", "busco_lineage"]
+        },
         "triming_and_qc": {
             "title": "triming_and_qc",
             "type": "object",
@@ -319,6 +336,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/rna_assembly_qc"
+        },
         {
             "$ref": "#/definitions/triming_and_qc"
         },
