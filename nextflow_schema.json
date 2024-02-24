@@ -42,8 +42,7 @@
                     "type": "boolean"
                 },
                 "umi_discard_read": {
-                    "type": "integer",
-                    "default": 0
+                    "type": "integer"
                 },
                 "min_trimmed_reads": {
                     "type": "integer",
@@ -334,7 +333,7 @@
             "properties": {
                 "trinity_mem": {
                     "type": "string",
-                    "default": "12.GB"
+                    "default": "6.GB"
                 }
             }
         }
