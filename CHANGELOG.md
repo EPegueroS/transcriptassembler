@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 BUSCO
+Updated latest nf-core template
 
 ## v0.0.7dev - [2023-10-10]
 
