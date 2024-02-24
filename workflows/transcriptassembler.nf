@@ -138,16 +138,16 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
-
-    BUSCO (
-       ch_assembled_transcript_fasta,
-       params.busco_mode,
-       params.busco_lineage,
-       [],
-       []    
-    )
-    ch_busco_dir                   = BUSCO.out.seq_dir
-    ch_versions                    = ch_versions.mix(BUSCO.out.versions)  
+    if (!params.skip_busco) {
+       BUSCO (
+          ch_assembled_transcript_fasta,
+          params.busco_mode,
+          params.busco_lineage,
+          [],
+          []
+       )
+       ch_versions                    = ch_versions.mix(BUSCO.out.versions)
+    }
 
 
     TRANSDECODER_LONGORF (

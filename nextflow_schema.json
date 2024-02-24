@@ -18,6 +18,10 @@
                 "busco_lineage": {
                     "type": "string",
                     "default": "auto"
+                },
+                "skip_busco": {
+                    "type": "boolean",
+                    "default": true
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
