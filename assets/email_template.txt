@@ -4,7 +4,7 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/transcriptassembler v${version}
+  nf-core/transcriptassembler ${version}
 ----------------------------------------------------
 Run Name: $runName
 
