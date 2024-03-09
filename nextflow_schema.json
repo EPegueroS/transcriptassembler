@@ -313,7 +313,7 @@
             "properties": {
                 "trinity_mem": {
                     "type": "string",
-                    "default": "12.GB"
+                    "default": "6.GB"
                 }
             }
         }
@@ -340,5 +340,16 @@
         {
             "$ref": "#/definitions/rna_assembly_options"
         }
-    ]
+    ],
+    "properties": {
+        "skip_diamond": {
+            "type": "boolean",
+            "hidden": true
+        },
+        "diamond_fasta": {
+            "type": "string",
+            "default": "assets/testdata/test_db.fasta"
+        }
+    },
+    "required": ["diamond_fasta"]
 }

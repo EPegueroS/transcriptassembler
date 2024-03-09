@@ -183,6 +183,14 @@ workflow TRANSCRIPTASSEMBLER {
         multiqc_report = MULTIQC.out.report.toList()
     }
 
+// MODULE: DIAMOND
+//
+    if (!params.skip_diamond){
+        DIAMOND_MAKEDB(
+            params.diamond_fasta
+        )
+    }
+
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
