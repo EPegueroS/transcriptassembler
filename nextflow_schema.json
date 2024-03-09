@@ -22,6 +22,14 @@
                 "skip_busco": {
                     "type": "boolean",
                     "default": true
+                },
+                "lineage_path": {
+                    "type": "string",
+                    "default": "auto"
+                },
+                "local_lineage": {
+                    "type": "string",
+                    "default": "ext.args"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
