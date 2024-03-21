@@ -363,5 +363,23 @@
         {
             "$ref": "#/definitions/rna_assembly_options"
         }
-    ]
+    ],
+    "properties": {
+        "skip_diamond": {
+            "type": "boolean"
+        },
+        "diamond_fasta": {
+            "type": "string",
+            "default": "assets/testdata/test_db.fasta"
+        },
+        "diamond_taxonmap": {
+            "type": "string"
+        },
+        "diamond_taxonnodes": {
+            "type": "string"
+        },
+        "diamond_taxonnames": {
+            "type": "string"
+        }
+    }
 }

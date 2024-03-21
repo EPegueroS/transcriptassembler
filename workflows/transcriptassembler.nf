@@ -52,7 +52,7 @@ include { BUSCO } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
-
+include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -193,6 +193,16 @@ workflow TRANSCRIPTASSEMBLER {
             ch_trim_log_multiqc.collect{it[1]}.ifEmpty([]),
         )
         multiqc_report = MULTIQC.out.report.toList()
+    }
+// MODULE: DIAMOND
+//
+    if (!params.skip_diamond){
+        DIAMOND_MAKEDB(
+            params.diamond_fasta, 
+            [],
+            [],
+            []
+        )
     }
 
 }
