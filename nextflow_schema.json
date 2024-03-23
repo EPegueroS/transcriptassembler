@@ -5,6 +5,23 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
+        "diamond": {
+            "title": "diamond",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "diamond_fasta": {
+                    "type": "string",
+                    "default": "assets/testdata/test_db.fasta"
+                },
+                "skip_diamond": {
+                    "type": "boolean",
+                    "hidden": true
+                }
+            },
+            "required": ["diamond_fasta"]
+        },
         "triming_and_qc": {
             "title": "triming_and_qc",
             "type": "object",
@@ -21,8 +38,7 @@
                     "type": "boolean"
                 },
                 "umi_discard_read": {
-                    "type": "integer",
-                    "default": 0
+                    "type": "integer"
                 },
                 "min_trimmed_reads": {
                     "type": "integer",
@@ -320,6 +336,9 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/diamond"
+        },
+        {
             "$ref": "#/definitions/triming_and_qc"
         },
         {
@@ -340,16 +359,5 @@
         {
             "$ref": "#/definitions/rna_assembly_options"
         }
-    ],
-    "properties": {
-        "skip_diamond": {
-            "type": "boolean",
-            "hidden": true
-        },
-        "diamond_fasta": {
-            "type": "string",
-            "default": "assets/testdata/test_db.fasta"
-        }
-    },
-    "required": ["diamond_fasta"]
+    ]
 }
