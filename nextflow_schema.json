@@ -25,11 +25,7 @@
                 },
                 "lineage_path": {
                     "type": "string",
-                    "default": "auto"
-                },
-                "local_lineage": {
-                    "type": "string",
-                    "default": "ext.args"
+                    "default": "/home/moisessotelo/Documents/Universidad_de_Guadalajara/Doctorado/projects/transcript_assembler_with_nfcore"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
