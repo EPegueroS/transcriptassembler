@@ -1,2 +1,3 @@
 sample,fastq_1,fastq_2
-synthetic_dataset,./assets/testdata/reads1.fastq.gz,./assets/testdata/reads2.fastq.gz
+synthetic_dataset_pe,./assets/testdata/reads1.fastq.gz,./assets/testdata/reads2.fastq.gz
+synthetic_dataset_se,./assets/testdata/reads1.fastq.gz,
