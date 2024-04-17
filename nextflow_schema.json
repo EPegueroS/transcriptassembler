@@ -336,6 +336,30 @@
                     "default": "6.GB"
                 }
             }
+        },
+        "diamond_makeblastdb": {
+            "title": "Diamond_makeblastdb",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "diamond_fasta": {
+                    "type": "string",
+                    "default": "$projectDir/assets/testdata/test_db.fasta"
+                },
+                "skip_diamond": {
+                    "type": "boolean"
+                },
+                "diamond_taxonnodes": {
+                    "type": "string"
+                },
+                "diamond_taxonmap": {
+                    "type": "string"
+                },
+                "diamond_taxonnames": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
@@ -362,24 +386,9 @@
         },
         {
             "$ref": "#/definitions/rna_assembly_options"
+        },
+        {
+            "$ref": "#/definitions/diamond_makeblastdb"
         }
-    ],
-    "properties": {
-        "skip_diamond": {
-            "type": "boolean"
-        },
-        "diamond_fasta": {
-            "type": "string",
-            "default": "assets/testdata/test_db.fasta"
-        },
-        "diamond_taxonmap": {
-            "type": "string"
-        },
-        "diamond_taxonnodes": {
-            "type": "string"
-        },
-        "diamond_taxonnames": {
-            "type": "string"
-        }
-    }
+    ]
 }
