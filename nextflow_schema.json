@@ -25,7 +25,7 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "/home/msr/Documents/Universidad_de_Guadalajara/Doctorado/projects/transcript_assembler_with_nfcore/nf-core-transcriptassembler/assets/busco_test_lineage/"
+                    "default": "${projectDir}/assets/busco_test_lineage/"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
