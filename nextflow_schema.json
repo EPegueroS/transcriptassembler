@@ -17,7 +17,7 @@
                 },
                 "busco_lineage": {
                     "type": "string",
-                    "default": "archaea_odb10"
+                    "default": "saccharomycetes_odb10"
                 },
                 "skip_busco": {
                     "type": "boolean",
