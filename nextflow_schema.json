@@ -345,7 +345,7 @@
             "properties": {
                 "diamond_fasta": {
                     "type": "string",
-                    "default": "$projectDir/assets/testdata/test_db.fasta"
+                    "default": "${projectDir}/assets/testdata/test_db.faa"
                 },
                 "skip_diamond": {
                     "type": "boolean"
