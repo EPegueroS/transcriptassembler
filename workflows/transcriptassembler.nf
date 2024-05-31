@@ -170,6 +170,18 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
+// MODULE: DIAMOND
+//
+    diamond_input_ch = Channel.of([[id:'synthetic_dataset_T1', single_end:false], params.diamond_fasta])// Esta parte está hardcodeada, no encontré la forma de recuperar
+    // el primer elemento de la tupla directamente del canal ch_assembled_transcript_fasta
+    if (!params.skip_diamond){
+        DIAMOND_MAKEDB(
+            diamond_input_ch, 
+            [],
+            [],
+            []
+        )
+    }
 
 // MODULE: MultiQC
 //
@@ -194,19 +206,6 @@ workflow TRANSCRIPTASSEMBLER {
         )
         multiqc_report = MULTIQC.out.report.toList()
     }
-// MODULE: DIAMOND
-//
-    diamond_input_ch = Channel.of([[id:'synthetic_dataset_T1', single_end:false], params.diamond_fasta])// Esta parte está hardcodeada, no encontré la forma de recuperar
-    // el primer elemento de la tupla directamente del canal ch_assembled_transcript_fasta
-    if (!params.skip_diamond){
-        DIAMOND_MAKEDB(
-            diamond_input_ch, 
-            [],
-            [],
-            []
-        )
-    }
-
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
