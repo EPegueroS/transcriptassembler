@@ -25,7 +25,7 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "${projectDir}/assets/busco_test_lineage/"
+                    "default": "${projectDir}/assets/busco_test_data"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
