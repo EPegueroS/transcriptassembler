@@ -25,8 +25,7 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "/mnt/Omega_Files_2/Moy/nf-core-transcriptassembler/assets/busco_test_data",
-                    "format": "directory-path"
+                    "default": "${projectDir}/assets/busco_test_data"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
