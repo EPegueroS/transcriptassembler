@@ -345,6 +345,7 @@
             "properties": {
                 "diamond_fasta": {
                     "type": "string",
+                    "mimetype": "text/plain",
                     "default": "${projectDir}/assets/testdata/test_db.faa",
                     "format": "file-path"
                 },

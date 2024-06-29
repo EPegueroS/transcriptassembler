@@ -1,4 +1,7 @@
 repository_type: pipeline
 lint:
+  nextflow_config:
+    - config_defaults:
+        - params.diamond_fasta
   multiqc_config:
     report_comment: False
