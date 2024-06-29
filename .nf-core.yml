@@ -2,6 +2,6 @@ repository_type: pipeline
 lint:
   nextflow_config:
     - config_defaults:
-      - params.busco_lineage_path
+        - params.busco_lineage_path
   multiqc_config:
     report_comment: False
