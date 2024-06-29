@@ -138,12 +138,13 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
+    // MODULE: BUSCO
     if (!params.skip_busco) {
        BUSCO (
           ch_assembled_transcript_fasta,
           params.busco_mode,
           params.busco_lineage,
-          [],
+          params.busco_lineage_path,
           []
        )
        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
