@@ -17,11 +17,15 @@
                 },
                 "busco_lineage": {
                     "type": "string",
-                    "default": "auto"
+                    "default": "saccharomycetes_odb10"
                 },
                 "skip_busco": {
                     "type": "boolean",
                     "default": true
+                },
+                "busco_lineage_path": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/busco_test_data"
                 }
             },
             "required": ["busco_mode", "busco_lineage"]
