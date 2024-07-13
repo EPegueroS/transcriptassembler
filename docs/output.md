@@ -1,4 +1,4 @@
-# nf-core/giotto: Output
+# nf-core/transcriptassembler: Output
 
 ## Introduction
 
