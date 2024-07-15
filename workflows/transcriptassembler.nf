@@ -178,6 +178,7 @@ workflow TRANSCRIPTASSEMBLER {
         DIAMOND_MAKEDB(
             params.diamond_fasta
         )
+        ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
     }
 
 // MODULE: MultiQC
