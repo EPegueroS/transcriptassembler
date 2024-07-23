@@ -340,6 +340,24 @@
                     "default": "6.GB"
                 }
             }
+        },
+        "diamond_makeblastdb": {
+            "title": "Diamond_makeblastdb",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "diamond_fasta": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "default": "${projectDir}/assets/testdata/test_db.faa",
+                    "format": "file-path"
+                },
+                "skip_diamond": {
+                    "type": "boolean"
+                }
+            },
+            "required": ["diamond_fasta"]
         }
     },
     "allOf": [
@@ -366,6 +384,9 @@
         },
         {
             "$ref": "#/definitions/rna_assembly_options"
+        },
+        {
+            "$ref": "#/definitions/diamond_makeblastdb"
         }
     ]
 }
