@@ -53,6 +53,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
+include { STAR_ALIGN } from '../modules/nf-core/star/align/main'
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
