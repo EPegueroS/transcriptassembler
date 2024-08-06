@@ -182,6 +182,23 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
     }
 
+// MODULE: STAR
+//
+
+    if (!params.skip_star){
+        STAR_ALIGN(
+            ch_filtered_reads, 
+            [],
+            [],
+            [],
+            [],
+            []
+
+            
+        )
+        ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
+    }
+
 // MODULE: MultiQC
 //
     if (!params.skip_multiqc) {

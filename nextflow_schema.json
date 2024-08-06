@@ -358,6 +358,20 @@
                 }
             },
             "required": ["diamond_fasta"]
+        },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_star": {
+                    "type": "boolean"
+                },
+                "star_genome": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
@@ -387,6 +401,9 @@
         },
         {
             "$ref": "#/definitions/diamond_makeblastdb"
+        },
+        {
+            "$ref": "#/definitions/new_group_1"
         }
     ]
 }
