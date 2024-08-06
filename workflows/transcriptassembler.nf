@@ -154,7 +154,6 @@ workflow TRANSCRIPTASSEMBLER {
     TRANSDECODER_LONGORF (
         ch_assembled_transcript_fasta
     )
-    ch_longorf_pep                 = TRANSDECODER_LONGORF.out.pep
     ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
     ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
 
