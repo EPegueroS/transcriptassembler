@@ -61,8 +61,6 @@ sync nf-core
 
 ## v0.0.1dev - [2023-06-17]
 
-Initial release of nf-core/transcriptassembler, created with the [nf-core](https://nf-co.re/) template.
-
 ### `Added`
 
 Minimal test data
@@ -73,6 +71,3 @@ Documentation
 
 Removed requirement of a genome
 
-### `Dependencies`
-
-### `Deprecated`

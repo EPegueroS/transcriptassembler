@@ -5,68 +5,6 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
-        "rna_assembly_qc": {
-            "title": "RNA assembly QC",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "busco_mode": {
-                    "type": "string",
-                    "default": "transcriptome"
-                },
-                "busco_lineage": {
-                    "type": "string",
-                    "default": "saccharomycetes_odb10"
-                },
-                "skip_busco": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "busco_lineage_path": {
-                    "type": "string",
-                    "default": "${projectDir}/assets/busco_test_data"
-                }
-            },
-            "required": ["busco_mode", "busco_lineage"]
-        },
-        "triming_and_qc": {
-            "title": "triming_and_qc",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "with_umi": {
-                    "type": "boolean"
-                },
-                "skip_umi_extract": {
-                    "type": "boolean"
-                },
-                "skip_multiqc": {
-                    "type": "boolean"
-                },
-                "umi_discard_read": {
-                    "type": "integer"
-                },
-                "min_trimmed_reads": {
-                    "type": "integer",
-                    "default": 10000
-                },
-                "save_trimmed": {
-                    "type": "boolean"
-                },
-                "skip_trimming": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "skip_qc": {
-                    "type": "boolean"
-                },
-                "skip_fastqc": {
-                    "type": "boolean"
-                }
-            }
-        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -78,6 +16,7 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
+                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
@@ -326,29 +265,18 @@
                     "description": "Validation of parameters in lenient more.",
                     "hidden": true,
                     "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
-                }
-            }
-        },
-        "rna_assembly_options": {
-            "title": "RNA assembly options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "trinity_mem": {
+                },
+                "pipelines_testdata_base_path": {
                     "type": "string",
-                    "default": "6.GB"
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Base URL or local path to location of pipeline test dataset files",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "hidden": true
                 }
             }
         }
     },
     "allOf": [
-        {
-            "$ref": "#/definitions/rna_assembly_qc"
-        },
-        {
-            "$ref": "#/definitions/triming_and_qc"
-        },
         {
             "$ref": "#/definitions/input_output_options"
         },
@@ -363,9 +291,6 @@
         },
         {
             "$ref": "#/definitions/generic_options"
-        },
-        {
-            "$ref": "#/definitions/rna_assembly_options"
         }
     ]
 }
