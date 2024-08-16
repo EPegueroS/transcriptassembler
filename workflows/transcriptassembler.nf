@@ -150,7 +150,7 @@ workflow TRANSCRIPTASSEMBLER {
        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
 
-
+    // MODULE: TRANSDECODER
     TRANSDECODER_LONGORF (
         ch_assembled_transcript_fasta
     )
