@@ -358,6 +358,20 @@
                 }
             },
             "required": ["diamond_fasta"]
+        },
+        "homology_search": {
+            "title": "Homology search",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "pfam_hits": {
+                    "type": "string"
+                },
+                "blastp_hits": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
@@ -387,6 +401,9 @@
         },
         {
             "$ref": "#/definitions/diamond_makeblastdb"
+        },
+        {
+            "$ref": "#/definitions/homology_search"
         }
     ]
 }
