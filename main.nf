@@ -43,24 +43,14 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
+
+//
+// WORKFLOW: Run main nf-core/transcriptassembler analysis pipeline
+//
 workflow NFCORE_TRANSCRIPTASSEMBLER {
-
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    TRANSCRIPTASSEMBLER (
-        samplesheet
-    )
-
-    emit:
-    multiqc_report = TRANSCRIPTASSEMBLER.out.multiqc_report // channel: /path/to/multiqc_report.html
-
+    TRANSCRIPTASSEMBLER ()
 }
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -68,43 +58,9 @@ workflow NFCORE_TRANSCRIPTASSEMBLER {
 */
 
 workflow {
+    NFCORE_TRANSCRIPTASSEMBLER ()
 
-    main:
-
-    //
-    // SUBWORKFLOW: Run initialisation tasks
-    //
-    PIPELINE_INITIALISATION (
-        params.version,
-        params.help,
-        params.validate_params,
-        params.monochrome_logs,
-        args,
-        params.outdir,
-        params.input
-    )
-
-    //
-    // WORKFLOW: Run main workflow
-    //
-    NFCORE_TRANSCRIPTASSEMBLER (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
-
-    //
-    // SUBWORKFLOW: Run completion tasks
-    //
-    PIPELINE_COMPLETION (
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        params.hook_url,
-        NFCORE_TRANSCRIPTASSEMBLER.out.multiqc_report
-    )
 }
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
