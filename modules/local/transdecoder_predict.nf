@@ -4,18 +4,18 @@ process TRANSDECODER_PREDICT {
 
     conda "bioconda::transdecoder=5.7.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/transdecoder:5.5.0--pl5262hdfd78af_4':
-        'quay.io/comp-bio-aging/transdecoder' }"
+        'https://depot.galaxyproject.org/singularity/transdecoder:5.7.1--pl5321hdfd78af_0':
+        'quay.io/biocontainers/transdecoder:5.7.1--pl5321hdfd78af_0' }"
 
     input:
     tuple val(meta), path(fasta)
     path(fold)
 
     output:
-    tuple val(meta), path("*.transdecoder.pep")  , emit: pep
-    tuple val(meta), path("*.transdecoder.gff3") , emit: gff3
-    tuple val(meta), path("*.transdecoder.cds")  , emit: cds
-    tuple val(meta), path("*.transdecoder.bed")  , emit: bed
+    tuple val(meta), path("*.transdecoder.pep")  , emit: pep, optional: true
+    tuple val(meta), path("*.transdecoder.gff3") , emit: gff3, optional: true
+    tuple val(meta), path("*.transdecoder.cds")  , emit: cds, optional: true
+    tuple val(meta), path("*.transdecoder.bed")  , emit: bed, optional: true
     path "versions.yml"                          , emit: versions
 
     when:
