@@ -4,6 +4,7 @@
 //               https://nf-co.re/join
 // TODO nf-core: A subworkflow SHOULD import at least two modules
 
+include { GUNZIP } from '../../modules/nf-core/gunzip/main'
 include { WGET as WGET_CM } from '../../modules/local/wget/main'
 include { WGET as WGET_CLANIN } from '../../modules/local/wget/main'
 
@@ -17,13 +18,24 @@ workflow WGET_GUNZIP_INFERNAL {
     // TODO nf-core: substitute modules here for the modules of your subworkflow
     WGET_CM (
         params.rfam_cm_path,
-        'Rfam.cm.gz'
+        'Rfam.cm'
     )
+    ch_versions = ch_versions.mix(WGET_CM.out.versions)
+    
 
     WGET_CLANIN (
         params.rfam_clanin_path,
         'Rfam.clanin'
     )
+    ch_versions = ch_versions.mix(WGET_CLANIN.out.versions)
+
+    GUNZIP {
+        WGET_CM.out.file
+    }
+    ch_versions = ch_versions.mix(GUNZIP.out.versions)
+
+ 
+     
     
 
     //emit:
