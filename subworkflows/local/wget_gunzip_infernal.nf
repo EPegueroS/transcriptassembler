@@ -7,6 +7,7 @@
 include { GUNZIP } from '../../modules/nf-core/gunzip/main'
 include { WGET as WGET_CM } from '../../modules/local/wget/main'
 include { WGET as WGET_CLANIN } from '../../modules/local/wget/main'
+include { CMPRESS } from '../../modules/local/infernal/cmpress/cmpress'
 
 workflow WGET_GUNZIP_INFERNAL {
 
@@ -34,7 +35,10 @@ workflow WGET_GUNZIP_INFERNAL {
     }
     ch_versions = ch_versions.mix(GUNZIP.out.versions)
 
- 
+    CMPRESS (
+        GUNZIP.out.gunzip
+    )
+    ch_versions = ch_versions.mix(CMPRESS.out.versions)
      
     
 
