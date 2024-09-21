@@ -44,7 +44,7 @@ include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
+include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
 //
 // MODULE: Installed directly from nf-core/modules
 //
@@ -137,6 +137,12 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
+
+
+    WGET_GUNZIP_INFERNAL (
+        
+    )
+    //infernal_ch = WGET_GUNZIP_INFERNAL.out
 
     // MODULE: BUSCO
     if (!params.skip_busco) {

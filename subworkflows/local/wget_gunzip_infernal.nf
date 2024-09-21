@@ -4,15 +4,11 @@
 //               https://nf-co.re/join
 // TODO nf-core: A subworkflow SHOULD import at least two modules
 
-include { WGET as WGET_CM } from '../../../modules/local/wget/main'
-include { WGET as WGET_CLANIN } from '../../../modules/local/wget/main'
+include { WGET as WGET_CM } from '../../modules/local/wget/main'
+include { WGET as WGET_CLANIN } from '../../modules/local/wget/main'
 
 workflow WGET_GUNZIP_INFERNAL {
 
-    take:
-    // TODO nf-core: edit input (take) channels
-    rfam_cm_path = params.rfam_cm_path
-    rfam_clanin_path = params.rfam_clanin_path
 
     main:
 
@@ -20,15 +16,20 @@ workflow WGET_GUNZIP_INFERNAL {
 
     // TODO nf-core: substitute modules here for the modules of your subworkflow
     WGET_CM (
-        rfam_cm_path,
+        params.rfam_cm_path,
         'Rfam.cm.gz'
+    )
+
+    WGET_CLANIN (
+        params.rfam_clanin_path,
+        'Rfam.clanin'
     )
     
 
-    emit:
+    //emit:
     // TODO nf-core: edit emitted channels
-    'Rfam.cm.gz'
+    //WGET_CM.out
 
-    versions = ch_versions                     // channel: [ versions.yml ]
+    //versions = ch_versions                     // channel: [ versions.yml ]
 }
 
