@@ -5,20 +5,20 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
-        "diamond_blastp": {
-            "title": "Diamond_BLASTp",
+        "diamond_blastx": {
+            "title": "Diamond_BLASTx",
             "type": "object",
             "description": "",
             "default": "",
             "properties": {
-                "skip_diamond_blastp": {
+                "skip_diamond_blastx": {
                     "type": "boolean"
                 },
-                "diamond_blastp_outext": {
+                "diamond_blastx_outext": {
                     "type": "string",
                     "default": "txt"
                 },
-                "diamond_blastp_columns": {
+                "diamond_blastx_columns": {
                     "type": "integer",
                     "default": 6
                 }
@@ -381,7 +381,7 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/diamond_blastp"
+            "$ref": "#/definitions/diamond_blastx"
         },
         {
             "$ref": "#/definitions/rna_assembly_qc"

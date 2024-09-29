@@ -53,7 +53,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
+include { DIAMOND_BLASTX } from '../modules/nf-core/diamond/blastx/main'
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -183,17 +183,16 @@ workflow TRANSCRIPTASSEMBLER {
         ch_diamond_db                  = DIAMOND_MAKEDB.out.db
     }
 
-// MODULE: DIAMOND_BLASTP
+// MODULE: DIAMOND_BLASTX
 
-    if (!params.skip_diamond_blastp){
-        DIAMOND_BLASTP(
+    if (!params.skip_diamond_blastx){
+        DIAMOND_BLASTX(
             ch_assembled_transcript_fasta, // error aqui
             DIAMOND_MAKEDB.out.db,
-            params.diamond_blastp_outext,
-            params.diamond_blastp_columns
+            params.diamond_blastx_outext,
+            []
         )
-        //ch_diamond_blastp_out = DIAMOND_BLASTP.out.out
-        ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+        ch_versions                    = ch_versions.mix(DIAMOND_BLASTX.out.versions)
     }
 
 // MODULE: MultiQC

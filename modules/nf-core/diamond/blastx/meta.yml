@@ -1,9 +1,9 @@
-name: diamond_blastp
-description: Queries a DIAMOND database using blastp mode
+name: diamond_blastx
+description: Queries a DIAMOND database using blastx mode
 keywords:
   - fasta
   - diamond
-  - blastp
+  - blastx
   - DNA sequence
 tools:
   - diamond:
@@ -22,16 +22,11 @@ input:
   - fasta:
       type: file
       description: Input fasta file containing query sequences
-      pattern: "*.{fa,fasta,fa.gz,fasta.gz}"
-  - meta2:
-      type: map
-      description: |
-        Groovy Map containing db information
-        e.g. [ id:'test2', single_end:false ]
+      pattern: "*.{fa,fasta}"
   - db:
-      type: file
-      description: File of the indexed DIAMOND database
-      pattern: "*.dmnd"
+      type: directory
+      description: Directory containing the nucelotide blast database
+      pattern: "*"
   - out_ext:
       type: string
       description: |
@@ -40,18 +35,7 @@ input:
         `txt` corresponds to to BLAST tabular format. `tsv` corresponds to
         taxonomic classification format.
       pattern: "blast|xml|txt|daa|sam|tsv|paf"
-  - blast_columns:
-      type: string
-      description: |
-        Optional space separated list of DIAMOND tabular BLAST output keywords
-        used for in conjunction with the 'txt' out_ext option (--outfmt 6). Options:
-        qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore
 output:
-  - meta:
-      type: map
-      description: |
-        Groovy Map containing sample information
-        e.g. [ id:'test', single_end:false ]
   - blast:
       type: file
       description: File containing blastp hits
@@ -84,10 +68,15 @@ output:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
+  - log:
+      type: file
+      description: Log file containing stdout information
+      pattern: "*.{log}"
 authors:
   - "@spficklin"
   - "@jfy133"
+  - "@mjamy"
 maintainers:
   - "@spficklin"
   - "@jfy133"
-  - "@vagkaratzas"
+  - "@mjamy"

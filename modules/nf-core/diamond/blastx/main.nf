@@ -1,15 +1,15 @@
-process DIAMOND_BLASTP {
+process DIAMOND_BLASTX {
     tag "$meta.id"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/diamond:2.1.8--h43eeafb_0' :
-        'biocontainers/diamond:2.1.8--h43eeafb_0' }"
+        'https://depot.galaxyproject.org/singularity/diamond:2.0.15--hb97b32f_0' :
+        'biocontainers/diamond:2.0.15--hb97b32f_0' }"
 
     input:
-    tuple val(meta) , path(fasta)
-    tuple val(meta2), path(db)
+    tuple val(meta), path(fasta)
+    path db
     val out_ext
     val blast_columns
 
@@ -21,7 +21,8 @@ process DIAMOND_BLASTP {
     tuple val(meta), path('*.sam')  , optional: true, emit: sam
     tuple val(meta), path('*.tsv')  , optional: true, emit: tsv
     tuple val(meta), path('*.paf')  , optional: true, emit: paf
-    path "versions.yml"             , emit: versions
+    tuple val(meta), path("*.log")                  , emit: log
+    path "versions.yml"                               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,8 +30,6 @@ process DIAMOND_BLASTP {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def is_compressed = fasta.getExtension() == "gz" ? true : false
-    def fasta_name = is_compressed ? fasta.getBaseName() : fasta
     def columns = blast_columns ? "${blast_columns}" : ''
     switch ( out_ext ) {
         case "blast": outfmt = 0; break
@@ -47,47 +46,19 @@ process DIAMOND_BLASTP {
             break
     }
     """
-    if [ "${is_compressed}" == "true" ]; then
-        gzip -c -d ${fasta} > ${fasta_name}
-    fi
-
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
     diamond \\
-        blastp \\
-        --threads ${task.cpus} \\
+        blastx \\
+        --threads $task.cpus \\
         --db \$DB \\
-        --query ${fasta_name} \\
+        --query $fasta \\
         --outfmt ${outfmt} ${columns} \\
-        ${args} \\
-        --out ${prefix}.${out_ext}
+        $args \\
+        --out ${prefix}.${out_ext} \\
+        --log
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        diamond: \$(diamond --version 2>&1 | tail -n 1 | sed 's/^diamond version //')
-    END_VERSIONS
-    """
-
-    stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    switch ( out_ext ) {
-        case "blast": outfmt = 0; break
-        case "xml": outfmt = 5; break
-        case "txt": outfmt = 6; break
-        case "daa": outfmt = 100; break
-        case "sam": outfmt = 101; break
-        case "tsv": outfmt = 102; break
-        case "paf": outfmt = 103; break
-        default:
-            outfmt = '6';
-            out_ext = 'txt';
-            log.warn("Unknown output file format provided (${out_ext}): selecting DIAMOND default of tabular BLAST output (txt)");
-            break
-    }
-
-    """
-    touch ${prefix}.${out_ext}
+    mv diamond.log ${prefix}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
