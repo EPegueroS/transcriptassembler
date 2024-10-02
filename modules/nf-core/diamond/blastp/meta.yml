@@ -1,9 +1,9 @@
-name: diamond_blastx
-description: Queries a DIAMOND database using blastx mode
+name: diamond_blastp
+description: Queries a DIAMOND database using blastp mode
 keywords:
   - fasta
   - diamond
-  - blastx
+  - blastp
   - DNA sequence
 tools:
   - diamond:
@@ -25,7 +25,7 @@ input:
       pattern: "*.{fa,fasta}"
   - db:
       type: directory
-      description: Directory containing the nucelotide blast database
+      description: Directory containing the protein blast database
       pattern: "*"
   - out_ext:
       type: string
@@ -35,6 +35,12 @@ input:
         `txt` corresponds to to BLAST tabular format. `tsv` corresponds to
         taxonomic classification format.
       pattern: "blast|xml|txt|daa|sam|tsv|paf"
+  - blast_columns:
+      type: string
+      description: |
+        Optional space separated list of DIAMOND tabular BLAST output keywords
+        used for in conjunction with the 'txt' out_ext option (--outfmt 6). See
+        DIAMOND documnetation for more information.
 output:
   - blast:
       type: file
@@ -68,15 +74,9 @@ output:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-  - log:
-      type: file
-      description: Log file containing stdout information
-      pattern: "*.{log}"
 authors:
   - "@spficklin"
   - "@jfy133"
-  - "@mjamy"
 maintainers:
   - "@spficklin"
   - "@jfy133"
-  - "@mjamy"

@@ -1,4 +1,4 @@
-process DIAMOND_BLASTX {
+process DIAMOND_BLASTP {
     tag "$meta.id"
     label 'process_medium'
 
@@ -21,8 +21,7 @@ process DIAMOND_BLASTX {
     tuple val(meta), path('*.sam')  , optional: true, emit: sam
     tuple val(meta), path('*.tsv')  , optional: true, emit: tsv
     tuple val(meta), path('*.paf')  , optional: true, emit: paf
-    tuple val(meta), path("*.log")                  , emit: log
-    path "versions.yml"                               , emit: versions
+    path "versions.yml"               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -49,16 +48,13 @@ process DIAMOND_BLASTX {
     DB=`find -L ./ -name "*.dmnd" | sed 's/\\.dmnd\$//'`
 
     diamond \\
-        blastx \\
+        blastp \\
         --threads $task.cpus \\
         --db \$DB \\
         --query $fasta \\
         --outfmt ${outfmt} ${columns} \\
         $args \\
-        --out ${prefix}.${out_ext} \\
-        --log
-
-    mv diamond.log ${prefix}.log
+        --out ${prefix}.${out_ext}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

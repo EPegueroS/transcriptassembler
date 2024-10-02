@@ -5,25 +5,6 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
-        "diamond_blastx": {
-            "title": "Diamond_BLASTx",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_diamond_blastx": {
-                    "type": "boolean"
-                },
-                "diamond_blastx_outext": {
-                    "type": "string",
-                    "default": "txt"
-                },
-                "diamond_blastx_columns": {
-                    "type": "integer",
-                    "default": 6
-                }
-            }
-        },
         "rna_assembly_qc": {
             "title": "RNA assembly QC",
             "type": "object",
@@ -39,8 +20,7 @@
                     "default": "saccharomycetes_odb10"
                 },
                 "skip_busco": {
-                    "type": "boolean",
-                    "default": true
+                    "type": "boolean"
                 },
                 "busco_lineage_path": {
                     "type": "string",
@@ -377,12 +357,27 @@
                 }
             },
             "required": ["diamond_fasta"]
+        },
+        "diamond_blastp": {
+            "title": "DIAMOND_BLASTP",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_diamond_blastp": {
+                    "type": "boolean"
+                },
+                "diamond_blastp_outext": {
+                    "type": "string",
+                    "default": "txt"
+                },
+                "diamond_blastp_columns": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
-        {
-            "$ref": "#/definitions/diamond_blastx"
-        },
         {
             "$ref": "#/definitions/rna_assembly_qc"
         },
@@ -409,6 +404,9 @@
         },
         {
             "$ref": "#/definitions/diamond_makeblastdb"
+        },
+        {
+            "$ref": "#/definitions/diamond_blastp"
         }
     ]
 }

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-Updated transdecoder conda and container versions. 
+Updated transdecoder conda and container versions.
 
 ## v.0.0.10dev - [2024-07-11]
 
