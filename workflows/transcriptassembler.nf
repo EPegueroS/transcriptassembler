@@ -53,7 +53,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { STAR_ALIGN } from '../modules/nf-core/star/align/main'
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -180,23 +180,6 @@ workflow TRANSCRIPTASSEMBLER {
             params.diamond_fasta
         )
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
-    }
-
-// MODULE: STAR
-//
-
-    if (!params.skip_star){
-        STAR_ALIGN(
-            ch_filtered_reads, 
-            [],
-            [],
-            [],
-            [],
-            []
-
-            
-        )
-        ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
     }
 
 // MODULE: MultiQC
