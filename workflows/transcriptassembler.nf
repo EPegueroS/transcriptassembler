@@ -182,6 +182,17 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
     }
 
+// MODULE: STAR GENOMEGENERATE
+//
+
+    if (!params.skip_star){
+        STAR_GENOMEGENERATE(
+            [[id:'test'],params.star_genome_fasta], // generic meta
+            [[id:'test'],params.star_genome_gtf] // generic meta
+        )
+        ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+    }
+
 // MODULE: MultiQC
 //
     if (!params.skip_multiqc) {
