@@ -38,6 +38,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { MULTIQC } from '../modules/local/multiqc'
 include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
+include { FASTQ_ALIGN_STAR } from '../subworkflows/nf-core/fastq_align_star/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,6 +192,23 @@ workflow TRANSCRIPTASSEMBLER {
             [[id:'test'],params.star_genome_gtf] // generic meta
         )
         ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+    }
+
+// MODULE: FASTQ_ALIGN_STAR
+//
+
+    if (!params.skip_fastq_align_star){
+        FASTQ_ALIGN_STAR(
+            ch_filtered_reads,
+            STAR_GENOMEGENERATE.out.index,
+            [[id:'test'],params.star_genome_gtf],
+            params.star_ignore_sjdbgtf,
+            params.star_seq_platform,
+            params.star_seq_center,
+            [[id:'test'],params.star_genome_fasta],
+            ch_assembled_transcript_fasta
+        )
+        ch_versions                    = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
     }
 
 // MODULE: MultiQC

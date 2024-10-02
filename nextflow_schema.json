@@ -359,8 +359,8 @@
             },
             "required": ["diamond_fasta"]
         },
-        "new_group_1": {
-            "title": "New Group 1",
+        "star_align": {
+            "title": "STAR_align",
             "type": "object",
             "description": "",
             "default": "",
@@ -368,7 +368,37 @@
                 "skip_star": {
                     "type": "boolean"
                 },
-                "star_genome": {
+                "star_gzip_fastas": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        },
+        "star_mapping": {
+            "title": "STAR_mapping",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "star_genome_fasta": {
+                    "type": "string",
+                    "default": "/Users/c3po/Documents/Nextflow_pipelines/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                },
+                "skip_fastq_align_star": {
+                    "type": "boolean"
+                },
+                "star_genome_gtf": {
+                    "type": "string",
+                    "default": "/Users/c3po/Documents/Nextflow_pipelines/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean"
+                },
+                "star_seq_platform": {
+                    "type": "string",
+                    "default": "ILLUMINA"
+                },
+                "star_seq_center": {
                     "type": "string"
                 }
             }
@@ -403,7 +433,10 @@
             "$ref": "#/definitions/diamond_makeblastdb"
         },
         {
-            "$ref": "#/definitions/new_group_1"
+            "$ref": "#/definitions/star_align"
+        },
+        {
+            "$ref": "#/definitions/star_mapping"
         }
     ]
 }
