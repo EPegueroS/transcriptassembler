@@ -4,10 +4,12 @@
 //               https://nf-co.re/join
 // TODO nf-core: A subworkflow SHOULD import at least two modules
 
-include { GUNZIP } from '../../modules/nf-core/gunzip/main'
-include { WGET as WGET_CM } from '../../modules/local/wget/main'
-include { WGET as WGET_CLANIN } from '../../modules/local/wget/main'
+include { GUNZIP as GUNZIPCM } from '../../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIPFASTA } from '../../modules/nf-core/gunzip/main'
+include { WGET as WGETCM } from '../../modules/local/wget/main'
+include { WGET as WGETCLANIN } from '../../modules/local/wget/main'
 include { CMPRESS } from '../../modules/local/infernal/cmpress/cmpress'
+include { CMSCAN } from '../../modules/local/infernal/cmscan/cmscan'
 
 workflow WGET_GUNZIP_INFERNAL {
 
@@ -19,29 +21,34 @@ workflow WGET_GUNZIP_INFERNAL {
     ch_versions = Channel.empty()
 
     // TODO nf-core: substitute modules here for the modules of your subworkflow
-    WGET_CM (
+    WGETCM (
         params.rfam_cm_path,
         'Rfam.cm'
     )
-    ch_versions = ch_versions.mix(WGET_CM.out.versions)
+    ch_versions = ch_versions.mix(WGETCM.out.versions)
     
-
-    WGET_CLANIN (
-        params.rfam_clanin_path,
-        'Rfam.clanin'
-    )
-    ch_versions = ch_versions.mix(WGET_CLANIN.out.versions)
-
-    GUNZIP {
-        WGET_CM.out.file
+    GUNZIPCM {
+        WGETCM.out.file
     }
-    ch_versions = ch_versions.mix(GUNZIP.out.versions)
+    ch_versions = ch_versions.mix(GUNZIPCM.out.versions)
+
+    GUNZIPFASTA {
+        ch_assembled_transcript_fasta
+    }
+    ch_versions = ch_versions.mix(GUNZIPFASTA.out.versions)
 
     CMPRESS (
-        GUNZIP.out.gunzip
+        GUNZIPCM.out.gunzip
     )
     ch_versions = ch_versions.mix(CMPRESS.out.versions)
-     
+
+    
+    CMSCAN (
+        GUNZIPFASTA.out.gunzip,
+        params.rfam_clanin_path,
+        CMPRESS.out.cmpress.collect()
+    )
+    ch_versions = ch_versions.mix(CMSCAN.out.versions)
     
 
     //emit:
