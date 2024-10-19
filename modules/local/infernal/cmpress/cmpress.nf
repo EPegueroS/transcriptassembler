@@ -11,7 +11,9 @@ process CMPRESS {
     tuple val(meta), path(cm_file)
 
     output:
-    path("Rfam.cm*"), emit: rfam
+    // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
+    tuple val(meta), path(cm_file),path("*.i1f"),path("*.i1i"),path("*.i1m"),path("*.i1p"), emit: cmscan
+    // TODO nf-core: List additional required output channels/values here
     path "versions.yml"           , emit: versions
 
     when:

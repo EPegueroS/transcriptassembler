@@ -11,6 +11,8 @@ include { CMPRESS } from '../../modules/local/infernal/cmpress/cmpress'
 
 workflow WGET_GUNZIP_INFERNAL {
 
+    take:
+    ch_assembled_transcript_fasta
 
     main:
 
