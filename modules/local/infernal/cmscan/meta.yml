@@ -1,53 +1,52 @@
-name: wget
+name: cmscan
 description: Download files 
 keywords:
   - sort
 tools:
   - wget:
-      description: Wget module for downloading files.
-      homepage: https://www.gnu.org/software/wget/
-      documentation: https://www.gnu.org/software/wget/manual/
-      tool_dev_url: https://ftp.gnu.org/gnu/wget/
+      description: Classification of RNAs.
+      homepage: https://github.com/EddyRivasLab/infernal
+      documentation: http://eddylab.org/infernal/
+      tool_dev_url: https://github.com/EddyRivasLab/infernal
       doi: ""
-      licence: ["GPL v3"]
+      licence: ["BSD"]
 
 input:
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. [ id:'test', single_end:false ]
-  - url:
+  - fasta_file:
       type: string
-      description: URL link of the desired file.
-  - file_path:
+      description: path to the input fasta.
+  - clanin_file:
       type: string
-      description: Full path to filename
-  - extension:
+      description: path to the clan information file.
+  - cm_file:
       type: string
-      description: Filename extesion like for example ".gz"
+      description: path to the covariance model, also the files with extensions cm_file.[ilf,ili, ilp] are required. 
+         These are the outputs of cmpress.
 
 output:
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. [ id:'test', single_end:false ]
 
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
 
-  - output:
+  - mrum-geome.cmscan:
       type: file
-      description: File containing output
+      description: Detailed output
       pattern: "*"
 
-  - file:
+  - mrum-genome.tblout:
       type: file
-      description: Path to any file downloaded
+      description: Short output version
       pattern: "*"
 
 authors:
-  - "@matq007"
+  - "@EPegueroS"
