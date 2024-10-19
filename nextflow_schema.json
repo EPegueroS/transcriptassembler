@@ -36,8 +36,7 @@
                     "default": "saccharomycetes_odb10"
                 },
                 "skip_busco": {
-                    "type": "boolean",
-                    "default": true
+                    "type": "boolean"
                 },
                 "busco_lineage_path": {
                     "type": "string",
@@ -374,6 +373,24 @@
                 }
             },
             "required": ["diamond_fasta"]
+        },
+        "diamond_blastp": {
+            "title": "DIAMOND_BLASTP",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_diamond_blastp": {
+                    "type": "boolean"
+                },
+                "diamond_blastp_outext": {
+                    "type": "string",
+                    "default": "txt"
+                },
+                "diamond_blastp_columns": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
@@ -406,6 +423,9 @@
         },
         {
             "$ref": "#/definitions/diamond_makeblastdb"
+        },
+        {
+            "$ref": "#/definitions/diamond_blastp"
         }
     ]
 }
