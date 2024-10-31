@@ -210,7 +210,7 @@ workflow TRANSCRIPTASSEMBLER {
             ch_assembled_transcript_fasta
         )
         ch_versions                    = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
-        
+    }    
 // MODULE: DIAMOND_BLASTP
 
     if (!params.skip_diamond_blastp){
