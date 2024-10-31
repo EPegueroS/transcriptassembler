@@ -55,6 +55,8 @@ include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/m
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
+include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
+
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -173,8 +175,7 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
-// MODULE: DIAMOND
-//
+// MODULE: DIAMOND_MAKEDB
 
     if (!params.skip_diamond){
         DIAMOND_MAKEDB(
@@ -209,6 +210,17 @@ workflow TRANSCRIPTASSEMBLER {
             ch_assembled_transcript_fasta
         )
         ch_versions                    = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
+        
+// MODULE: DIAMOND_BLASTP
+
+    if (!params.skip_diamond_blastp){
+        DIAMOND_BLASTP(
+            [[id:'test', single_end:true],params.diamond_fasta], // generic meta data
+            DIAMOND_MAKEDB.out.db,
+            params.diamond_blastp_outext,
+            params.diamond_blastp_columns
+        )
+        ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
     }
 
 // MODULE: MultiQC
