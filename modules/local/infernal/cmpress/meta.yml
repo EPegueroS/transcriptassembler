@@ -1,0 +1,38 @@
+name: cmpress
+description: Compress and index the flat covariance model
+keywords:
+  - sort
+tools:
+  - wget:
+      description: Classification of RNAs
+      homepage: https://github.com/EddyRivasLab/infernal
+      documentation: http://eddylab.org/infernal/
+      tool_dev_url: https://github.com/EddyRivasLab/infernal
+      doi: ""
+      licence: ["BSD"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+  - cm_file:
+      type: string
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+  - cm_file:
+      type: file
+      description: Compressed cm file and indexes
+      pattern: "*"
+
+authors:
+  - "@EPegueroS"
