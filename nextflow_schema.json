@@ -5,6 +5,22 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
+        "rna_annotation": {
+            "title": "RNA annotation",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "rfam_clanin_path": {
+                    "type": "string",
+                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.clanin"
+                },
+                "rfam_cm_path": {
+                    "type": "string",
+                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
+                }
+            }
+        },
         "rna_assembly_qc": {
             "title": "RNA assembly QC",
             "type": "object",
@@ -24,7 +40,7 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "${projectDir}/assets/busco_test_data"
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/busco_test_data"
                 }
             },
             "required": [
@@ -362,7 +378,7 @@
                 "diamond_fasta": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "default": "${projectDir}/assets/testdata/test_db.faa",
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa",
                     "format": "file-path"
                 },
                 "skip_diamond": {
@@ -437,6 +453,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/rna_annotation"
+        },
         {
             "$ref": "#/definitions/rna_assembly_qc"
         },
