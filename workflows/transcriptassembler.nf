@@ -38,6 +38,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { MULTIQC } from '../modules/local/multiqc'
 include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
+include { FASTQ_ALIGN_STAR } from '../subworkflows/nf-core/fastq_align_star/main'
+include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,6 +55,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
+include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
+
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -138,6 +143,12 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
+
+    WGET_GUNZIP_INFERNAL (
+        ch_assembled_transcript_fasta
+    )
+    //infernal_ch = WGET_GUNZIP_INFERNAL.out
+
     // MODULE: BUSCO
     if (!params.skip_busco) {
        BUSCO (
@@ -171,14 +182,52 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
-// MODULE: DIAMOND
-//
+// MODULE: DIAMOND_MAKEDB
 
     if (!params.skip_diamond){
         DIAMOND_MAKEDB(
             params.diamond_fasta
         )
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
+    }
+
+// MODULE: STAR GENOMEGENERATE
+//
+
+    if (!params.skip_star){
+        STAR_GENOMEGENERATE(
+            [[id:'test'],params.star_genome_fasta], // generic meta
+            [[id:'test'],params.star_genome_gtf] // generic meta
+        )
+        ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+    }
+
+// MODULE: FASTQ_ALIGN_STAR
+//
+
+    if (!params.skip_fastq_align_star){
+        FASTQ_ALIGN_STAR(
+            ch_filtered_reads,
+            STAR_GENOMEGENERATE.out.index,
+            [[id:'test'],params.star_genome_gtf],
+            params.star_ignore_sjdbgtf,
+            params.star_seq_platform,
+            params.star_seq_center,
+            [[id:'test'],params.star_genome_fasta],
+            ch_assembled_transcript_fasta
+        )
+        ch_versions                    = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
+    }    
+// MODULE: DIAMOND_BLASTP
+
+    if (!params.skip_diamond_blastp){
+        DIAMOND_BLASTP(
+            [[id:'test', single_end:true],params.diamond_fasta], // generic meta data
+            DIAMOND_MAKEDB.out.db,
+            params.diamond_blastp_outext,
+            params.diamond_blastp_columns
+        )
+        ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
     }
 
 // MODULE: MultiQC
