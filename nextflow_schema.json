@@ -408,5 +408,10 @@
         {
             "$ref": "#/definitions/diamond_blastp"
         }
-    ]
+    ],
+    "properties": {
+        "skip_orthofinder": {
+            "type": "boolean"
+        }
+    }
 }

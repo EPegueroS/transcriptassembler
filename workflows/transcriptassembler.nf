@@ -54,6 +54,7 @@ include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/m
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
 include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
+include { ORTHOFINDER } from '../modules/nf-core/orthofinder/main'
 //
 // SUBWORKFLOW: Installed from nf-core/subworkflows
 //
@@ -191,6 +192,15 @@ workflow TRANSCRIPTASSEMBLER {
             params.diamond_blastp_columns
         )
         ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+    }
+
+// MODULE: ORTHOFINDER
+    if(!params.skip_orthofinder){
+        ORTHOFINDER(
+            [[id:'test', single_end:true],params.diamond_fasta], // generic meta data
+            []
+        )
+        ch_versions                    = ch_versions.mix(ORTHOFINDER.out.versions)
     }
 
 // MODULE: MultiQC
