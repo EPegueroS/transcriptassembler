@@ -11,46 +11,26 @@ process TRANSDECODER_LONGORF {
     tuple val(meta), path(fasta)
 
     output:
-    tuple val(meta), path("${output_dir_name}/*.pep")   , emit: pep
-    tuple val(meta), path("${output_dir_name}/*.gff3")  , emit: gff3
-    tuple val(meta), path("${output_dir_name}/*.cds")   , emit: cds
-    tuple val(meta), path("${output_dir_name}/*.dat")   , emit: dat
-    path("${output_dir_name}")                          , emit: folder
-    path "versions.yml"                                 , emit: versions
+    tuple val(meta), path("${meta.id}/*.pep") , emit: pep
+    tuple val(meta), path("${meta.id}/*.gff3"), emit: gff3
+    tuple val(meta), path("${meta.id}/*.cds") , emit: cds
+    tuple val(meta), path("${meta.id}/*.dat") , emit: dat
+    path("${meta.id}/")                       , emit: folder
+    path "versions.yml"                       , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args        = task.ext.args         ?: ''
-    def prefix      = task.ext.prefix       ?: "${meta.id}"
-    def fasta_no_gz = fasta.toString()      - '.gz'
-    output_dir_name = "${meta.id}/${fasta_no_gz}.transdecoder_dir"
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
     """
     TransDecoder.LongOrfs \\
         $args \\
         -O $prefix \\
         -t \\
         $fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        transdecoder: \$(echo \$(TransDecoder.LongOrfs --version) | sed -e "s/TransDecoder.LongOrfs //g")
-    END_VERSIONS
-    """
-
-    stub:
-    def args        = task.ext.args         ?: ''
-    def prefix      = task.ext.prefix       ?: "${meta.id}"
-    def fasta_no_gz = fasta.toString()      - '.gz'
-    output_dir_name = "${meta.id}/${fasta_no_gz}.transdecoder_dir"
-    """
-    mkdir -p $output_dir_name
-
-    touch $output_dir_name/longest_orfs.pep
-    touch $output_dir_name/longest_orfs.gff3
-    touch $output_dir_name/longest_orfs.cds
-    touch $output_dir_name/base_freqs.dat
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -5,6 +5,20 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "definitions": {
+        "transdecoder_predict": {
+            "title": "Transdecoder/predict",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "pfam_hits": {
+                    "type": "string"
+                },
+                "blastp_hits": {
+                    "type": "string"
+                }
+            }
+        },
         "rna_annotation": {
             "title": "RNA annotation",
             "type": "object",
@@ -13,7 +27,7 @@
             "properties": {
                 "rfam_clanin_path": {
                     "type": "string",
-                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.clanin"
+                    "default": "/Users/msr/Documents/projects/transcript_assembler/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin"
                 },
                 "rfam_cm_path": {
                     "type": "string",
@@ -40,13 +54,10 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/busco_test_data"
+                    "default": "/Users/msr/Documents/projects/transcript_assembler/nf-core-transcriptassembler/assets/busco_test_data"
                 }
             },
-            "required": [
-                "busco_mode",
-                "busco_lineage"
-            ]
+            "required": ["busco_mode", "busco_lineage"]
         },
         "triming_and_qc": {
             "title": "triming_and_qc",
@@ -90,10 +101,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input",
-                "outdir"
-            ],
+            "required": ["input", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -264,14 +272,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -378,16 +379,14 @@
                 "diamond_fasta": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa",
+                    "default": "/Users/msr/Documents/projects/transcript_assembler/nf-core-transcriptassembler/assets/testdata/test_db.faa",
                     "format": "file-path"
                 },
                 "skip_diamond": {
                     "type": "boolean"
                 }
             },
-            "required": [
-                "diamond_fasta"
-            ]
+            "required": ["diamond_fasta"]
         },
         "star_align": {
             "title": "STAR_align",
@@ -412,14 +411,14 @@
             "properties": {
                 "star_genome_fasta": {
                     "type": "string",
-                    "default": "/Users/c3po/Documents/Nextflow_pipelines/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                    "default": "/Users/msr/Documents/projects/transcript_assembler/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
                 },
                 "skip_fastq_align_star": {
                     "type": "boolean"
                 },
                 "star_genome_gtf": {
                     "type": "string",
-                    "default": "/Users/c3po/Documents/Nextflow_pipelines/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
+                    "default": "/Users/msr/Documents/projects/transcript_assembler/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
                 },
                 "star_ignore_sjdbgtf": {
                     "type": "boolean"
@@ -453,6 +452,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/transdecoder_predict"
+        },
         {
             "$ref": "#/definitions/rna_annotation"
         },
@@ -492,13 +494,5 @@
         {
             "$ref": "#/definitions/diamond_blastp"
         }
-    ],
-    "properties": {
-        "pfam_hits": {
-            "type": "string"
-        },
-        "blastp_hits": {
-            "type": "string"
-        }
-    }
+    ]
 }
