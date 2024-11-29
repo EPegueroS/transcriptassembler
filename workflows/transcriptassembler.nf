@@ -171,7 +171,7 @@ workflow TRANSCRIPTASSEMBLER {
 
     TRANSDECODER_PREDICT (
         ch_assembled_transcript_fasta,
-        TRANSDECODER_LONGORF.out.folder
+        ch_longorfs
     )
     ch_gff                         = TRANSDECODER_PREDICT.out.gff3
     ch_aa                          = TRANSDECODER_PREDICT.out.pep
