@@ -4,8 +4,8 @@ process TRANSDECODER_PREDICT {
 
     conda "bioconda::transdecoder=5.7.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/transdecoder:5.7.1--pl5321hdfd78af_0':
-        'quay.io/biocontainers/transdecoder:5.7.1--pl5321hdfd78af_0' }"
+    'https://depot.galaxyproject.org/singularity/transdecoder:5.7.1--pl5321hdfd78af_0' :
+    'biocontainers/transdecoder:5.7.1--pl5321hdfd78af_0' }"
 
     input:
     tuple val(meta), path(fasta)
@@ -24,6 +24,8 @@ process TRANSDECODER_PREDICT {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def fasta_no_gz = fasta.toString()      - '.gz'
+    input_dir_name = "${meta.id}/${fasta_no_gz}"
 
     """
     TransDecoder.Predict \\
