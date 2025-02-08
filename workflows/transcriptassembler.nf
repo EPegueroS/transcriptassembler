@@ -40,6 +40,7 @@ include { MULTIQC } from '../modules/local/multiqc'
 include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
 include { FASTQ_ALIGN_STAR } from '../subworkflows/nf-core/fastq_align_star/main'
 include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
+include { checkSamplesAfterGrouping      } from '../../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
