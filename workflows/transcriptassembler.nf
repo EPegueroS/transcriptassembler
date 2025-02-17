@@ -37,7 +37,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { MULTIQC } from '../modules/local/multiqc'
-include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
+include { TRANSDECODER_PREDICT  } from '../modules/nf-core/transdecoder/predict/main'
 include { FASTQ_ALIGN_STAR } from '../subworkflows/nf-core/fastq_align_star/main'
 include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
 
@@ -167,6 +167,7 @@ workflow TRANSCRIPTASSEMBLER {
         ch_assembled_transcript_fasta
     )
     ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
+    ch_longorfs.view()
     ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
 
     TRANSDECODER_PREDICT (
