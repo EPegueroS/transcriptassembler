@@ -14,7 +14,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNASEQ  } from './workflows/transcriptassembler'
+include { TRANSCRIPTASSEMBLER  } from './workflows/transcriptassembler'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 
@@ -40,7 +40,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_RNASEQ {
+workflow NFCORE_TRANSCRIPTASSEMBLER {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -50,7 +50,7 @@ workflow NFCORE_RNASEQ {
     //
     // WORKFLOW: Run pipeline
     //
-    RNASEQ (
+    TRANSCRIPTASSEMBLER (
         samplesheet
     )
 
@@ -84,8 +84,8 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNASEQ (
-        PIPELINE_INITIALISATION.out.samplesheet
+    NFCORE_TRANSCRIPTASSEMBLER (
+        PIPELINE_INITIALISATION.out.samplesheeT
     )
 
     //
