@@ -1,12 +1,8 @@
-nf_core_version: 2.14.1
 repository_type: pipeline
-template:
-  author: "Harshil Patel, Phil Ewels, Rickard Hammar\xE9n"
-  description: RNA sequencing analysis pipeline for gene/isoform quantification and
-    extensive quality control.
-  force: false
-  is_nfcore: true
-  name: rnaseq
-  org: nf-core
-  outdir: .
-  version: 3.17.0dev
+lint:
+  files_unchanged:
+    - assets/email_template.html
+    - assets/email_template.txt
+    - lib/NfcoreTemplate.groovy
+    - pyproject.toml
+  multiqc_config: false
