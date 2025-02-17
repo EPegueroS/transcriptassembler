@@ -1,12 +1,13 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/rnaseq
+    nf-core/transcriptassembler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Github : https://github.com/nf-core/transcriptassembler
+    Website: https://nf-co.re/transcriptassembler
+    Slack  : https://nfcore.slack.com/channels/transcriptassembler
 ----------------------------------------------------------------------------------------
 */
-
-nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +18,6 @@ nextflow.enable.dsl = 2
 include { TRANSCRIPTASSEMBLER  } from './workflows/transcriptassembler'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 
 /*
@@ -53,10 +53,8 @@ workflow NFCORE_TRANSCRIPTASSEMBLER {
     TRANSCRIPTASSEMBLER (
         samplesheet
     )
-
     emit:
-    multiqc_report = RNASEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
-
+    multiqc_report = TRANSCRIPTASSEMBLER.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,13 +65,11 @@ workflow NFCORE_TRANSCRIPTASSEMBLER {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
@@ -85,9 +81,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     NFCORE_TRANSCRIPTASSEMBLER (
-        PIPELINE_INITIALISATION.out.samplesheeT
+        PIPELINE_INITIALISATION.out.samplesheet
     )
-
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -98,7 +93,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_RNASEQ.out.multiqc_report
+        NFCORE_TRANSCRIPTASSEMBLER.out.multiqc_report
     )
 }
 

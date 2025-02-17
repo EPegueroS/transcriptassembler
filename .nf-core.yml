@@ -1,8 +1,16 @@
+bump_version: null
+lint: {}
+nf_core_version: 3.0.2
+org_path: null
 repository_type: pipeline
-lint:
-  files_unchanged:
-    - assets/email_template.html
-    - assets/email_template.txt
-    - lib/NfcoreTemplate.groovy
-    - pyproject.toml
-  multiqc_config: false
+template:
+  author: Esteban Peguero Sanchez
+  description: A cool pipeline
+  force: true
+  is_nfcore: true
+  name: transcriptassembler
+  org: nf-core
+  outdir: .
+  skip_features: null
+  version: 1.0.0dev
+update: null
