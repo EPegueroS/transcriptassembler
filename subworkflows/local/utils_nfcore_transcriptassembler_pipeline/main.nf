@@ -1,5 +1,5 @@
 //
-// Subworkflow with functionality specific to the {{ transcriptassembler }} pipeline
+// Subworkflow with functionality specific to the transcriptassembler pipeline
 //
 
 /*
