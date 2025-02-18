@@ -9,7 +9,16 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-
+include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
+include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
+include { BUSCO } from '../modules/nf-core/busco/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
+include { TRINITY } from '../modules/nf-core/trinity/main'
+include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
+include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
+include { FASTQ_FASTQC_UMITOOLS_FASTP      } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -25,13 +34,33 @@ workflow TRANSCRIPTASSEMBLER {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
     //
-    // MODULE: Run FastQC
-    //
-    FASTQC (
-        ch_samplesheet
+    ch_fastq = ch_samplesheet
+        .branch {
+            meta, fastqs ->
+                single  : fastqs.size() == 1
+                    return [ meta, fastqs.flatten() ]
+                multiple: fastqs.size() > 1
+                    return [ meta, fastqs.flatten() ]
+        }
+
+    FASTQ_FASTQC_UMITOOLS_FASTP (
+        ch_fastq.multiple,
+        params.skip_fastqc || params.skip_qc,
+        params.with_umi,
+        params.skip_umi_extract,
+        params.umi_discard_read,
+        params.skip_trimming,
+        [],
+        params.save_trimmed,
+        params.save_trimmed,
+        params.min_trimmed_reads
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_filtered_reads      = FASTQ_FASTQC_UMITOOLS_FASTP.out.reads
+    ch_fastqc_raw_multiqc  = FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_raw_zip
+    ch_fastqc_trim_multiqc = FASTQ_FASTQC_UMITOOLS_FASTP.out.fastqc_trim_zip
+    ch_trim_log_multiqc    = FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_json
+    ch_trim_read_count     = FASTQ_FASTQC_UMITOOLS_FASTP.out.trim_read_count
+    ch_versions = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.versions)
 
     //
     // Collate and save software versions
