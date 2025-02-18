@@ -63,6 +63,34 @@ workflow TRANSCRIPTASSEMBLER {
     ch_versions = ch_versions.mix(FASTQ_FASTQC_UMITOOLS_FASTP.out.versions)
 
     //
+    // Get list of samples that failed trimming threshold for MultiQC report
+    //
+    ch_trim_read_count
+        .map {
+            meta, num_reads ->
+                pass_trimmed_reads[meta.id] = true
+                if (num_reads <= params.min_trimmed_reads.toFloat()) {
+                    pass_trimmed_reads[meta.id] = false
+                    return [ "$meta.id\t$num_reads" ]
+                }
+        }
+        .collect()
+        .map {
+            tsv_data ->
+                def header = ["Sample", "Reads after trimming"]
+                WorkflowTranscriptassembler.multiqcTsvFromList(tsv_data, header)
+        }
+        .set { ch_fail_trimming_multiqc }
+
+    // MODULE: TRINITY
+    //
+    TRINITY (
+       ch_filtered_reads
+    )
+    ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
+    ch_versions                    = ch_versions.mix(TRINITY.out.versions)
+
+    //
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
