@@ -235,5 +235,36 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "with_umi": {
+            "type": "boolean"
+        },
+        "skip_umi_extract": {
+            "type": "boolean"
+        },
+        "umi_discard_read": {
+            "type": "string"
+        },
+        "min_trimmed_reads": {
+            "type": "integer",
+            "default": 10000
+        },
+        "save_trimmed": {
+            "type": "boolean"
+        },
+        "skip_trimming": {
+            "type": "boolean",
+            "default": true
+        },
+        "skip_multiqc": {
+            "type": "boolean"
+        },
+        "skip_qc": {
+            "type": "boolean"
+        },
+        "skip_fastqc": {
+            "type": "boolean"
+        }
+    }
 }
