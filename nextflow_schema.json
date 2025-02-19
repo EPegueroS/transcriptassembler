@@ -78,7 +78,7 @@
                     "description": "The base path to the igenomes reference files",
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
-                    "default": "s3://ngi-igenomes/igenomes/"
+                    "default": "s3://ngi-igenomes/igenomes"
                 }
             }
         },
@@ -265,6 +265,78 @@
         },
         "skip_fastqc": {
             "type": "boolean"
+        },
+        "busco_mode": {
+            "type": "string",
+            "default": "transcriptome"
+        },
+        "busco_lineage": {
+            "type": "string",
+            "default": "saccharomycetes_odb10"
+        },
+        "busco_lineage_path": {
+            "type": "string",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/busco_test_data"
+        },
+        "skip_busco": {
+            "type": "boolean"
+        },
+        "skip_diamond": {
+            "type": "boolean"
+        },
+        "diamond_fasta": {
+            "type": "string",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa"
+        },
+        "skip_star": {
+            "type": "boolean"
+        },
+        "star_genome_fasta": {
+            "type": "string",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+        },
+        "star_genome_gtf": {
+            "type": "string",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
+        },
+        "star_gzip_fastas": {
+            "type": "boolean",
+            "default": true
+        },
+        "skip_fastq_align_star": {
+            "type": "boolean"
+        },
+        "star_ignore_sjdbgtf": {
+            "type": "boolean"
+        },
+        "star_seq_platform": {
+            "type": "string",
+            "default": "ILLUMINA"
+        },
+        "star_seq_center": {
+            "type": "string"
+        },
+        "skip_diamond_blastp": {
+            "type": "boolean"
+        },
+        "diamond_blastp_outext": {
+            "type": "string",
+            "default": "txt"
+        },
+        "diamond_blastp_columns": {
+            "type": "string"
+        },
+        "trinity_mem": {
+            "type": "string",
+            "default": "6.GB"
+        },
+        "rfam_cm_path": {
+            "type": "string",
+            "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
+        },
+        "rfam_clanin_path": {
+            "type": "string",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin"
         }
     }
 }

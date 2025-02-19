@@ -89,6 +89,41 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
+    
+    // TODO nf-core: Investigate failure EPS 2025-03-19
+    //WGET_GUNZIP_INFERNAL (
+    //    ch_assembled_transcript_fasta
+    //)
+    //infernal_ch = WGET_GUNZIP_INFERNAL.out
+
+    // MODULE: BUSCO
+    if (!params.skip_busco) {
+       BUSCO (
+          ch_assembled_transcript_fasta,
+          params.busco_mode,
+          params.busco_lineage,
+          params.busco_lineage_path,
+          []
+       )
+       ch_versions                    = ch_versions.mix(BUSCO.out.versions)
+    }
+
+    // MODULE: TRANSDECODER
+    TRANSDECODER_LONGORF (
+        ch_assembled_transcript_fasta
+    )
+    ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
+    ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
+
+    TRANSDECODER_PREDICT (
+        ch_assembled_transcript_fasta,
+        ch_longorfs
+    )
+    ch_gff                         = TRANSDECODER_PREDICT.out.gff3
+    ch_aa                          = TRANSDECODER_PREDICT.out.pep
+    ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
+
+    
 
     //
     // Collate and save software versions
