@@ -123,6 +123,28 @@ workflow TRANSCRIPTASSEMBLER {
     ch_aa                          = TRANSDECODER_PREDICT.out.pep
     ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
 
+    // MODULE: DIAMOND_MAKEDB
+
+    if (!params.skip_diamond){
+        DIAMOND_MAKEDB(
+            params.diamond_fasta
+        )
+        ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
+    }
+
+
+// MODULE: DIAMOND_BLASTP
+
+    if (!params.skip_diamond_blastp){
+        DIAMOND_BLASTP(
+            [[id:'test', single_end:true],params.diamond_fasta], // generic meta data
+            DIAMOND_MAKEDB.out.db,
+            params.diamond_blastp_outext,
+            params.diamond_blastp_columns
+        )
+        ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
+    }
+
     
 
     //
