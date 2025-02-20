@@ -1,12 +1,14 @@
-nf_core_version: 2.14.1
+lint:
+  actions_awsfulltest: false
+  plugin_includes: false
+nf_core_version: 3.2.0
 repository_type: pipeline
 template:
-  author: "Harshil Patel, Phil Ewels, Rickard Hammar\xE9n"
-  description: RNA sequencing analysis pipeline for gene/isoform quantification and
-    extensive quality control.
+  author: Esteban Peguero Sanchez
+  description: A cool pipeline
   force: false
   is_nfcore: true
-  name: rnaseq
+  name: transcriptassembler
   org: nf-core
   outdir: .
-  version: 3.17.0dev
+  version: 1.0.0dev

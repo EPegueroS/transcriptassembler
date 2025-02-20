@@ -1,15 +1,13 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/rnaseq
+    nf-core/transcriptassembler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/rnaseq
-    Website: https://nf-co.re/rnaseq
-    Slack  : https://nfcore.slack.com/channels/rnaseq
+    Github : https://github.com/nf-core/transcriptassembler
+    Website: https://nf-co.re/transcriptassembler
+    Slack  : https://nfcore.slack.com/channels/transcriptassembler
 ----------------------------------------------------------------------------------------
 */
-
-nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,11 +15,10 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RNASEQ  } from './workflows/rnaseq'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rnaseq_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rnaseq_pipeline'
-
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rnaseq_pipeline'
+include { TRANSCRIPTASSEMBLER  } from './workflows/transcriptassembler'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +40,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_RNASEQ {
+workflow NFCORE_TRANSCRIPTASSEMBLER {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -53,13 +50,11 @@ workflow NFCORE_RNASEQ {
     //
     // WORKFLOW: Run pipeline
     //
-    RNASEQ (
+    TRANSCRIPTASSEMBLER (
         samplesheet
     )
-
     emit:
-    multiqc_report = RNASEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
-
+    multiqc_report = TRANSCRIPTASSEMBLER.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,13 +65,11 @@ workflow NFCORE_RNASEQ {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
@@ -87,10 +80,9 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RNASEQ (
+    NFCORE_TRANSCRIPTASSEMBLER (
         PIPELINE_INITIALISATION.out.samplesheet
     )
-
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -101,7 +93,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_RNASEQ.out.multiqc_report
+        NFCORE_TRANSCRIPTASSEMBLER.out.multiqc_report
     )
 }
 
