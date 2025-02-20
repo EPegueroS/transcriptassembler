@@ -1,0 +1,1 @@
+/usr/local/opt/transdecoder/util/compute_base_probs.pl synthetic_dataset.fa 0 > /home/esteban/projects/nf-core-transcriptassembler/work/bd/36a5a5af92de94c405e29d4ea67ec4/synthetic_dataset/synthetic_dataset.fa.transdecoder_dir/base_freqs.dat

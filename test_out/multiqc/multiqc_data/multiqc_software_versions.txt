@@ -1,0 +1,9 @@
+Sample	busco	diamond	fastqc	transdecoder	transdecoder_predict	trinity	nf-core/transcriptassembler	Nextflow
+BUSCO	5.5.0							
+DIAMOND_BLASTP		2.0.15						
+DIAMOND_MAKEDB		2.0.15						
+FASTQC_RAW			0.12.1					
+TRANSDECODER_LONGORF				5.7.1				
+TRANSDECODER_PREDICT					5.7.1			
+TRINITY						2.13.2)		
+Workflow							v.1.0.14dev	24.10.4

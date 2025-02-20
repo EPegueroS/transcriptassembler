@@ -1,0 +1,17 @@
+BUSCO:
+  busco: 5.5.0
+DIAMOND_BLASTP:
+  diamond: 2.0.15
+DIAMOND_MAKEDB:
+  diamond: 2.0.15
+FASTQC_RAW:
+  fastqc: 0.12.1
+TRANSDECODER_LONGORF:
+  transdecoder: 5.7.1
+TRANSDECODER_PREDICT:
+  transdecoder_predict: 5.7.1
+TRINITY:
+  trinity: 2.13.2)
+Workflow:
+    nf-core/transcriptassembler: v.1.0.14dev
+    Nextflow: 24.10.4

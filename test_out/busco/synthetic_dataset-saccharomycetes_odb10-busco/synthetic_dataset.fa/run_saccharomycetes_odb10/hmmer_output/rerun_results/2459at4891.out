@@ -1,0 +1,13 @@
+#                                                                            --- full sequence --- -------------- this domain -------------   hmm coord   ali coord   env coord
+# target name        accession   tlen query name           accession   qlen   E-value  score  bias   #  of  c-Evalue  i-Evalue  score  bias  from    to  from    to  from    to  acc description of target
+#------------------- ---------- ----- -------------------- ---------- ----- --------- ------ ----- --- --- --------- --------- ------ ----- ----- ----- ----- ----- ----- ----- ---- ---------------------
+#
+# Program:         hmmsearch
+# Version:         3.1b2 (February 2015)
+# Pipeline mode:   SEARCH
+# Query file:      /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/busco_test_data/lineages/saccharomycetes_odb10/hmms/2459at4891.hmm
+# Target file:     /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/synthetic_dataset-saccharomycetes_odb10-busco/synthetic_dataset.fa/run_saccharomycetes_odb10/metaeuk_output/rerun_results/synthetic_dataset.fa.modified.fas
+# Option settings: hmmsearch --domtblout /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/synthetic_dataset-saccharomycetes_odb10-busco/synthetic_dataset.fa/run_saccharomycetes_odb10/hmmer_output/rerun_results/2459at4891.out --cpu 1 /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/busco_test_data/lineages/saccharomycetes_odb10/hmms/2459at4891.hmm /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/synthetic_dataset-saccharomycetes_odb10-busco/synthetic_dataset.fa/run_saccharomycetes_odb10/metaeuk_output/rerun_results/synthetic_dataset.fa.modified.fas 
+# Current dir:     /home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7
+# Date:            Thu Feb 20 16:44:30 2025
+# [ok]

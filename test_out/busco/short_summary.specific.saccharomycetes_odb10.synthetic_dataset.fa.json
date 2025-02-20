@@ -1,0 +1,54 @@
+{
+    "parameters": {
+        "out_path": "/home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7",
+        "cpu": "4",
+        "force": "False",
+        "restart": "False",
+        "quiet": "False",
+        "download_path": "/home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/busco_test_data",
+        "datasets_version": "odb10",
+        "offline": "False",
+        "download_base_url": "https://busco-data.ezlab.org/v5/data/",
+        "auto-lineage": "False",
+        "auto-lineage-prok": "False",
+        "auto-lineage-euk": "False",
+        "update-data": "False",
+        "use_augustus": "False",
+        "use_miniprot": "False",
+        "batch_mode": "True",
+        "tar": "False",
+        "in": "/home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/input_seqs/synthetic_dataset.fa",
+        "out": "synthetic_dataset-saccharomycetes_odb10-busco",
+        "mode": "euk_tran",
+        "lineage_dataset": "/home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/busco_test_data/lineages/saccharomycetes_odb10",
+        "main_out": "/home/esteban/projects/nf-core-transcriptassembler/work/16/57330e31e848cfa04025d6edd216b7/synthetic_dataset-saccharomycetes_odb10-busco/synthetic_dataset.fa",
+        "lineage_results_dir": "run_saccharomycetes_odb10",
+        "domain": "eukaryota",
+        "max_intron": "60000",
+        "max_seq_len": "70000",
+        "orthodb_version": "10.1",
+        "metaeuk_parameters": "",
+        "metaeuk_rerun_parameters": ""
+    },
+    "lineage_dataset": {
+        "name": "saccharomycetes_odb10",
+        "creation_date": "2024-01-08",
+        "number_of_buscos": "2137",
+        "number_of_species": "76"
+    },
+    "versions": {
+        "hmmsearch": 3.1,
+        "metaeuk": "6.a5d39d9",
+        "busco": "5.5.0"
+    },
+    "results": {
+        "one_line_summary": "C:0.0%[S:0.0%,D:0.0%],F:0.0%,M:100.0%,n:2137",
+        "Complete": 0.0,
+        "Single copy": 0.0,
+        "Multi copy": 0.0,
+        "Fragmented": 0.0,
+        "Missing": 100.0,
+        "n_markers": 2137,
+        "domain": "eukaryota"
+    }
+}
