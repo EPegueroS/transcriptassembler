@@ -1,8 +1,0 @@
-[2025-02-20 16:45:01,093] multiqc.config                                     [INFO   ]  Loading config settings from: multiqc_config.yml
-[2025-02-20 16:45:01,342] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.27 now available!
-[2025-02-20 16:45:01,343] multiqc.core.file_search                           [INFO   ]  Search path: /home/esteban/projects/nf-core-transcriptassembler/work/b6/9ce16333b4cdd5ef98ea4ab8326460
-[2025-02-20 16:45:01,397] multiqc.modules.custom_content.custom_content      [WARNING]  HTML plot type found with more than one dataset in nf-core-transcriptassembler-summary
-[2025-02-20 16:45:01,397] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-transcriptassembler-summary: Found 1 sample (html)
-[2025-02-20 16:45:01,397] multiqc.modules.custom_content.custom_content      [WARNING]  HTML plot type found with more than one dataset in nf-core-transcriptassembler-methods-description
-[2025-02-20 16:45:01,397] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-transcriptassembler-methods-description: Found 1 sample (html)
-[2025-02-20 16:45:01,399] multiqc.core.write_results                         [INFO   ]  Rendering plots. Export plots to formats png, svg, pdf is requested, so it might take a while. To disable plot export, set `export_plots: false` in config, or remove the `--export-plots` command line flag

@@ -1,2 +1,0 @@
-Input_file	Dataset	Complete	Single	Duplicated	Fragmented	Missing	n_markers
-synthetic_dataset.fa	saccharomycetes_odb10	0.0	0.0	0.0	0.0	100.0	2137
