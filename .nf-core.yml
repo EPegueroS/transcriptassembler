@@ -1,18 +1,14 @@
-bump_version: null
 lint:
-  plugin_includes: False
-  actions_awsfulltest: False
+  actions_awsfulltest: false
+  plugin_includes: false
 nf_core_version: 3.2.0
-org_path: null
 repository_type: pipeline
 template:
   author: Esteban Peguero Sanchez
   description: A cool pipeline
-  force: true
+  force: false
   is_nfcore: true
   name: transcriptassembler
   org: nf-core
   outdir: .
-  skip_features: null
   version: 1.0.0dev
-update: null
