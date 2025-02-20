@@ -276,7 +276,7 @@
         },
         "busco_lineage_path": {
             "type": "string",
-            "default": "\"${projectDir}/assets/busco_test_data\""
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/busco_test_data"
         },
         "skip_busco": {
             "type": "boolean"
@@ -286,18 +286,18 @@
         },
         "diamond_fasta": {
             "type": "string",
-            "default": "\"${projectDir}/assets/testdata/test_db.faa\""
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa"
         },
         "skip_star": {
             "type": "boolean"
         },
         "star_genome_fasta": {
             "type": "string",
-            "default": "\"${projectDir}/assets/testdata/Sc_chr1.fasta\""
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
         },
         "star_genome_gtf": {
             "type": "string",
-            "default": "\"${projectDir}/assets/testdata/Sc_chr1.gff3\""
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
         },
         "star_gzip_fastas": {
             "type": "boolean",
@@ -336,7 +336,7 @@
         },
         "rfam_clanin_path": {
             "type": "string",
-            "default": "\"${projectDir}/assets/rfam_data/Rfam.clanin\"",
+            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin",
             "format": "path"
         }
     }
