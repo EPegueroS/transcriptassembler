@@ -21,7 +21,6 @@ process CMPRESS {
 
     script:
     def args = task.ext.args ?: ''
-    
     """
     cmpress ${cm_file}
 
@@ -33,7 +32,6 @@ process CMPRESS {
 
     stub:
     def args = task.ext.args ?: ''
-   
     """
     touch ${cm_file}
     touch ${cm_file}.i1f

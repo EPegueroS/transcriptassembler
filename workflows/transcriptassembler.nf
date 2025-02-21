@@ -1,104 +1,50 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { checkSamplesAfterGrouping      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
-WorkflowTranscriptassembler.initialise(params, log)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-// TODO used files for multi QC
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
-include { MULTIQC } from '../modules/local/multiqc'
+include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
-include { FASTQ_ALIGN_STAR } from '../subworkflows/nf-core/fastq_align_star/main'
 include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// MODULE: Installed directly from nf-core/modules
-//
 include { BUSCO } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'
 include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
-
-//
-// SUBWORKFLOW: Installed from nf-core/subworkflows
-//
-
-include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp/main'
+include { FASTQ_FASTQC_UMITOOLS_FASTP      } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-def pass_trimmed_reads = [:]
-
 workflow TRANSCRIPTASSEMBLER {
 
+    take:
+    ch_samplesheet // channel: samplesheet read in from --input
+    main:
+
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
+    //
+    ch_fastq = ch_samplesheet
+        .branch {
+            meta, fastqs ->
+                single  : fastqs.size() == 1
+                    return [ meta, fastqs.flatten() ]
+                multiple: fastqs.size() > 1
+                    return [ meta, fastqs.flatten() ]
+        }
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    INPUT_CHECK (
-        file(params.input)
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
-
-    //
-    // SUBWORKFLOW: Read QC, extract UMI and trim adapters with fastp
-    //
-    ch_filtered_reads      = Channel.empty()
-    ch_fastqc_raw_multiqc  = Channel.empty()
-    ch_fastqc_trim_multiqc = Channel.empty()
-    ch_trim_log_multiqc    = Channel.empty()
-    ch_trim_read_count     = Channel.empty()
     FASTQ_FASTQC_UMITOOLS_FASTP (
-        INPUT_CHECK.out.reads,
+        ch_fastq.multiple,
         params.skip_fastqc || params.skip_qc,
         params.with_umi,
         params.skip_umi_extract,
@@ -139,27 +85,27 @@ workflow TRANSCRIPTASSEMBLER {
     // MODULE: TRINITY
     //
     TRINITY (
-       ch_filtered_reads
+        ch_filtered_reads
     )
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
-
-    WGET_GUNZIP_INFERNAL (
-        ch_assembled_transcript_fasta
-    )
+    // TODO nf-core: Investigate failure EPS 2025-03-19
+    //WGET_GUNZIP_INFERNAL (
+    //    ch_assembled_transcript_fasta
+    //)
     //infernal_ch = WGET_GUNZIP_INFERNAL.out
 
     // MODULE: BUSCO
     if (!params.skip_busco) {
-       BUSCO (
-          ch_assembled_transcript_fasta,
-          params.busco_mode,
-          params.busco_lineage,
-          params.busco_lineage_path,
-          []
-       )
-       ch_versions                    = ch_versions.mix(BUSCO.out.versions)
+        BUSCO (
+            ch_assembled_transcript_fasta,
+            params.busco_mode,
+            params.busco_lineage,
+            params.busco_lineage_path,
+            []
+        )
+        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
 
     // MODULE: TRANSDECODER
@@ -176,14 +122,8 @@ workflow TRANSCRIPTASSEMBLER {
     ch_gff                         = TRANSDECODER_PREDICT.out.gff3
     ch_aa                          = TRANSDECODER_PREDICT.out.pep
     ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
-    
 
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
-// MODULE: DIAMOND_MAKEDB
+    // MODULE: DIAMOND_MAKEDB
 
     if (!params.skip_diamond){
         DIAMOND_MAKEDB(
@@ -192,33 +132,7 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
     }
 
-// MODULE: STAR GENOMEGENERATE
-//
 
-    if (!params.skip_star){
-        STAR_GENOMEGENERATE(
-            [[id:'test'],params.star_genome_fasta], // generic meta
-            [[id:'test'],params.star_genome_gtf] // generic meta
-        )
-        ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
-    }
-
-// MODULE: FASTQ_ALIGN_STAR
-//
-
-    if (!params.skip_fastq_align_star){
-        FASTQ_ALIGN_STAR(
-            ch_filtered_reads,
-            STAR_GENOMEGENERATE.out.index,
-            [[id:'test'],params.star_genome_gtf],
-            params.star_ignore_sjdbgtf,
-            params.star_seq_platform,
-            params.star_seq_center,
-            [[id:'test'],params.star_genome_fasta],
-            ch_assembled_transcript_fasta
-        )
-        ch_versions                    = ch_versions.mix(FASTQ_ALIGN_STAR.out.versions)
-    }    
 // MODULE: DIAMOND_BLASTP
 
     if (!params.skip_diamond_blastp){
@@ -231,45 +145,61 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
     }
 
-// MODULE: MultiQC
-//
-    if (!params.skip_multiqc) {
-        workflow_summary    = WorkflowTranscriptassembler.paramsSummaryMultiqc(workflow, summary_params)
-        ch_workflow_summary = Channel.value(workflow_summary)
+    //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_'  +  'transcriptassembler_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
-        methods_description    = WorkflowTranscriptassembler.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, summary_params)
-        ch_methods_description = Channel.value(methods_description)
 
-        MULTIQC (
-            ch_multiqc_config,
-            ch_multiqc_custom_config.collect().ifEmpty([]),
-            CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
-            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
-            ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'),
-            ch_multiqc_logo.collect().ifEmpty([]),
-            ch_fail_trimming_multiqc.collectFile(name: 'fail_trimmed_samples_mqc.tsv').ifEmpty([]),
-            ch_fastqc_raw_multiqc.collect{it[1]}.ifEmpty([]),
-            ch_fastqc_trim_multiqc.collect{it[1]}.ifEmpty([]),
-            ch_trim_log_multiqc.collect{it[1]}.ifEmpty([]),
+    //
+    // MODULE: MultiQC
+    //
+    ch_multiqc_config        = Channel.fromPath(
+        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ?
+        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        Channel.empty()
+    ch_multiqc_logo          = params.multiqc_logo ?
+        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        Channel.empty()
+
+    summary_params      = paramsSummaryMap(
+        workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+        file(params.multiqc_methods_description, checkIfExists: true) :
+        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description))
+
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_methods_description.collectFile(
+            name: 'methods_description_mqc.yaml',
+            sort: true
         )
-        multiqc_report = MULTIQC.out.report.toList()
-    }
-}
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+    )
 
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report, pass_trimmed_reads)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList(),
+        [],
+        []
+    )
+
+    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+
 }
 
 /*

@@ -1,8 +1,15 @@
-repository_type: pipeline
 lint:
-  nextflow_config:
-    - config_defaults:
-        - params.diamond_fasta
-        - params.busco_lineage_path
-  multiqc_config:
-    report_comment: False
+  actions_awsfulltest: false
+  nextflow_config: false
+  plugin_includes: false
+nf_core_version: 3.2.0
+repository_type: pipeline
+template:
+  author: Esteban Peguero Sanchez
+  description: A cool pipeline
+  force: false
+  is_nfcore: true
+  name: transcriptassembler
+  org: nf-core
+  outdir: .
+  version: 1.0.0dev

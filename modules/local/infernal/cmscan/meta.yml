@@ -1,5 +1,5 @@
 name: cmscan
-description: Download files 
+description: Download files
 keywords:
   - sort
 tools:
@@ -24,8 +24,8 @@ input:
       description: path to the clan information file.
   - cm_file:
       type: string
-      description: path to the covariance model, also the files with extensions cm_file.[ilf,ili, ilp] are required. 
-         These are the outputs of cmpress.
+      description: path to the covariance model, also the files with extensions cm_file.[ilf,ili, ilp] are required.
+        These are the outputs of cmpress.
 
 output:
   - meta:

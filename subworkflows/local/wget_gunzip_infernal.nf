@@ -26,7 +26,6 @@ workflow WGET_GUNZIP_INFERNAL {
         'Rfam.cm'
     )
     ch_versions = ch_versions.mix(WGETCM.out.versions)
-    
     GUNZIPCM {
         WGETCM.out.file
     }
@@ -42,14 +41,12 @@ workflow WGET_GUNZIP_INFERNAL {
     )
     ch_versions = ch_versions.mix(CMPRESS.out.versions)
 
-    
     CMSCAN (
         GUNZIPFASTA.out.gunzip,
         params.rfam_clanin_path,
         CMPRESS.out.cmpress.collect()
     )
     ch_versions = ch_versions.mix(CMSCAN.out.versions)
-    
 
     //emit:
     // TODO nf-core: edit emitted channels

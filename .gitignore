@@ -6,7 +6,4 @@ results/
 testing/
 testing*
 *.pyc
-null
-test_out
-*.swp
-
+null/
