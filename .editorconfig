@@ -37,4 +37,4 @@ indent_style = unset
 insert_final_newline = unset
 
 # ignore assets
-[assets/*]
+[*.{hmm,faa}]
