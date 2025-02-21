@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-Updated template 
+Updated template
 
 ### `Removed`
 
@@ -16,7 +16,6 @@ STAR processes and WGET_GUNZIP_INFERNAL - need to investigate failures
 ### `Fixed`
 
 Tests
-
 
 ## v.0.0.14dev - [2024-10-2]
 
@@ -30,13 +29,11 @@ Added STAR mapping with the star-align subworkflow
 
 Implemented subworkflow to run infernal search and classify RNAs.
 
-
 ## v.0.0.12dev -[2024-10-2]
 
 ### `Added`
 
 Implemented diamond/blastp module
-
 
 ## v.0.0.11dev - [2024-08-6]
 
