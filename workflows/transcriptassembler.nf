@@ -16,7 +16,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRINITY } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'   
+include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'
 include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP      } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 /*
@@ -85,7 +85,7 @@ workflow TRANSCRIPTASSEMBLER {
     // MODULE: TRINITY
     //
     TRINITY (
-       ch_filtered_reads
+        ch_filtered_reads
     )
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
@@ -98,14 +98,14 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: BUSCO
     if (!params.skip_busco) {
-       BUSCO (
-          ch_assembled_transcript_fasta,
-          params.busco_mode,
-          params.busco_lineage,
-          params.busco_lineage_path,
-          []
-       )
-       ch_versions                    = ch_versions.mix(BUSCO.out.versions)
+         BUSCO (
+            ch_assembled_transcript_fasta,
+            params.busco_mode,
+            params.busco_lineage,
+            params.busco_lineage_path,
+            []
+        )
+        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
 
     // MODULE: TRANSDECODER
