@@ -37,7 +37,7 @@ indent_style = unset
 insert_final_newline = unset
 
 # ignore assets
-[/assets/*]
+[/assets/**]
 charset = unset
 end_of_line = unset
 insert_final_newline = unset
