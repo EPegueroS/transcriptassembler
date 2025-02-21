@@ -1,6 +1,6 @@
 lint:
   actions_awsfulltest: false
-  nextflow_confif: false
+  nextflow_config: false
   plugin_includes: false
 nf_core_version: 3.2.0
 repository_type: pipeline
