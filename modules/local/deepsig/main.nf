@@ -35,11 +35,11 @@ process DEEPSIG {
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(bam)
+    tuple val(meta), path(fasta)
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*.out"), emit: output
     // TODO nf-core: List additional required output channels/values here
     path "versions.yml"           , emit: versions
 
@@ -59,17 +59,11 @@ process DEEPSIG {
     // TODO nf-core: Please replace the example samtools command below with your module's command
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    samtools \\
-        sort \\
-        $args \\
-        -@ $task.cpus \\
-        -o ${prefix}.bam \\
-        -T $prefix \\
-        $bam
+    deepsig -f ${fasta} -o ${prefix}.out -k euk
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        deepsig: \$(samtools --version |& sed '1!d ; s/samtools //')
+        deepsig: \$(deepsig --version //')
     END_VERSIONS
     """
 
@@ -85,7 +79,7 @@ process DEEPSIG {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        deepsig: \$(samtools --version |& sed '1!d ; s/samtools //')
+        deepsig: \$(deepsig --version //')
     END_VERSIONS
     """
 }

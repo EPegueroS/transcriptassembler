@@ -3,22 +3,23 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
-include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO } from '../modules/nf-core/busco/main'
+include { FASTQC                      } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap            } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { TRANSDECODER_PREDICT        } from '../modules/local/transdecoder_predict'
+include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
+include { BUSCO                       } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
-include { TRINITY } from '../modules/nf-core/trinity/main'
-include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'
-include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
-include { FASTQ_FASTQC_UMITOOLS_FASTP      } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
+include { TRANSDECODER_LONGORF        } from '../modules/nf-core/transdecoder/longorf/main'
+include { TRINITY                     } from '../modules/nf-core/trinity/main'
+include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
+include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
+include { DIAMOND_BLASTP              } from '../modules/nf-core/diamond/blastp/main'
+include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
+include { DEEPSIG                     } from '../modules/local/deepsig/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
