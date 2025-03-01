@@ -2,14 +2,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "deepsig"
 ## TODO nf-core: Add a description of the module and list keywords
-description: write your description here
+description: Predicts signal peptides using deep learning.
 keywords:
-  - sort
-  - example
+  - deepsig
+  - prediction
   - genomics
 tools:
   - "deepsig":
-      ## TODO nf-core: Add a description and other details for the software below
       description: "Predictor of signal peptides in proteins based on deep learning"
       homepage: "None"
       documentation: "None"
@@ -18,43 +17,29 @@ tools:
       licence: ["GPL v3"]
       identifier: biotools:deepsig
 
-## TODO nf-core: Add a description of all of the variables used as input
 input:
-  # Only when we have meta
   - - meta:
         type: map
         description: |
           Groovy Map containing sample information
           e.g. `[ id:'sample1', single_end:false ]`
 
-    ## TODO nf-core: Delete / customise this example input
-    - bam:
+    - fasta:
         type: file
-        description: Sorted BAM/CRAM/SAM file
-        pattern: "*.{bam,cram,sam}"
-        ontologies:
-          - edam: "http://edamontology.org/format_25722"
-          - edam: "http://edamontology.org/format_2573"
-          - edam: "http://edamontology.org/format_3462"
+        description: Fasta file containing aminoacid sequences
+        pattern: "*.{fasta,fa,faa}"
 
-## TODO nf-core: Add a description of all of the variables used as output
 output:
-  - bam:
-      #Only when we have meta
+  - out:
       - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-      ## TODO nf-core: Delete / customise this example output
-      - "*.bam":
+      - "*.out":
           type: file
-          description: Sorted BAM/CRAM/SAM file
-          pattern: "*.{bam,cram,sam}"
-          ontologies:
-            - edam: "http://edamontology.org/format_25722"
-            - edam: "http://edamontology.org/format_2573"
-            - edam: "http://edamontology.org/format_3462"
+          description: Tab separated file. Contains the peptide identifiers, coordinates and prediction evidence.
+          pattern: "*.{out}"
 
   - versions:
       - "versions.yml":
