@@ -39,7 +39,7 @@ process DEEPSIG {
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.out"), emit: output
+    tuple val(meta), path("*.out"), emit: signalpreds
     // TODO nf-core: List additional required output channels/values here
     path "versions.yml"           , emit: versions
 
@@ -63,7 +63,7 @@ process DEEPSIG {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        deepsig: \$(deepsig --version //')
+        deepsig: \$(deepsig --version)
     END_VERSIONS
     """
 
@@ -79,7 +79,7 @@ process DEEPSIG {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        deepsig: \$(deepsig --version //')
+        deepsig: \$(deepsig --version)
     END_VERSIONS
     """
 }

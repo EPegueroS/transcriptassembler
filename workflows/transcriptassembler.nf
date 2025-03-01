@@ -9,11 +9,11 @@ include { paramsSummaryMap            } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { TRANSDECODER_PREDICT        } from '../modules/local/transdecoder_predict'
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
 include { BUSCO                       } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER_LONGORF        } from '../modules/nf-core/transdecoder/longorf/main'
+include { TRANSDECODER_PREDICT        } from '../modules/nf-core/transdecoder/predict/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
@@ -91,6 +91,8 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
+    ch_assembled_transcript_fasta.view {v  -> "value: $v" }
+
     // TODO nf-core: Investigate failure EPS 2025-03-19
     //WGET_GUNZIP_INFERNAL (
     //    ch_assembled_transcript_fasta
@@ -123,9 +125,18 @@ workflow TRANSCRIPTASSEMBLER {
     ch_gff                         = TRANSDECODER_PREDICT.out.gff3
     ch_aa                          = TRANSDECODER_PREDICT.out.pep
     ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
+    
+    ch_aa.subscribe { v -> println "value: $v" }
+
+    ch_aa.view {v  -> "value: $v" }
+
+    // MODULE: DEEPSIG
+    DEEPSIG(
+        ch_aa
+    )
+    ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
     // MODULE: DIAMOND_MAKEDB
-
     if (!params.skip_diamond){
         DIAMOND_MAKEDB(
             params.diamond_fasta
@@ -135,7 +146,6 @@ workflow TRANSCRIPTASSEMBLER {
 
 
 // MODULE: DIAMOND_BLASTP
-
     if (!params.skip_diamond_blastp){
         DIAMOND_BLASTP(
             [[id:'test', single_end:true],params.diamond_fasta], // generic meta data

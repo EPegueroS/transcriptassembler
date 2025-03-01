@@ -12,7 +12,7 @@ process TRANSDECODER_PREDICT {
     path(fold)
 
     output:
-    tuple val(meta), path("*.transdecoder.pep")  , emit: pep, optional: true
+    tuple val(meta), path("*.pep")  , emit: pep, optional: true
     tuple val(meta), path("*.transdecoder.gff3") , emit: gff3, optional: true
     tuple val(meta), path("*.transdecoder.cds")  , emit: cds, optional: true
     tuple val(meta), path("*.transdecoder.bed")  , emit: bed, optional: true
@@ -31,7 +31,7 @@ process TRANSDECODER_PREDICT {
         -O ${prefix} \\
         -t \\
         $fasta
-
+    mv ./synthetic_dataset/synthetic_dataset.fa.transdecoder_dir/longest_orfs.pep .
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         transdecoder_predict: \$(echo \$(TransDecoder.Predict --version) | sed -e "s/TransDecoder.Predict //g")
