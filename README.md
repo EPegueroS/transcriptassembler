@@ -23,7 +23,6 @@
 
 The pipeline takes a samplesheet that defines the paths to FASTQ files contaning the RNA-seq reads.
 
-
 ## Usage
 
 > [!NOTE]
