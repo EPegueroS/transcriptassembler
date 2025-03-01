@@ -12,8 +12,7 @@ include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
 include { BUSCO                       } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { TRANSDECODER_LONGORF        } from '../modules/nf-core/transdecoder/longorf/main'
-include { TRANSDECODER_PREDICT        } from '../modules/nf-core/transdecoder/predict/main'
+include { TRANSDECODER                } from '../modules/local/transdecoder/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
@@ -91,8 +90,6 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
-    ch_assembled_transcript_fasta.view {v  -> "value: $v" }
-
     // TODO nf-core: Investigate failure EPS 2025-03-19
     //WGET_GUNZIP_INFERNAL (
     //    ch_assembled_transcript_fasta
@@ -112,27 +109,16 @@ workflow TRANSCRIPTASSEMBLER {
     }
 
     // MODULE: TRANSDECODER
-    TRANSDECODER_LONGORF (
+    TRANSDECODER (
         ch_assembled_transcript_fasta
     )
-    ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
-    ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
-
-    TRANSDECODER_PREDICT (
-        ch_assembled_transcript_fasta,
-        ch_longorfs
-    )
-    ch_gff                         = TRANSDECODER_PREDICT.out.gff3
-    ch_aa                          = TRANSDECODER_PREDICT.out.pep
-    ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
-    
-    ch_aa.subscribe { v -> println "value: $v" }
-
-    ch_aa.view {v  -> "value: $v" }
+        ch_gff      = TRANSDECODER.out.gff
+        ch_protein  = TRANSDECODER.out.pep
+        ch_versions = ch_versions.mix(TRANSDECODER.out.versions)
 
     // MODULE: DEEPSIG
     DEEPSIG(
-        ch_aa
+        ch_protein
     )
     ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
