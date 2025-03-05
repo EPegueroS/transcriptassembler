@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "deepsig"
+## TODO nf-core: Add a description of the module and list keywords
+description: Predicts signal peptides using deep learning.
+keywords:
+  - deepsig
+  - prediction
+  - genomics
+tools:
+  - "deepsig":
+      description: "Predictor of signal peptides in proteins based on deep learning"
+      homepage: "None"
+      documentation: "None"
+      tool_dev_url: "https://github.com/BolognaBiocomp/deepsig"
+      doi: ""
+      licence: ["GPL v3"]
+      identifier: biotools:deepsig
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+
+    - fasta:
+        type: file
+        description: Fasta file containing aminoacid sequences
+        pattern: "*.{fasta,fa,faa}"
+
+output:
+  - out:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "*.out":
+          type: file
+          description: Tab separated file. Contains the peptide identifiers, coordinates and prediction evidence.
+          pattern: "*.{out}"
+
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+
+authors:
+  - "@EPegueroS"
+maintainers:
+  - "@EPegueroS"

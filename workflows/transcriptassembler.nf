@@ -3,22 +3,22 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { TRANSDECODER_PREDICT  } from '../modules/local/transdecoder_predict'
-include { WGET_GUNZIP_INFERNAL } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO } from '../modules/nf-core/busco/main'
+include { FASTQC                      } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap            } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
+include { BUSCO                       } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { TRANSDECODER_LONGORF } from '../modules/nf-core/transdecoder/longorf/main'
-include { TRINITY } from '../modules/nf-core/trinity/main'
-include { DIAMOND_MAKEDB } from '../modules/nf-core/diamond/makedb/main'
-include { STAR_GENOMEGENERATE } from '../modules/nf-core/star/genomegenerate/main'
-include { DIAMOND_BLASTP } from '../modules/nf-core/diamond/blastp/main'
-include { FASTQ_FASTQC_UMITOOLS_FASTP      } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
+include { TRANSDECODER                } from '../modules/local/transdecoder/main'
+include { TRINITY                     } from '../modules/nf-core/trinity/main'
+include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
+include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
+include { DIAMOND_BLASTP              } from '../modules/nf-core/diamond/blastp/main'
+include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
+include { DEEPSIG                     } from '../modules/local/deepsig/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -109,22 +109,20 @@ workflow TRANSCRIPTASSEMBLER {
     }
 
     // MODULE: TRANSDECODER
-    TRANSDECODER_LONGORF (
+    TRANSDECODER (
         ch_assembled_transcript_fasta
     )
-    ch_longorfs                    = TRANSDECODER_LONGORF.out.folder
-    ch_versions                    = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
+        ch_gff      = TRANSDECODER.out.gff
+        ch_protein  = TRANSDECODER.out.pep
+        ch_versions = ch_versions.mix(TRANSDECODER.out.versions)
 
-    TRANSDECODER_PREDICT (
-        ch_assembled_transcript_fasta,
-        ch_longorfs
+    // MODULE: DEEPSIG
+    DEEPSIG(
+        ch_protein
     )
-    ch_gff                         = TRANSDECODER_PREDICT.out.gff3
-    ch_aa                          = TRANSDECODER_PREDICT.out.pep
-    ch_versions                    = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
+    ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
     // MODULE: DIAMOND_MAKEDB
-
     if (!params.skip_diamond){
         DIAMOND_MAKEDB(
             params.diamond_fasta
@@ -134,7 +132,6 @@ workflow TRANSCRIPTASSEMBLER {
 
 
 // MODULE: DIAMOND_BLASTP
-
     if (!params.skip_diamond_blastp){
         DIAMOND_BLASTP(
             [[id:'test', single_end:true],params.diamond_fasta], // generic meta data

@@ -1,8 +1,6 @@
 {
     "name": "nf-core/transcriptassembler",
     "homePage": "https://github.com/nf-core/transcriptassembler",
-    "name": "nf-core/transcriptassembler",
-    "homePage": "https://github.com/nf-core/transcriptassembler",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
