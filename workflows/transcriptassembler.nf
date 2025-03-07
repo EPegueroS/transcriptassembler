@@ -16,6 +16,7 @@ include { TRANSDECODER                } from '../modules/local/transdecoder/main
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
+include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main' 
 include { DIAMOND_BLASTP              } from '../modules/nf-core/diamond/blastp/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
@@ -130,7 +131,25 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
     }
 
+// MODULE: STAR GENOMEGENERATE
 
+    if (!params.skip_star){
+        STAR_GENOMEGENERATE(
+            [[id:'test'],params.star_genome_fasta], // generic meta
+            [[id:'test'],params.star_genome_gtf] // generic meta
+        )
+        ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
+
+        STAR_ALIGN(
+            ch_filtered_reads,
+            STAR_GENOMEGENERATE.out.index,
+            [[id:'test'],params.star_genome_gtf], // generic meta
+            params.star_ignore_sjdbgtf,
+            params.star_seq_platform,
+            params.star_seq_center
+        )
+        ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
+    }
 // MODULE: DIAMOND_BLASTP
     if (!params.skip_diamond_blastp){
         DIAMOND_BLASTP(
