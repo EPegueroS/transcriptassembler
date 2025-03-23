@@ -5,7 +5,7 @@
   </picture>
 </h1>
 
-[![GitHub Actions CI Status](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml/badge.svg)](/actions/workflows/ci.yml)
+[![GitHub Actions CI Status](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml/badge.svg)]([/actions/workflows/ci.yml](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml))
 [![GitHub Actions Linting Status](https://github.com/nf-core/transcriptassembler/actions/workflows/linting.yml/badge.svg)](https://github.com/EPegueroS/transcriptassembler/actions/workflows/linting.yml)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)
@@ -16,6 +16,16 @@
 **transcriptassembler** is a bioinformatics pipeline that performs de novo transcriptome assembly and extensive transcript annotation.
 
 The pipeline takes a samplesheet that defines the paths to FASTQ files contaning the RNA-seq reads.
+
+## Pipeline diagram
+
+```mermaid
+graph TD;
+    Input reads-->FASTQ;
+    A-->C;
+    B-->D;
+    C-->D;
+```
 
 ## Usage
 
@@ -54,6 +64,7 @@ nextflow run nf-core/transcriptassembler \
 
 For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/transcriptassembler/usage) and the [parameter documentation](https://nf-co.re/transcriptassembler/parameters).
 
+
 ## Pipeline output
 
 To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/transcriptassembler/results) tab on the nf-core website pipeline page.
@@ -72,12 +83,9 @@ We thank the following people for their extensive assistance in the development 
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#transcriptassembler` channel](https://nfcore.slack.com/channels/transcriptassembler) (you can join with [this invite](https://nf-co.re/join/slack)).
-
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/transcriptassembler for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
@@ -85,7 +93,7 @@ An extensive list of references for the tools used by the pipeline can be found 
 
 You can cite the `nf-core` publication as follows:
 
-> **The nf-core framework for community-curated bioinformatics pipelines.**
+This pipeline follows the nf-core framework standards:
 >
 > Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
 >
