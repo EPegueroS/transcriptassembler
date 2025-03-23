@@ -50,6 +50,8 @@ nextflow run transcriptassembler \
    --outdir <OUTDIR>
 ```
 
+(The pipeline comes with a minimal test dataset defined in assets/samplesheet_test.csv)
+
 Next, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
@@ -96,7 +98,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+<!-- TODO nf-core: Add bibliography of tools and data used in the pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
