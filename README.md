@@ -30,6 +30,7 @@ graph TD;
     TRINITY-->BUSCO;
     TRINITY-->TRANSDECODER;
     TRANSDECODER-->DEEPSIG;
+    DIAMOND_MAKEDB -->DIAMOND_BLASTP
 ```
 
 ## Usage
@@ -65,8 +66,6 @@ RUN2,READS1.fastq.gz,READS2.fastq.gz
 ```
 
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
 
 Now, you can run the pipeline using:
 
