@@ -1,6 +1,6 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-transcriptassembler_logo_dark.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipeline_logo.png">
     <img alt="nf-core/transcriptassembler" src="docs/images/nf-core-transcriptassembler_logo_light.png">
   </picture>
 </h1>
