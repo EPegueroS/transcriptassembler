@@ -83,17 +83,11 @@ For more details and further functionality, please refer to the [usage documenta
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/transcriptassembler/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/transcriptassembler/output).
+<!-- TODO nf-core: Document pipeline outputs. -->
 
 ## Credits
 
-nf-core/transcriptassembler was originally written by Esteban Peguero-Sanchez, Moises Sotelo Rodrigues and Teresa Romero-Gutierrez.
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
+transcriptassembler was originally written by Esteban Peguero-Sanchez, Moises Sotelo Rodrigues and Teresa Romero-Gutierrez.
 
 ## Citations
 
@@ -102,8 +96,6 @@ If you would like to contribute to this pipeline, please see the [contributing g
 <!-- TODO nf-core: Add bibliography of tools and data used in the pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
-
-You can cite the `nf-core` publication as follows:
 
 This pipeline is based on the nf-core framework standards:
 
