@@ -23,8 +23,10 @@ The pipeline is still under development. The plan is to incorporate the latest m
 graph TD;
     Input_reads-->FASTQ;
     FASTQ-->FASTQC;
+    FASTQC-->UMITOOLS;
     UMITOOLS-->FASTP;
-    FASTQC-->TRINITY;
+    FASTP-->FASTQC_TRIM;
+    FASTQC_TRIM-->TRINITY;
     TRINITY-->BUSCO;
     TRINITY-->TRANSDECODER;
     TRANSDECODER-->DEEPSIG;
