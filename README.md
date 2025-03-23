@@ -21,7 +21,7 @@ The pipeline takes a samplesheet that defines the paths to FASTQ files contaning
 
 ```mermaid
 graph TD;
-    Input reads-->FASTQ;
+    Input_reads-->FASTQ;
     A-->C;
     B-->D;
     C-->D;
