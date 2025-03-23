@@ -5,7 +5,7 @@
   </picture>
 </h1>
 
-[![GitHub Actions CI Status](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml/badge.svg)]([/actions/workflows/ci.yml](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml))
+[![GitHub Actions CI Status](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml/badge.svg)](<[/actions/workflows/ci.yml](https://github.com/EPegueroS/transcriptassembler/actions/workflows/ci.yml)>)
 [![GitHub Actions Linting Status](https://github.com/nf-core/transcriptassembler/actions/workflows/linting.yml/badge.svg)](https://github.com/EPegueroS/transcriptassembler/actions/workflows/linting.yml)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)
@@ -15,33 +15,49 @@
 
 **transcriptassembler** is a bioinformatics pipeline that performs de novo transcriptome assembly and extensive transcript annotation.
 
-The pipeline takes a samplesheet that defines the paths to FASTQ files contaning the RNA-seq reads.
+The pipeline is still under development. The plan is to incorporate the latest machine learning tools to annotate and predict the structure/properties of the resulting RNAs after assembly and the predicted proteins/peptides.
 
 ## Pipeline diagram
 
 ```mermaid
 graph TD;
     Input_reads-->FASTQ;
-    A-->C;
-    B-->D;
-    C-->D;
+    FASTQ-->FASTQC;
+    UMITOOLS-->FASTP;
+    FASTQC-->TRINITY;
+    TRINITY-->BUSCO;
+    TRINITY-->TRANSDECODER;
+    TRANSDECODER-->DEEPSIG;
 ```
 
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data:
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+```bash
+nextflow run transcriptassembler \
+   -profile test,docker \
+   --outdir <OUTDIR>
+```
 
-First, prepare a samplesheet with your input data that looks as follows:
+The previous command is equivalent to:
+
+```bash
+nextflow run transcriptassembler \
+   -profile docker \
+   --input ./assets/samplesheet_test.csv \
+   --outdir <OUTDIR>
+```
+
+Next, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
 
 ```csv
 sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+RUN2,READS1.fastq.gz,READS2.fastq.gz
 ```
 
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
@@ -50,20 +66,17 @@ Each row represents a fastq file (single-end) or a pair of fastq files (paired e
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
-nextflow run nf-core/transcriptassembler \
-   -profile <docker/singularity/.../institute> \
+nextflow run transcriptassembler \
+   -profile docker \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
 
 > [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
+> Please provide pipeline parameters via Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
 
 For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/transcriptassembler/usage) and the [parameter documentation](https://nf-co.re/transcriptassembler/parameters).
-
 
 ## Pipeline output
 
@@ -73,11 +86,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/transcriptassembler was originally written by Esteban Peguero Sanchez.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+nf-core/transcriptassembler was originally written by Esteban Peguero-Sanchez, Moises Sotelo Rodrigues and Teresa Romero-Gutierrez.
 
 ## Contributions and Support
 
@@ -93,8 +102,8 @@ An extensive list of references for the tools used by the pipeline can be found 
 
 You can cite the `nf-core` publication as follows:
 
-This pipeline follows the nf-core framework standards:
->
+This pipeline is based on the nf-core framework standards:
+
 > Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
 >
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
