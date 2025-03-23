@@ -14,6 +14,30 @@
 
 > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
 
+- [fastp](https://www.ncbi.nlm.nih.gov/pubmed/30423086/)
+
+> Chen S, Zhou Y, Chen Y, Gu J. fastp: an ultra-fast all-in-one FASTQ preprocessor. Bioinformatics. 2018 Sep 1;34(17):i884-i890. doi: 10.1093/bioinformatics/bty560. PubMed PMID: 30423086; PubMed Central PMCID: PMC6129281.
+
+- [Trinity](https://pmc.ncbi.nlm.nih.gov/articles/PMC3571712/)
+
+> Grabherr MG, Haas BJ, Yassour M, Levin JZ, Thompson DA, Amit I, Adiconis X, Fan L, Raychowdhury R, Zeng Q, Chen Z, Mauceli E, Hacohen N, Gnirke A, Rhind N, di Palma F, Birren BW, Nusbaum C, Lindblad-Toh K, Friedman N, Regev A. Full-length transcriptome assembly from RNA-Seq data without a reference genome. Nat Biotechnol. 2011 May 15;29(7):644-52. doi: 10.1038/nbt.1883. PMID: 21572440; PMCID: PMC3571712.
+
+- [BUSCO](https://academic.oup.com/bioinformatics/article/31/19/3210/211866)
+
+> GSeppey M, Manni M, Zdobnov EM. BUSCO: Assessing Genome Assembly and Annotation Completeness. Methods Mol Biol. 2019;1962:227-245. doi: 10.1007/978-1-4939-9173-0_14. PMID: 31020564.
+
+- [Transdecoder](https://github.com/TransDecoder/TransDecoder)
+
+> Haas, BJ. https://github.com/TransDecoder/TransDecoder
+
+- [DeepSig](https://pmc.ncbi.nlm.nih.gov/articles/PMC5946842/)
+
+> Savojardo C, Martelli PL, Fariselli P, Casadio R. DeepSig: deep learning improves signal peptide detection in proteins. Bioinformatics. 2018 May 15;34(10):1690-1696. doi: 10.1093/bioinformatics/btx818. PMID: 29280997; PMCID: PMC5946842.
+
+- [DIAMOND](https://pubmed.ncbi.nlm.nih.gov/25402007/)
+
+> Buchfink B, Xie C, Huson DH. Fast and sensitive protein alignment using DIAMOND. Nat Methods. 2015 Jan;12(1):59-60. doi: 10.1038/nmeth.3176. Epub 2014 Nov 17. PMID: 25402007.
+
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
