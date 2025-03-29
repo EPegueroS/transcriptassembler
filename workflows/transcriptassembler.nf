@@ -16,7 +16,7 @@ include { TRANSDECODER                } from '../modules/local/transdecoder/main
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
-include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main' 
+include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { DIAMOND_BLASTP              } from '../modules/nf-core/diamond/blastp/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
