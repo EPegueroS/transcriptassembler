@@ -13,7 +13,8 @@
             "properties": {
                 "trinity_mem": {
                     "type": "string",
-                    "default": "6.GB"
+                    "default": "6.GB",
+                    "description": "Trinity memory limit"
                 }
             }
         },
@@ -25,12 +26,14 @@
             "properties": {
                 "rfam_cm_path": {
                     "type": "string",
-                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
+                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz",
+                    "description": "Path to Rfam annotation"
                 },
                 "rfam_clanin_path": {
                     "type": "string",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin",
-                    "format": "path"
+                    "default": "transcriptassembler/assets/rfam_data/Rfam.clanin",
+                    "format": "path",
+                    "description": "Path to Rfam clan information"
                 }
             }
         },
@@ -41,11 +44,13 @@
             "default": "",
             "properties": {
                 "skip_diamond": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Defines if diamond database is required"
                 },
                 "diamond_fasta": {
                     "type": "string",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa"
+                    "default": "transcriptassembler/assets/testdata/test_db.faa",
+                    "description": "Path to fasta file used to build the diamond blast database"
                 }
             }
         },
@@ -56,11 +61,13 @@
             "default": "",
             "properties": {
                 "skip_diamond_blastp": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Defines if diamond blastp is required"
                 },
                 "diamond_blastp_outext": {
                     "type": "string",
-                    "default": "txt"
+                    "default": "txt",
+                    "description": "Defines diamond blast output extension"
                 },
                 "diamond_blastp_columns": {
                     "type": "string"
@@ -75,19 +82,23 @@
             "properties": {
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "\"${projectDir}/assets/busco_test_data\"",
-                    "format": "directory-path"
+                    "default": "transcriptassembler/assets/busco_test_data",
+                    "format": "directory-path",
+                    "description": "Path to the BUSCO lineage data"
                 },
                 "skip_busco": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Defines if BUSCO is required"
                 },
                 "busco_mode": {
                     "type": "string",
-                    "default": "transcriptome"
+                    "default": "transcriptome",
+                    "description": "Defines BUSCO run mode"
                 },
                 "busco_lineage": {
                     "type": "string",
-                    "default": "saccharomycetes_odb10"
+                    "default": "saccharomycetes_odb10",
+                    "description": "BUSCO lineage"
                 }
             }
         },
@@ -98,32 +109,39 @@
             "default": "",
             "properties": {
                 "skip_star": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Defines if STAR aligner is required"
                 },
                 "star_genome_fasta": {
                     "type": "string",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                    "default": "transcriptassembler/assets/testdata/Sc_chr1.fasta",
+                    "description": "Path to the FASTA file used for read alignment"
                 },
                 "star_genome_gtf": {
                     "type": "string",
-                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
+                    "default": "transcriptassembler/assets/testdata/Sc_chr1.gff3",
+                    "description": "Path to the GTF file used by STAR"
                 },
                 "star_gzip_fastas": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "Defines if the input fastas should be compressed"
                 },
                 "skip_fastq_align_star": {
                     "type": "boolean"
                 },
                 "star_ignore_sjdbgtf": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "When using pre-built STAR indices do not re-extract and use splice junctions from the GTF file."
                 },
                 "star_seq_platform": {
                     "type": "string",
-                    "default": "ILLUMINA"
+                    "default": "ILLUMINA",
+                    "description": "Sequencing platform"
                 },
                 "star_seq_center": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Sequencing center information to be added to read group of BAM files."
                 }
             }
         },
@@ -134,33 +152,41 @@
             "default": "",
             "properties": {
                 "with_umi": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Enable UMI-based read deduplication."
                 },
                 "skip_umi_extract": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Defines if UMIs should be extracted."
                 },
                 "skip_multiqc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Disables multiqc"
                 },
                 "umi_discard_read": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "UMIs to be discarded"
                 },
                 "min_trimmed_reads": {
                     "type": "integer",
-                    "default": 10000
+                    "default": 10000,
+                    "description": "Minimum number of trimmed reads"
                 },
                 "save_trimmed": {
                     "type": "boolean"
                 },
                 "skip_trimming": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "Enables read trimming"
                 },
                 "skip_qc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Enables QC steps"
                 },
                 "skip_fastqc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Enables FASTQ"
                 }
             }
         },
