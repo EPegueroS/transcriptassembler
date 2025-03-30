@@ -5,6 +5,68 @@
     "description": "A cool pipeline",
     "type": "object",
     "$defs": {
+        "rna_assembly_options": {
+            "title": "RNA_assembly_options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "trinity_mem": {
+                    "type": "string",
+                    "default": "6.GB"
+                }
+            }
+        },
+        "rna_annotation": {
+            "title": "RNA_annotation",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "rfam_cm_path": {
+                    "type": "string",
+                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
+                },
+                "rfam_clanin_path": {
+                    "type": "string",
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin",
+                    "format": "path"
+                }
+            }
+        },
+        "diamond_MAKEDB": {
+            "title": "Diamond_MAKEDB",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_diamond": {
+                    "type": "boolean"
+                },
+                "diamond_fasta": {
+                    "type": "string",
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa"
+                }
+            }
+        },
+        "diamond_BLASTP": {
+            "title": "Diamond_BLASTP",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_diamond_blastp": {
+                    "type": "boolean"
+                },
+                "diamond_blastp_outext": {
+                    "type": "string",
+                    "default": "txt"
+                },
+                "diamond_blastp_columns": {
+                    "type": "string"
+                }
+            }
+        },
         "rna_assembly_qc_busco": {
             "title": "RNA assembly QC (BUSCO)",
             "type": "object",
@@ -26,6 +88,79 @@
                 "busco_lineage": {
                     "type": "string",
                     "default": "saccharomycetes_odb10"
+                }
+            }
+        },
+        "STAR": {
+            "title": "STAR",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_star": {
+                    "type": "boolean"
+                },
+                "star_genome_fasta": {
+                    "type": "string",
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                },
+                "star_genome_gtf": {
+                    "type": "string",
+                    "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
+                },
+                "star_gzip_fastas": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "skip_fastq_align_star": {
+                    "type": "boolean"
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean"
+                },
+                "star_seq_platform": {
+                    "type": "string",
+                    "default": "ILLUMINA"
+                },
+                "star_seq_center": {
+                    "type": "string"
+                }
+            }
+        },
+        "trimming_and_qc": {
+            "title": "trimming_and_qc",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "with_umi": {
+                    "type": "boolean"
+                },
+                "skip_umi_extract": {
+                    "type": "boolean"
+                },
+                "skip_multiqc": {
+                    "type": "boolean"
+                },
+                "umi_discard_read": {
+                    "type": "string"
+                },
+                "min_trimmed_reads": {
+                    "type": "integer",
+                    "default": 10000
+                },
+                "save_trimmed": {
+                    "type": "boolean"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "skip_qc": {
+                    "type": "boolean"
+                },
+                "skip_fastqc": {
+                    "type": "boolean"
                 }
             }
         },
@@ -254,7 +389,25 @@
     },
     "allOf": [
         {
+            "$ref": "#/$defs/rna_assembly_options"
+        },
+        {
+            "$ref": "#/$defs/rna_annotation"
+        },
+        {
+            "$ref": "#/$defs/diamond_MAKEDB"
+        },
+        {
+            "$ref": "#/$defs/diamond_BLASTP"
+        },
+        {
             "$ref": "#/$defs/rna_assembly_qc_busco"
+        },
+        {
+            "$ref": "#/$defs/STAR"
+        },
+        {
+            "$ref": "#/$defs/trimming_and_qc"
         },
         {
             "$ref": "#/$defs/input_output_options"
@@ -268,94 +421,5 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ],
-    "properties": {
-        "with_umi": {
-            "type": "boolean"
-        },
-        "skip_umi_extract": {
-            "type": "boolean"
-        },
-        "umi_discard_read": {
-            "type": "string"
-        },
-        "min_trimmed_reads": {
-            "type": "integer",
-            "default": 10000
-        },
-        "save_trimmed": {
-            "type": "boolean"
-        },
-        "skip_trimming": {
-            "type": "boolean",
-            "default": true
-        },
-        "skip_multiqc": {
-            "type": "boolean"
-        },
-        "skip_qc": {
-            "type": "boolean"
-        },
-        "skip_fastqc": {
-            "type": "boolean"
-        },
-        "skip_diamond": {
-            "type": "boolean"
-        },
-        "diamond_fasta": {
-            "type": "string",
-            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/test_db.faa"
-        },
-        "skip_star": {
-            "type": "boolean"
-        },
-        "star_genome_fasta": {
-            "type": "string",
-            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
-        },
-        "star_genome_gtf": {
-            "type": "string",
-            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/testdata/Sc_chr1.gff3"
-        },
-        "star_gzip_fastas": {
-            "type": "boolean",
-            "default": true
-        },
-        "skip_fastq_align_star": {
-            "type": "boolean"
-        },
-        "star_ignore_sjdbgtf": {
-            "type": "boolean"
-        },
-        "star_seq_platform": {
-            "type": "string",
-            "default": "ILLUMINA"
-        },
-        "star_seq_center": {
-            "type": "string"
-        },
-        "skip_diamond_blastp": {
-            "type": "boolean"
-        },
-        "diamond_blastp_outext": {
-            "type": "string",
-            "default": "txt"
-        },
-        "diamond_blastp_columns": {
-            "type": "string"
-        },
-        "trinity_mem": {
-            "type": "string",
-            "default": "6.GB"
-        },
-        "rfam_cm_path": {
-            "type": "string",
-            "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
-        },
-        "rfam_clanin_path": {
-            "type": "string",
-            "default": "/home/esteban/projects/nf-core-transcriptassembler/assets/rfam_data/Rfam.clanin",
-            "format": "path"
-        }
-    }
+    ]
 }
