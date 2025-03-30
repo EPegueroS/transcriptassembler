@@ -21,8 +21,7 @@ The pipeline is still under development. The plan is to incorporate the latest m
 
 ```mermaid
 graph TD;
-    Input_reads-->FASTQ;
-    FASTQ-->FASTQC;
+    Input_reads-->FASTQC;
     FASTQC-->UMITOOLS;
     UMITOOLS-->FASTP;
     FASTP-->FASTQC_TRIM;
