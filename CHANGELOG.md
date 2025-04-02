@@ -3,7 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v.1.0.17dev - [2025-03-29]
+## v.1.0.17dev - [2025-03-30]
+
+### `Added`
+
+Improvements to the pipeline documentation, including a basic diagram.
+
+## v.1.0.16dev - [2025-03-29]
 
 ### `Fixed`
 
