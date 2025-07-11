@@ -14,10 +14,8 @@ include { BUSCO                       } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER                } from '../modules/local/transdecoder/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
-include { DIAMOND_MAKEDB              } from '../modules/nf-core/diamond/makedb/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
-include { DIAMOND_BLASTP              } from '../modules/nf-core/diamond/blastp/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
 /*
@@ -123,14 +121,6 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
-    // MODULE: DIAMOND_MAKEDB
-    if (!params.skip_diamond){
-        DIAMOND_MAKEDB(
-            params.diamond_fasta
-        )
-        ch_versions                    = ch_versions.mix(DIAMOND_MAKEDB.out.versions)
-    }
-
 // MODULE: STAR GENOMEGENERATE
 
     if (!params.skip_star){
@@ -149,16 +139,6 @@ workflow TRANSCRIPTASSEMBLER {
             params.star_seq_center
         )
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
-    }
-// MODULE: DIAMOND_BLASTP
-    if (!params.skip_diamond_blastp){
-        DIAMOND_BLASTP(
-            [[id:'test', single_end:true],params.diamond_fasta], // generic meta data
-            DIAMOND_MAKEDB.out.db,
-            params.diamond_blastp_outext,
-            params.diamond_blastp_columns
-        )
-        ch_versions                    = ch_versions.mix(DIAMOND_BLASTP.out.versions)
     }
 
     //
