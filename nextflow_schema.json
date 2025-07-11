@@ -5,6 +5,21 @@
     "description": "A cool pipeline",
     "type": "object",
     "$defs": {
+        "blastp": {
+            "title": "blastp",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_blast_blastp": {
+                    "type": "boolean"
+                },
+                "blast_blastp_outext": {
+                    "type": "string",
+                    "default": "tsv"
+                }
+            }
+        },
         "makeblastdb": {
             "title": "makeblastdb",
             "type": "object",
@@ -392,6 +407,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/$defs/blastp"
+        },
         {
             "$ref": "#/$defs/makeblastdb"
         },
