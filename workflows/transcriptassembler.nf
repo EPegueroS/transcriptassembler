@@ -17,6 +17,7 @@ include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
 include { BLAST_MAKEBLASTDB           } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/main'
+include { BLAST_BLASTN } from '../modules/nf-core/blast/blastn/main'
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
@@ -159,7 +160,16 @@ workflow TRANSCRIPTASSEMBLER {
         )
         ch_versions = ch_versions.mix(BLAST_BLASTP.out.versions)
     }   
-
+    // MODULE: BLAST_BLASTN
+    if (!params.skip_blast_blastn) {
+        BLAST_BLASTN(
+            ch_assembled_transcript_fasta,
+            BLAST_MAKEBLASTDB.out.db,
+            params.blast_blastn_outext
+        )
+        ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
+    }
+    
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
