@@ -147,14 +147,14 @@ workflow TRANSCRIPTASSEMBLER {
     // MODULE: BLAST_MAKEBLASTDB
     if (!params.skip_blast_makeblastdb) {
         BLAST_MAKEBLASTDB(
-            params.blast_makeblastdb_fasta,
+            [[id:'reference_fasta'],params.blast_makeblastdb_fasta],
         )
         ch_versions = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
     }
     // MODULE: BLAST_BLASTP
     if (!params.skip_blast_blastp) {
         BLAST_BLASTP(
-            ch_assembled_transcript_fasta,
+            ch_protein,
             BLAST_MAKEBLASTDB.out.db,
             params.blast_blastp_outext
         )
@@ -164,8 +164,7 @@ workflow TRANSCRIPTASSEMBLER {
     if (!params.skip_blast_blastn) {
         BLAST_BLASTN(
             ch_assembled_transcript_fasta,
-            BLAST_MAKEBLASTDB.out.db,
-            params.blast_blastn_outext
+            BLAST_MAKEBLASTDB.out.db
         )
         ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
     }
