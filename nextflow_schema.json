@@ -5,21 +5,6 @@
     "description": "A cool pipeline",
     "type": "object",
     "$defs": {
-        "blastn": {
-            "title": "blastn",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_blast_blastn": {
-                    "type": "boolean"
-                },
-                "blast_blastn_outext": {
-                    "type": "string",
-                    "default": "tsv"
-                }
-            }
-        },
         "blastp": {
             "title": "blastp",
             "type": "object",
@@ -423,9 +408,6 @@
     },
     "allOf": [
         {
-            "$ref": "#/$defs/blastn"
-        },
-        {
             "$ref": "#/$defs/blastp"
         },
         {
@@ -458,5 +440,11 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "blast_dbtype": {
+            "type": "boolean",
+            "default": true
+        }
+    }
 }
