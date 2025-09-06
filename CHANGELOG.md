@@ -6,11 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## v1.0.18dev - [2025-09-06]
 
 ### Added
+
 - Configured module `blast/blastp`
 
 ### Removed
-- Removed module `blast/blastn`
 
+- Removed module `blast/blastn`
 
 ## v.1.0.17dev - [2025-03-30]
 

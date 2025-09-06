@@ -158,7 +158,7 @@ workflow TRANSCRIPTASSEMBLER {
             params.blast_blastp_outext
         )
         ch_versions = ch_versions.mix(BLAST_BLASTP.out.versions)
-    }   
+    }
 
     // Collate and save software versions
     //
