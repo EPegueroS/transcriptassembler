@@ -10,7 +10,7 @@ include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfco
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO                       } from '../modules/nf-core/busco/main'
+include { BUSCO_BUSCO                       } from '../modules/nf-core/busco/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER                } from '../modules/local/transdecoder/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
@@ -20,6 +20,7 @@ include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/ma
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
+include { COLABFOLD                   } from '../subworkflows/local/colabfold'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -99,14 +100,15 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: BUSCO
     if (!params.skip_busco) {
-        BUSCO (
+        BUSCO_BUSCO (
             ch_assembled_transcript_fasta,
             params.busco_mode,
             params.busco_lineage,
             params.busco_lineage_path,
+            [],
             []
         )
-        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
+        ch_versions                    = ch_versions.mix(BUSCO_BUSCO.out.versions)
     }
 
     // MODULE: TRANSDECODER
@@ -129,7 +131,7 @@ workflow TRANSCRIPTASSEMBLER {
         STAR_GENOMEGENERATE(
             [[id:'test'],params.star_genome_fasta], // generic meta
             [[id:'test'],params.star_genome_gtf] // generic meta
-        )
+
         ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
 
         STAR_ALIGN(
@@ -141,6 +143,20 @@ workflow TRANSCRIPTASSEMBLER {
             params.star_seq_center
         )
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
+    }
+
+    // MODULE: COLABFOLD - Protein Structure Prediction
+    if (!params.skip_colabfold) {
+        COLABFOLD(
+            ch_protein,
+            ch_versions,
+            params.colabfold_model_preset ?: 'alphafold2_ptm',
+            Channel.empty(),  // colabfold_params - empty for simplicity
+            Channel.empty(),  // colabfold_db - empty for webserver mode
+            Channel.empty(),  // uniref30 - empty for webserver mode
+            params.num_recycles ?: 3
+        )
+        ch_versions = ch_versions.mix(COLABFOLD.out.versions)
     }
 
     // MODULE: BLAST_MAKEBLASTDB
