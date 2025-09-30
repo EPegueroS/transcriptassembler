@@ -105,8 +105,8 @@ workflow TRANSCRIPTASSEMBLER {
             params.busco_mode,
             params.busco_lineage,
             params.busco_lineage_path,
-            [],
-            []
+            params.busco_config,
+            params.busco_clean_intermediates
         )
         ch_versions                    = ch_versions.mix(BUSCO_BUSCO.out.versions)
     }
