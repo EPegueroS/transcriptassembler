@@ -10,7 +10,7 @@ include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfco
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO_BUSCO                       } from '../modules/nf-core/busco/busco/main'
+include { BUSCO                      } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER                } from '../modules/local/transdecoder/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
@@ -100,15 +100,14 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: BUSCO
     if (!params.skip_busco) {
-        BUSCO_BUSCO (
+        BUSCO(
             ch_assembled_transcript_fasta,
             params.busco_mode,
             params.busco_lineage,
             params.busco_lineage_path,
             params.busco_config,
-            params.busco_clean_intermediates
         )
-        ch_versions                    = ch_versions.mix(BUSCO_BUSCO.out.versions)
+        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
 
     // MODULE: TRANSDECODER
