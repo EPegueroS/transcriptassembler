@@ -21,6 +21,9 @@ include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
 include { COLABFOLD                   } from '../subworkflows/local/colabfold'
+include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { PREPARE_COLABFOLD_DBS } from '../subworkflows/local/prepare_colabfold_dbs'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -146,13 +149,36 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: COLABFOLD - Protein Structure Prediction
     if (!params.skip_colabfold) {
+
+        /*
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            COLABFOLD PARAMETER VALUES
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        */
+
+        params.colabfold_alphafold2_params_link = getColabfoldAlphafold2Params()
+        params.colabfold_alphafold2_params_path = getColabfoldAlphafold2ParamsPath()
+
+        PREPARE_COLABFOLD_DBS (
+            params.colabfold_db,
+            params.colabfold_server,
+            params.colabfold_alphafold2_params_path,
+            params.colabfold_db_path,
+            params.colabfold_uniref30_path,
+            params.colabfold_alphafold2_params_link,
+            params.colabfold_db_link,
+            params.colabfold_uniref30_link,
+            params.create_colabfold_index
+        )
+        ch_versions = ch_versions.mix(PREPARE_COLABFOLD_DBS.out.versions)
+
         COLABFOLD(
             ch_protein,
             ch_versions,
             params.colabfold_model_preset ?: 'alphafold2_ptm',
-            Channel.empty(),  // colabfold_params - empty for simplicity
-            Channel.empty(),  // colabfold_db - empty for webserver mode
-            Channel.empty(),  // uniref30 - empty for webserver mode
+            PREPARE_COLABFOLD_DBS.out.params,
+            PREPARE_COLABFOLD_DBS.out.colabfold_db,
+            PREPARE_COLABFOLD_DBS.out.uniref30,
             params.num_recycles ?: 3
         )
         ch_versions = ch_versions.mix(COLABFOLD.out.versions)

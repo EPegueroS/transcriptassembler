@@ -32,6 +32,10 @@
                 "blast_makeblastdb_fasta": {
                     "type": "string",
                     "default": "/Users/c3po/Documents/Workflow_venomics/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                },
+                "blast_dbtype": {
+                    "type": "boolean",
+                    "default": true
                 }
             }
         },
@@ -404,6 +408,63 @@
                     "hidden": true
                 }
             }
+        },
+        "colabfold": {
+            "title": "COLABFOLD",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_colabfold": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "colabfold_server": {
+                    "type": "string",
+                    "default": "webserver"
+                },
+                "colabfold_model_preset": {
+                    "type": "string",
+                    "default": "alphafold2_ptm"
+                },
+                "num_recycles": {
+                    "type": "integer",
+                    "default": 3
+                },
+                "use_amber": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "colabfold_db": {
+                    "type": "string"
+                },
+                "db_load_mode": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "host_url": {
+                    "type": "string"
+                },
+                "use_templates": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "create_colabfold_index": {
+                    "type": "boolean"
+                },
+                "colabfold_db_link": {
+                    "type": "string"
+                },
+                "colabfold_uniref30_link": {
+                    "type": "string"
+                },
+                "colabfold_db_path": {
+                    "type": "string"
+                },
+                "colabfold_uniref30_path": {
+                    "type": "string"
+                }
+            }
         }
     },
     "allOf": [
@@ -439,12 +500,15 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/colabfold"
         }
     ],
     "properties": {
-        "blast_dbtype": {
-            "type": "boolean",
-            "default": true
+        "busco_config": {
+            "type": "string",
+            "default": "[]"
         }
     }
 }
