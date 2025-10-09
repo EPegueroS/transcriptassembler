@@ -5,6 +5,36 @@
     "description": "A cool pipeline",
     "type": "object",
     "$defs": {
+        "blastp": {
+            "title": "blastp",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_blast_blastp": {
+                    "type": "boolean"
+                },
+                "blast_blastp_outext": {
+                    "type": "string",
+                    "default": "tsv"
+                }
+            }
+        },
+        "makeblastdb": {
+            "title": "makeblastdb",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_blast_makeblastdb": {
+                    "type": "boolean"
+                },
+                "blast_makeblastdb_fasta": {
+                    "type": "string",
+                    "default": "/Users/c3po/Documents/Workflow_venomics/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                }
+            }
+        },
         "rna_assembly_options": {
             "title": "RNA_assembly_options",
             "type": "object",
@@ -37,43 +67,6 @@
                 }
             }
         },
-        "diamond_MAKEDB": {
-            "title": "Diamond_MAKEDB",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_diamond": {
-                    "type": "boolean",
-                    "description": "Defines if diamond database is required"
-                },
-                "diamond_fasta": {
-                    "type": "string",
-                    "default": "transcriptassembler/assets/testdata/test_db.faa",
-                    "description": "Path to fasta file used to build the diamond blast database"
-                }
-            }
-        },
-        "diamond_BLASTP": {
-            "title": "Diamond_BLASTP",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_diamond_blastp": {
-                    "type": "boolean",
-                    "description": "Defines if diamond blastp is required"
-                },
-                "diamond_blastp_outext": {
-                    "type": "string",
-                    "default": "txt",
-                    "description": "Defines diamond blast output extension"
-                },
-                "diamond_blastp_columns": {
-                    "type": "string"
-                }
-            }
-        },
         "rna_assembly_qc_busco": {
             "title": "RNA assembly QC (BUSCO)",
             "type": "object",
@@ -82,7 +75,7 @@
             "properties": {
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "transcriptassembler/assets/busco_test_data",
+                    "default": "/Users/c3po/Documents/Workflow_venomics/nf-core-transcriptassembler/assets/busco_test_data",
                     "format": "directory-path",
                     "description": "Path to the BUSCO lineage data"
                 },
@@ -415,16 +408,16 @@
     },
     "allOf": [
         {
+            "$ref": "#/$defs/blastp"
+        },
+        {
+            "$ref": "#/$defs/makeblastdb"
+        },
+        {
             "$ref": "#/$defs/rna_assembly_options"
         },
         {
             "$ref": "#/$defs/rna_annotation"
-        },
-        {
-            "$ref": "#/$defs/diamond_MAKEDB"
-        },
-        {
-            "$ref": "#/$defs/diamond_BLASTP"
         },
         {
             "$ref": "#/$defs/rna_assembly_qc_busco"
@@ -447,5 +440,11 @@
         {
             "$ref": "#/$defs/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "blast_dbtype": {
+            "type": "boolean",
+            "default": true
+        }
+    }
 }
