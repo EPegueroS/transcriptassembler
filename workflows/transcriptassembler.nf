@@ -172,8 +172,16 @@ workflow TRANSCRIPTASSEMBLER {
         )
         ch_versions = ch_versions.mix(PREPARE_COLABFOLD_DBS.out.versions)
 
+        // Rename TRANSDECODER output
+        ch_protein_fasta = ch_protein.map { meta, pep_file ->
+            def new_name = pep_file.getBaseName() + ".fasta"
+            def renamed = pep_file.copyTo(new_name)  // returns a new File object
+            tuple(meta, renamed)
+            }
+    
+
         COLABFOLD(
-            ch_protein,
+            ch_protein_fasta,
             ch_versions,
             params.colabfold_model_preset ?: 'alphafold2_ptm',
             PREPARE_COLABFOLD_DBS.out.params,
