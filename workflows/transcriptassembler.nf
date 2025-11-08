@@ -127,13 +127,13 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
-// MODULE: STAR GENOMEGENERATE
+    // MODULE: STAR GENOMEGENERATE
 
     if (!params.skip_star){
         STAR_GENOMEGENERATE(
             [[id:'test'],params.star_genome_fasta], // generic meta
             [[id:'test'],params.star_genome_gtf] // generic meta
-
+        )
         ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
 
         STAR_ALIGN(
