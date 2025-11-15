@@ -12,3 +12,6 @@ limits.config
 limits.config
 # Any files generated for testing
 *.fasta
+
+# .nf-test.log
+.nf-test.log
