@@ -2,7 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/transcriptassembler/master/nextflow_schema.json",
     "title": "nf-core/transcriptassembler pipeline parameters",
-    "description": "A cool pipeline",
+    "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "$defs": {
         "blastp": {
@@ -472,7 +472,7 @@
                     "type": "boolean"
                 },
                 "colabfold_alphafold2_params_tags": {
-                    "type": "object",
+                    "type": "string",
                     "default": "[alphafold2_multimer_v1:'alphafold_params_colab_2021-10-27', alphafold2_multimer_v2:'alphafold_params_colab_2022-03-02', alphafold2_multimer_v3:'alphafold_params_colab_2022-12-06', alphafold2_ptm:'alphafold_params_2021-07-14']"
                 }
             }
