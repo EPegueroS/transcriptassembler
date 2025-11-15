@@ -26,7 +26,7 @@ include { MULTIFASTA_TO_CSV      } from '../../modules/local/multifasta_to_csv'
 workflow COLABFOLD {
 
     take:
-    ch_protein_fasta       // channel: [meta, protein.fasta] 
+    ch_protein_fasta       // channel: [meta, protein.fasta]
     ch_versions            // channel: [ path(versions.yml) ]
     colabfold_model_preset // string: Specifies the model preset to use for colabfold
     ch_colabfold_params    // channel: path(colabfold_params)

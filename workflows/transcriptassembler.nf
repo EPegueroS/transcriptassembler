@@ -178,7 +178,6 @@ workflow TRANSCRIPTASSEMBLER {
             def renamed = pep_file.copyTo(new_name)  // returns a new File object
             tuple(meta, renamed)
             }
-    
 
         COLABFOLD(
             ch_protein_fasta,
