@@ -250,7 +250,6 @@ workflow TRANSCRIPTASSEMBLER {
             [],
             [],
             false
-            //params.blast_blastn_outext
         )
         ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
     }
