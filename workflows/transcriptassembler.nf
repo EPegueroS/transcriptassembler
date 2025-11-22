@@ -10,7 +10,7 @@ include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfco
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO                       } from '../modules/nf-core/busco/main'
+include { BUSCO                      } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER                } from '../modules/local/transdecoder/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
@@ -20,6 +20,10 @@ include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/ma
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
+include { COLABFOLD                   } from '../subworkflows/local/colabfold'
+include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { PREPARE_COLABFOLD_DBS } from '../subworkflows/local/prepare_colabfold_dbs'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -99,12 +103,12 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: BUSCO
     if (!params.skip_busco) {
-        BUSCO (
+        BUSCO(
             ch_assembled_transcript_fasta,
             params.busco_mode,
             params.busco_lineage,
             params.busco_lineage_path,
-            []
+            params.busco_config,
         )
         ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
@@ -123,7 +127,7 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
-// MODULE: STAR GENOMEGENERATE
+    // MODULE: STAR GENOMEGENERATE
 
     if (!params.skip_star){
         STAR_GENOMEGENERATE(
@@ -141,6 +145,50 @@ workflow TRANSCRIPTASSEMBLER {
             params.star_seq_center
         )
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
+    }
+
+    // MODULE: COLABFOLD - Protein Structure Prediction
+    if (!params.skip_colabfold) {
+
+        /*
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            COLABFOLD PARAMETER VALUES
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        */
+
+        params.colabfold_alphafold2_params_link = getColabfoldAlphafold2Params()
+        params.colabfold_alphafold2_params_path = getColabfoldAlphafold2ParamsPath()
+
+        PREPARE_COLABFOLD_DBS (
+            params.colabfold_db,
+            params.colabfold_server,
+            params.colabfold_alphafold2_params_path,
+            params.colabfold_db_path,
+            params.colabfold_uniref30_path,
+            params.colabfold_alphafold2_params_link,
+            params.colabfold_db_link,
+            params.colabfold_uniref30_link,
+            params.create_colabfold_index
+        )
+        ch_versions = ch_versions.mix(PREPARE_COLABFOLD_DBS.out.versions)
+
+        // Rename TRANSDECODER output
+        ch_protein_fasta = ch_protein.map { meta, pep_file ->
+            def new_name = pep_file.getBaseName() + ".fasta"
+            def renamed = pep_file.copyTo(new_name)  // returns a new File object
+            tuple(meta, renamed)
+            }
+
+        COLABFOLD(
+            ch_protein_fasta,
+            ch_versions,
+            params.colabfold_model_preset ?: 'alphafold2_ptm',
+            PREPARE_COLABFOLD_DBS.out.params,
+            PREPARE_COLABFOLD_DBS.out.colabfold_db,
+            PREPARE_COLABFOLD_DBS.out.uniref30,
+            params.num_recycles ?: 3
+        )
+        ch_versions = ch_versions.mix(COLABFOLD.out.versions)
     }
 
     // MODULE: BLAST_MAKEBLASTDB
