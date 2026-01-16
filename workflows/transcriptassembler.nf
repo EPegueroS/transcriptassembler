@@ -148,7 +148,7 @@ workflow TRANSCRIPTASSEMBLER {
     }
 
     // MODULE: COLABFOLD - Protein Structure Prediction
-    if (!params.skip_colabfold) {
+    if (params.run_colabfold) {
 
         /*
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
