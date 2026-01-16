@@ -309,6 +309,9 @@
         },
         "fasta": {
             "type": "string"
+        },
+        "skip_orthofinder": {
+            "type": "boolean"
         }
     }
 }

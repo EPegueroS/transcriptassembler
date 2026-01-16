@@ -150,6 +150,15 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
     }
 
+    // MODULE: ORTHOFINDER
+    if (!params.skip_orthofinder){
+        ORTHOFINDER(
+            ch_protein,
+            [[id:'test'], []] // generic meta and no prior run
+        )
+    }
+    ch_versions = ch_versions.mix(ORTHOFINDER.out.versions)
+
     // MODULE: COLABFOLD - Protein Structure Prediction
     if (params.run_colabfold) {
 
