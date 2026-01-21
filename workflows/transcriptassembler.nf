@@ -203,7 +203,7 @@ workflow TRANSCRIPTASSEMBLER {
     // Nucleotide database (for BLASTN)
         MAKEBLASTDB_NUCL(
             [[id:'nucl_db'], params.blast_makeblastdb_nucl_fasta]
-        )   
+        )
         ch_versions = ch_versions.mix(MAKEBLASTDB_NUCL.out.versions)
     }
 
