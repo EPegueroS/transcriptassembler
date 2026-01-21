@@ -3,7 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.0.19dv - [2025-11-8]
+## v1.0.20dev - [2026-01-21]
+### Added
+- Added BLASTP and BLASTN modules for functional annotation.
+
+## v1.0.19dev - [2025-11-8]
 ### Added
 - Added protein folding subworkflow (colabfold) based on nf-core/proteinfold.
 

@@ -44,10 +44,6 @@
                 "skip_blast_makeblastdb": {
                     "type": "boolean"
                 },
-                "blast_makeblastdb_fasta": {
-                    "type": "string",
-                    "default": "/Users/c3po/Documents/Workflow_venomics/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
-                },
                 "blast_makeblastdb_prot_fasta": {
                     "type": "string",
                     "default": "assets/testdata/test_db.faa"
@@ -492,12 +488,7 @@
                 },
                 "colabfold_alphafold2_params_tags": {
                     "type": "object",
-                    "default": {
-                        "alphafold2_multimer_v1": "alphafold_params_colab_2021-10-27", 
-                        "alphafold2_multimer_v2": "alphafold_params_colab_2022-03-02", 
-                        "alphafold2_multimer_v3": "alphafold_params_colab_2022-12-06", 
-                        "alphafold2_ptm": "alphafold_params_2021-07-14"
-                    }    
+                    "description": "Mapping of AlphaFold2 model presets to parameter tags"
                 }
             }
         }
