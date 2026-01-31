@@ -152,8 +152,23 @@ workflow TRANSCRIPTASSEMBLER {
 
     // MODULE: ORTHOFINDER
     if (!params.skip_orthofinder){
+        // Create a channel for the reference fasta JUST FOR TESTING PURPOSES
+        // Create the reference file object
+        def reference_fasta = file(
+            params.orthofinder_reference_fasta,
+            checkIfExists: true
+            )
+
+        // Combine TRINITY's output fasta with the reference
+        ch_orthofinder_input = ch_protein
+            .map{meta, fasta ->
+                [
+                    [id: 'orthofinder_run'],  // Combined meta
+                    [fasta, reference_fasta]  // List of both files
+                ]
+            }
         ORTHOFINDER(
-            ch_protein,
+            ch_orthofinder_input,
             [[id:'test'], []] // generic meta and no prior run
         )
     }
