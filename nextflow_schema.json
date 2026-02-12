@@ -5,11 +5,26 @@
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "$defs": {
+        "blastn": {
+            "title": "blastn",
+            "type": "object",
+            "description": "",
+            "default": {},
+            "properties": {
+                "skip_blast_blastn": {
+                    "type": "boolean"
+                },
+                "blast_blastn_outext": {
+                    "type": "string",
+                    "default": "tsv"
+                }
+            }
+        },
         "blastp": {
             "title": "blastp",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "skip_blast_blastp": {
                     "type": "boolean"
@@ -24,18 +39,18 @@
             "title": "makeblastdb",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "skip_blast_makeblastdb": {
                     "type": "boolean"
                 },
-                "blast_makeblastdb_fasta": {
+                "blast_makeblastdb_prot_fasta": {
                     "type": "string",
-                    "default": "/Users/c3po/Documents/Workflow_venomics/nf-core-transcriptassembler/assets/testdata/Sc_chr1.fasta"
+                    "default": "assets/testdata/test_db.faa"
                 },
-                "blast_dbtype": {
-                    "type": "boolean",
-                    "default": true
+                "blast_makeblastdb_nucl_fasta": {
+                    "type": "string",
+                    "default": "assets/testdata/test_db.fasta"
                 }
             }
         },
@@ -43,7 +58,7 @@
             "title": "RNA_assembly_options",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "trinity_mem": {
                     "type": "string",
@@ -56,7 +71,7 @@
             "title": "RNA_annotation",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "rfam_cm_path": {
                     "type": "string",
@@ -75,7 +90,7 @@
             "title": "RNA assembly QC (BUSCO)",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "busco_lineage_path": {
                     "type": "string",
@@ -103,7 +118,7 @@
             "title": "STAR",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "skip_star": {
                     "type": "boolean",
@@ -146,7 +161,7 @@
             "title": "trimming_and_qc",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "with_umi": {
                     "type": "boolean",
@@ -413,7 +428,7 @@
             "title": "COLABFOLD",
             "type": "object",
             "description": "",
-            "default": "",
+            "default": {},
             "properties": {
                 "skip_colabfold": {
                     "type": "boolean",
@@ -472,13 +487,16 @@
                     "type": "boolean"
                 },
                 "colabfold_alphafold2_params_tags": {
-                    "type": "string",
-                    "default": "[alphafold2_multimer_v1:'alphafold_params_colab_2021-10-27', alphafold2_multimer_v2:'alphafold_params_colab_2022-03-02', alphafold2_multimer_v3:'alphafold_params_colab_2022-12-06', alphafold2_ptm:'alphafold_params_2021-07-14']"
+                    "type": "object",
+                    "description": "Mapping of AlphaFold2 model presets to parameter tags"
                 }
             }
         }
     },
     "allOf": [
+        {
+            "$ref": "#/$defs/blastn"
+        },
         {
             "$ref": "#/$defs/blastp"
         },
