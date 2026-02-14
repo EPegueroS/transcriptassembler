@@ -2,6 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/transcriptassembler/master/nextflow_schema.json",
     "title": "nf-core/transcriptassembler pipeline parameters",
+<<<<<<< HEAD
     "description": "Pipeline to assemble and annotate transcriptomes",
     "type": "object",
     "$defs": {
@@ -202,6 +203,11 @@
                 }
             }
         },
+=======
+    "description": "A cool pipeline",
+    "type": "object",
+    "$defs": {
+>>>>>>> TEMPLATE
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -275,7 +281,11 @@
                     "description": "The base path to the igenomes reference files",
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
+<<<<<<< HEAD
                     "default": "s3://ngi-igenomes/igenomes"
+=======
+                    "default": "s3://ngi-igenomes/igenomes/"
+>>>>>>> TEMPLATE
                 }
             }
         },
@@ -421,6 +431,7 @@
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+<<<<<<< HEAD
                 }
             }
         },
@@ -489,12 +500,27 @@
                 "colabfold_alphafold2_params_tags": {
                     "type": "object",
                     "description": "Mapping of AlphaFold2 model presets to parameter tags"
+=======
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+>>>>>>> TEMPLATE
                 }
             }
         }
     },
     "allOf": [
         {
+<<<<<<< HEAD
             "$ref": "#/$defs/blastn"
         },
         {
@@ -532,6 +558,18 @@
         },
         {
             "$ref": "#/$defs/colabfold"
+=======
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/institutional_config_options"
+        },
+        {
+            "$ref": "#/$defs/generic_options"
+>>>>>>> TEMPLATE
         }
     ],
     "properties": {

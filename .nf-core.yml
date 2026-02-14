@@ -1,17 +1,19 @@
+nf_core_version: 3.5.2
+repository_type: pipeline
+
 lint:
   actions_awsfulltest: false
-  nextflow_config: false
-  plugin_includes: false
   files_unchanged:
     - assets/email_template.html
-nf_core_version: 3.2.0
-repository_type: pipeline
+  nextflow_config: false
+  plugin_includes: false
+
 template:
-  author: Esteban Peguero Sanchez
-  description: A cool pipeline
+  author: "Esteban Peguero Sanchez"
+  description: "A cool pipeline"
   force: false
   is_nfcore: true
   name: transcriptassembler
   org: nf-core
   outdir: .
-  version: 1.0.0dev
+  version: "1.0.0dev"

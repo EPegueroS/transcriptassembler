@@ -13,6 +13,7 @@
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+<<<<<<< HEAD
 
 - [fastp](https://www.ncbi.nlm.nih.gov/pubmed/30423086/)
 
@@ -37,6 +38,8 @@
 - [DIAMOND](https://pubmed.ncbi.nlm.nih.gov/25402007/)
 
 > Buchfink B, Xie C, Huson DH. Fast and sensitive protein alignment using DIAMOND. Nat Methods. 2015 Jan;12(1):59-60. doi: 10.1038/nmeth.3176. Epub 2014 Nov 17. PMID: 25402007.
+=======
+>>>>>>> TEMPLATE
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
