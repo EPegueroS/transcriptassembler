@@ -317,4 +317,3 @@ def getColabfoldAlphafold2ParamsPath() {
     }
     return path
 }
-

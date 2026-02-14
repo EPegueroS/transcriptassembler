@@ -54,4 +54,3 @@ workflow WGET_GUNZIP_INFERNAL {
 
     //versions = ch_versions                     // channel: [ versions.yml ]
 }
-
