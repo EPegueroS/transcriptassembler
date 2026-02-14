@@ -171,8 +171,8 @@ workflow TRANSCRIPTASSEMBLER {
             ch_orthofinder_input,
             [[], []] // generic meta and no prior run
         )
+        ch_versions = ch_versions.mix(ORTHOFINDER.out.versions)
     }
-    ch_versions = ch_versions.mix(ORTHOFINDER.out.versions)
 
     // MODULE: COLABFOLD - Protein Structure Prediction
     if (params.run_colabfold) {
