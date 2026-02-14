@@ -169,7 +169,7 @@ workflow TRANSCRIPTASSEMBLER {
             }
         ORTHOFINDER(
             ch_orthofinder_input,
-            [[id:'test'], []] // generic meta and no prior run
+            [[], []] // generic meta and no prior run
         )
     }
     ch_versions = ch_versions.mix(ORTHOFINDER.out.versions)
