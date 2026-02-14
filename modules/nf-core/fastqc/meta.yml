@@ -29,16 +29,10 @@ input:
         description: |
           List of input FastQ files of size 1 and 2 for single-end and paired-end data,
           respectively.
-<<<<<<< HEAD
-output:
-  - html:
-      - meta:
-=======
         ontologies: []
 output:
   html:
     - - meta:
->>>>>>> TEMPLATE
           type: map
           description: |
             Groovy Map containing sample information
@@ -47,14 +41,9 @@ output:
           type: file
           description: FastQC report
           pattern: "*_{fastqc.html}"
-<<<<<<< HEAD
-  - zip:
-      - meta:
-=======
           ontologies: []
   zip:
     - - meta:
->>>>>>> TEMPLATE
           type: map
           description: |
             Groovy Map containing sample information
@@ -63,13 +52,6 @@ output:
           type: file
           description: FastQC report archive
           pattern: "*_{fastqc.zip}"
-<<<<<<< HEAD
-  - versions:
-      - versions.yml:
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
-=======
           ontologies: []
   versions:
     - versions.yml:
@@ -78,7 +60,6 @@ output:
         pattern: "versions.yml"
         ontologies:
           - edam: http://edamontology.org/format_3750 # YAML
->>>>>>> TEMPLATE
 authors:
   - "@drpatelh"
   - "@grst"

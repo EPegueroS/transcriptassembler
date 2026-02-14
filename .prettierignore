@@ -10,11 +10,8 @@ testing/
 testing*
 *.pyc
 bin/
-<<<<<<< HEAD
-ro-crate-metadata.json
-=======
 .nf-test/
 ro-crate-metadata.json
 modules/nf-core/
 subworkflows/nf-core/
->>>>>>> TEMPLATE
+

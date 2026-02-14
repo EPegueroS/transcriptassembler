@@ -11,10 +11,7 @@
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
-<<<<<<< HEAD
-=======
 include { paramsHelp                } from 'plugin/nf-schema'
->>>>>>> TEMPLATE
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
@@ -57,12 +54,6 @@ workflow PIPELINE_INITIALISATION {
     //
     // Validate parameters and generate parameter summary to stdout
     //
-<<<<<<< HEAD
-    UTILS_NFSCHEMA_PLUGIN (
-        workflow,
-        validate_params,
-        null
-=======
     before_text = """
 -\033[2m----------------------------------------------------\033[0m-
                                         \033[0;32m,--.\033[0;30m/\033[0;32m,-.\033[0m
@@ -92,7 +83,6 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command
->>>>>>> TEMPLATE
     )
 
     //
@@ -111,11 +101,7 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-<<<<<<< HEAD
     Channel
-=======
-    channel
->>>>>>> TEMPLATE
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map {
             meta, fastq_1, fastq_2 ->

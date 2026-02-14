@@ -11,11 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download lint results
-<<<<<<< HEAD
-        uses: dawidd6/action-download-artifact@20319c5641d495c8a52e688b7dc5fada6c3a9fbc # v8
-=======
         uses: dawidd6/action-download-artifact@ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5 # v11
->>>>>>> TEMPLATE
         with:
           workflow: linting.yml
           workflow_conclusion: completed

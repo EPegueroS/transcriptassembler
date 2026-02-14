@@ -4,10 +4,7 @@
 
 include { paramsSummaryLog   } from 'plugin/nf-schema'
 include { validateParameters } from 'plugin/nf-schema'
-<<<<<<< HEAD
-=======
 include { paramsHelp         } from 'plugin/nf-schema'
->>>>>>> TEMPLATE
 
 workflow UTILS_NFSCHEMA_PLUGIN {
 
@@ -19,11 +16,6 @@ workflow UTILS_NFSCHEMA_PLUGIN {
                         //           when this input is empty it will automatically use the configured schema or
                         //           "${projectDir}/nextflow_schema.json" as default. This input should not be empty
                         //           for meta pipelines
-<<<<<<< HEAD
-
-    main:
-
-=======
     help                // boolean:  show help message
     help_full           // boolean:  show full help message
     show_hidden         // boolean:  show hidden parameters in help message
@@ -46,23 +38,15 @@ workflow UTILS_NFSCHEMA_PLUGIN {
         }
         log.info paramsHelp(
             help_options,
-            params.help instanceof String ? params.help : "",
+            (params.help instanceof String && params.help != "true") ? params.help : "",
         )
         exit 0
     }
 
->>>>>>> TEMPLATE
     //
     // Print parameter summary to stdout. This will display the parameters
     // that differ from the default given in the JSON schema
     //
-<<<<<<< HEAD
-    if(parameters_schema) {
-        log.info paramsSummaryLog(input_workflow, parameters_schema:parameters_schema)
-    } else {
-        log.info paramsSummaryLog(input_workflow)
-    }
-=======
 
     summary_options = [:]
     if(parameters_schema) {
@@ -71,29 +55,19 @@ workflow UTILS_NFSCHEMA_PLUGIN {
     log.info before_text
     log.info paramsSummaryLog(summary_options, input_workflow)
     log.info after_text
->>>>>>> TEMPLATE
 
     //
     // Validate the parameters using nextflow_schema.json or the schema
     // given via the validation.parametersSchema configuration option
     //
     if(validate_params) {
-<<<<<<< HEAD
-        if(parameters_schema) {
-            validateParameters(parameters_schema:parameters_schema)
-        } else {
-            validateParameters()
-        }
-=======
         validateOptions = [:]
         if(parameters_schema) {
             validateOptions << [parametersSchema: parameters_schema]
         }
         validateParameters(validateOptions)
->>>>>>> TEMPLATE
     }
 
     emit:
     dummy_emit = true
 }
-
