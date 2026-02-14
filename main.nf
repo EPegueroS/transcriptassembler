@@ -1,15 +1,13 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/giotto
+    nf-core/transcriptassembler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/giotto
-    Website: https://nf-co.re/giotto
-    Slack  : https://nfcore.slack.com/channels/giotto
+    Github : https://github.com/nf-core/transcriptassembler
+    Website: https://nf-co.re/transcriptassembler
+    Slack  : https://nfcore.slack.com/channels/transcriptassembler
 ----------------------------------------------------------------------------------------
 */
-
-nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,11 +15,10 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { GIOTTO  } from './workflows/giotto'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_giotto_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_giotto_pipeline'
-
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_giotto_pipeline'
+include { TRANSCRIPTASSEMBLER  } from './workflows/transcriptassembler'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
+include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +40,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_GIOTTO {
+workflow NFCORE_TRANSCRIPTASSEMBLER {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -53,13 +50,11 @@ workflow NFCORE_GIOTTO {
     //
     // WORKFLOW: Run pipeline
     //
-    GIOTTO (
+    TRANSCRIPTASSEMBLER (
         samplesheet
     )
-
     emit:
-    multiqc_report = GIOTTO.out.multiqc_report // channel: /path/to/multiqc_report.html
-
+    multiqc_report = TRANSCRIPTASSEMBLER.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,27 +65,27 @@ workflow NFCORE_GIOTTO {
 workflow {
 
     main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.input,
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_GIOTTO (
+    NFCORE_TRANSCRIPTASSEMBLER (
         PIPELINE_INITIALISATION.out.samplesheet
     )
-
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -101,7 +96,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_GIOTTO.out.multiqc_report
+        NFCORE_TRANSCRIPTASSEMBLER.out.multiqc_report
     )
 }
 
