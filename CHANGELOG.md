@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2.0dev - [2026-02-14]
+
+### Updated
+
+- Updated nf-core template to v3.5.2.
+- Updated nf-core modules: multiqc (1.32), fastqc, utils_nfschema_plugin (nf-schema 2.5.1 with help system).
+- Updated GitHub Actions workflows to latest versions.
+- Updated nf-test.yml to test minimum Nextflow version (24.04.2).
+- Removed obsolete workflow files (ci.yml, release-announcments.yml, template_version_comment.yml).
+
+### Fixed
+
+- Fixed `colabfold_alphafold2_params_tags` schema validation (object type, excluded from param validation).
+- Fixed UTILS_NFSCHEMA_PLUGIN call signature (3 args to 9 args) to match updated subworkflow.
+- Updated modules.json git_shas to match installed module/subworkflow versions.
+
 ## v1.1.19dev - [2026-01-21]
 
 ### Added

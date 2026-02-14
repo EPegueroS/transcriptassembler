@@ -74,6 +74,7 @@ Now, you can run the pipeline using:
 ```bash
 nextflow run transcriptassembler \
    -profile docker \
+
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
