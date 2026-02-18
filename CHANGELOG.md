@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.15.0dev - [2026-02-14]
+## v1.16.0dev - [2026-02-14]
 
 ### Added
 
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Versioning corrected to follow Semantic Versioning (semver) properly. Previous versions incorrectly bumped PATCH instead of MINOR when adding new modules. This release reflects the true version based on the number of functional modules added since v1.0.0dev.
 
-## v1.2.0dev - [2026-02-14]
+## v1.15.0dev - [2026-02-14]
 
 ### Updated
 
