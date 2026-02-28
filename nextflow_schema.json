@@ -312,7 +312,7 @@
         },
         "orthofinder_reference_fasta": {
             "type": "string",
-            "default": "/home/msr/Documents/projects/transcript-assembler/transcriptassembler/assets/orthofinder_test_data/Mycoplasma_genitalium.faa"
+            "default": "assets/orthofinder_test_data/Mycoplasma_genitalium.faa"
         },
         "run_colabfold": {
             "type": "boolean"

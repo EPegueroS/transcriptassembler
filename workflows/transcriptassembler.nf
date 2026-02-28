@@ -25,7 +25,7 @@ include { DEEPSIG                     } from '../modules/local/deepsig/main'
 include { COLABFOLD                   } from '../subworkflows/local/colabfold'
 include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { PREPARE_COLABFOLD_DBS }       from '../subworkflows/local/prepare_colabfold_dbs'
+include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_colabfold_dbs'
 include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
