@@ -1,52 +1,50 @@
-name: cmscan
-description: Download files
+name: CMSCAN
+description: Search sequences against a covariance model database for ncRNA annotation
 keywords:
-  - sort
+  - infernal
+  - cmscan
+  - ncRNA
+  - Rfam
+  - covariance model
 tools:
-  - wget:
-      description: Classification of RNAs.
+  - infernal:
+      description: Inference of RNA alignments using covariance models
       homepage: https://github.com/EddyRivasLab/infernal
       documentation: http://eddylab.org/infernal/
       tool_dev_url: https://github.com/EddyRivasLab/infernal
-      doi: ""
+      doi: "10.1093/bioinformatics/btt509"
       licence: ["BSD"]
-
 input:
   - meta:
       type: map
-      description: |
-        Groovy Map containing sample information
+      description: Groovy Map containing sample information
   - fasta_file:
-      type: string
-      description: path to the input fasta.
+      type: file
+      description: Input FASTA file with sequences to scan
+      pattern: "*.{fa,fasta,fna}"
   - clanin_file:
-      type: string
-      description: path to the clan information file.
+      type: file
+      description: Rfam clan information file
+      pattern: "*.clanin"
   - cm_file:
-      type: string
-      description: path to the covariance model, also the files with extensions cm_file.[ilf,ili, ilp] are required.
-        These are the outputs of cmpress.
-
+      type: file
+      description: Compressed covariance model and index files (output of cmpress)
+      pattern: "*.cm"
 output:
   - meta:
       type: map
-      description: |
-        Groovy Map containing sample information
-
+      description: Groovy Map containing sample information
+  - output:
+      type: file
+      description: Detailed cmscan output
+      pattern: "*.cmscan"
+  - tblout:
+      type: file
+      description: Tabular cmscan output
+      pattern: "*.tblout"
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-
-  - mrum-geome.cmscan:
-      type: file
-      description: Detailed output
-      pattern: "*"
-
-  - mrum-genome.tblout:
-      type: file
-      description: Short output version
-      pattern: "*"
-
 authors:
   - "@EPegueroS"

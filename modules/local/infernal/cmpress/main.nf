@@ -11,29 +11,26 @@ process CMPRESS {
     tuple val(meta), path(cm_file)
 
     output:
-    // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path(cm_file),path("*.i1f"),path("*.i1i"),path("*.i1m"),path("*.i1p"), emit: cmpress
-    // TODO nf-core: List additional required output channels/values here
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path(cm_file), path("*.i1f"), path("*.i1i"), path("*.i1m"), path("*.i1p"), emit: cmpress
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
+
     """
-    cmpress ${cm_file}
+    cmpress ${args} ${cm_file}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        cmpress: \$(echo \$(cmspress -h) | head -n2 | tail -n1 | cut -f3 -d " " ))
+        infernal: \$(cmpress -h | grep '^# INFERNAL' | sed 's/^# INFERNAL //; s/ .*//')
     END_VERSIONS
     """
 
     stub:
-    def args = task.ext.args ?: ''
     """
-    touch ${cm_file}
     touch ${cm_file}.i1f
     touch ${cm_file}.i1i
     touch ${cm_file}.i1m
@@ -41,7 +38,7 @@ process CMPRESS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        cmpress: \$(echo \$(cmpress -h) | head -n2 | tail -n1 | cut -f3 -d " " ))
+        infernal: \$(cmpress -h | grep '^# INFERNAL' | sed 's/^# INFERNAL //; s/ .*//')
     END_VERSIONS
     """
 }

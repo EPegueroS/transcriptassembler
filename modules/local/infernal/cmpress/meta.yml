@@ -1,38 +1,37 @@
-name: cmpress
-description: Compress and index the flat covariance model
+name: CMPRESS
+description: Compress and index a covariance model database for cmscan
 keywords:
-  - sort
+  - infernal
+  - covariance model
+  - ncRNA
+  - Rfam
 tools:
-  - wget:
-      description: Classification of RNAs
+  - infernal:
+      description: Inference of RNA alignments using covariance models
       homepage: https://github.com/EddyRivasLab/infernal
       documentation: http://eddylab.org/infernal/
       tool_dev_url: https://github.com/EddyRivasLab/infernal
-      doi: ""
+      doi: "10.1093/bioinformatics/btt509"
       licence: ["BSD"]
-
 input:
   - meta:
       type: map
-      description: |
-        Groovy Map containing sample information
+      description: Groovy Map containing sample information
   - cm_file:
-      type: string
-
+      type: file
+      description: Covariance model file (e.g. Rfam.cm)
+      pattern: "*.cm"
 output:
   - meta:
       type: map
-      description: |
-        Groovy Map containing sample information
+      description: Groovy Map containing sample information
+  - cmpress:
+      type: file
+      description: Compressed covariance model and index files
+      pattern: "*.{i1f,i1i,i1m,i1p}"
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
-
-  - cm_file:
-      type: file
-      description: Compressed cm file and indexes
-      pattern: "*"
-
 authors:
   - "@EPegueroS"
