@@ -1,9 +1,10 @@
-name: TRANSDECODER
-description: Identifies coding regions within transcripts using TransDecoder
+name: TRANSDECODER_PREDICT
+description: Runs TransDecoder.Predict with optional BLASTP homology support via --retain_blastp_hits
 keywords:
   - transdecoder
   - transcripts
   - protein prediction
+  - ORF
 input:
   - meta:
       type: map
@@ -12,13 +13,20 @@ input:
       type: file
       description: Input transcript FASTA file
       pattern: "*.{fa,fasta,fna}"
+  - longorf_dir:
+      type: directory
+      description: Output directory from TransDecoder.LongOrfs
+  - blastp_hits:
+      type: file
+      description: BLASTP outfmt6 TSV hits for --retain_blastp_hits (optional, pass [] to skip)
+      pattern: "*.{tsv,outfmt6}"
 output:
   - meta:
       type: map
       description: Groovy Map containing sample information
   - fasta:
       type: file
-      description: Input transcript FASTA file
+      description: Input transcript FASTA file (passthrough)
       pattern: "*.{fa,fasta,fna}"
   - pep:
       type: file

@@ -1,4 +1,4 @@
-process TRANSDECODER {
+process TRANSDECODER_PREDICT {
     tag "$meta.id"
     label 'process_medium'
 
@@ -8,15 +8,15 @@ process TRANSDECODER {
     'biocontainers/transdecoder:5.7.1--pl5321hdfd78af_0' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple val(meta), path(fasta), path("longorf_dir"), path(blastp_hits)
 
     output:
-    tuple val(meta), path(fasta)              , emit: fasta
-    tuple val(meta), path("${meta.id}/*.pep") , emit: pep
-    tuple val(meta), path("${meta.id}/*.gff3"), emit: gff
-    tuple val(meta), path("${meta.id}/*.cds") , emit: cds
-    tuple val(meta), path("${meta.id}/*.bed") , emit: bed
-    path "versions.yml"                       , emit: versions
+    tuple val(meta), path(fasta)                   , emit: fasta
+    tuple val(meta), path("${meta.id}/*.pep")      , emit: pep
+    tuple val(meta), path("${meta.id}/*.gff3")     , emit: gff
+    tuple val(meta), path("${meta.id}/*.cds")      , emit: cds
+    tuple val(meta), path("${meta.id}/*.bed")      , emit: bed
+    path "versions.yml"                             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,19 +24,16 @@ process TRANSDECODER {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def retain_blastp = blastp_hits ? "--retain_blastp_hits ${blastp_hits}" : ''
 
     """
-    TransDecoder.LongOrfs \\
-        $args \\
-        -O $prefix \\
-        -t \\
-        $fasta
+    cp -rL longorf_dir ${prefix}
 
     TransDecoder.Predict \\
         $args \\
         -O $prefix \\
-        -t \\
-        $fasta
+        -t $fasta \\
+        $retain_blastp
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
