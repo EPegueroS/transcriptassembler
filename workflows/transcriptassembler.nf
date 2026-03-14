@@ -13,6 +13,7 @@ include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_
 include { BUSCO                      } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER                } from '../modules/local/transdecoder/main'
+include { SPLIT_CODING_NONCODING     } from '../modules/local/split_coding_noncoding/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_PROT } from '../modules/nf-core/blast/makeblastdb/main'
@@ -122,6 +123,16 @@ workflow TRANSCRIPTASSEMBLER {
         ch_gff      = TRANSDECODER.out.gff
         ch_protein  = TRANSDECODER.out.pep
         ch_versions = ch_versions.mix(TRANSDECODER.out.versions)
+
+    // MODULE: SPLIT_CODING_NONCODING
+    ch_split_input = TRANSDECODER.out.fasta
+        .join(TRANSDECODER.out.bed)
+        .map { meta, fasta, bed -> [ meta, fasta, bed ] }
+
+    SPLIT_CODING_NONCODING (
+        ch_split_input
+    )
+    ch_versions = ch_versions.mix(SPLIT_CODING_NONCODING.out.versions)
 
     // MODULE: DEEPSIG
     DEEPSIG(
