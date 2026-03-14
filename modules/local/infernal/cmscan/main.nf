@@ -13,9 +13,9 @@ process CMSCAN {
     tuple val(meta2), path(cm_file), path(i1f), path(i1i), path(i1m), path(i1p)
 
     output:
-    tuple val(meta), path("${prefix}.cmscan")  , emit: output
-    tuple val(meta), path("${prefix}.tblout")   , emit: tblout
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), path("*.cmscan")  , emit: output
+    tuple val(meta), path("*.tblout")  , emit: tblout
+    path "versions.yml"                , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
