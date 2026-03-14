@@ -11,6 +11,7 @@ process TRANSDECODER {
     tuple val(meta), path(fasta)
 
     output:
+    tuple val(meta), path(fasta)              , emit: fasta
     tuple val(meta), path("${meta.id}/*.pep") , emit: pep
     tuple val(meta), path("${meta.id}/*.gff3"), emit: gff
     tuple val(meta), path("${meta.id}/*.cds") , emit: cds
