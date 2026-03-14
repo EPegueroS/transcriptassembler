@@ -1,5 +1,4 @@
 include { GUNZIP as GUNZIPCM }    from '../../modules/nf-core/gunzip/main'
-include { GUNZIP as GUNZIPFASTA } from '../../modules/nf-core/gunzip/main'
 include { WGET as WGETCM }       from '../../modules/local/wget/main'
 include { WGET as WGETCLANIN }   from '../../modules/local/wget/main'
 include { CMPRESS }               from '../../modules/local/infernal/cmpress/main'
@@ -8,7 +7,7 @@ include { CMSCAN }                from '../../modules/local/infernal/cmscan/main
 workflow WGET_GUNZIP_INFERNAL {
 
     take:
-    ch_assembled_transcript_fasta
+    ch_fasta
 
     main:
 
@@ -25,25 +24,20 @@ workflow WGET_GUNZIP_INFERNAL {
     )
     ch_versions = ch_versions.mix(GUNZIPCM.out.versions)
 
-    GUNZIPFASTA (
-        ch_assembled_transcript_fasta
-    )
-    ch_versions = ch_versions.mix(GUNZIPFASTA.out.versions)
-
     CMPRESS (
         GUNZIPCM.out.gunzip
     )
     ch_versions = ch_versions.mix(CMPRESS.out.versions)
 
     CMSCAN (
-        GUNZIPFASTA.out.gunzip,
+        ch_fasta,
         params.rfam_clanin_path,
         CMPRESS.out.cmpress.collect()
     )
     ch_versions = ch_versions.mix(CMSCAN.out.versions)
 
     emit:
-    cmscan  = CMSCAN.out.output
-    tblout  = CMSCAN.out.tblout
+    cmscan   = CMSCAN.out.output
+    tblout   = CMSCAN.out.tblout
     versions = ch_versions
 }

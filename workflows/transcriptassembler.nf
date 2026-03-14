@@ -99,12 +99,6 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
-    // TODO nf-core: Investigate failure EPS 2025-03-19
-    //WGET_GUNZIP_INFERNAL (
-    //    ch_assembled_transcript_fasta
-    //)
-    //infernal_ch = WGET_GUNZIP_INFERNAL.out
-
     // MODULE: BUSCO
     if (!params.skip_busco) {
         BUSCO(
@@ -134,6 +128,12 @@ workflow TRANSCRIPTASSEMBLER {
         ch_split_input
     )
     ch_versions = ch_versions.mix(SPLIT_CODING_NONCODING.out.versions)
+
+    // SUBWORKFLOW: INFERNAL - ncRNA annotation on non-coding transcripts
+    WGET_GUNZIP_INFERNAL (
+        SPLIT_CODING_NONCODING.out.noncoding
+    )
+    ch_versions = ch_versions.mix(WGET_GUNZIP_INFERNAL.out.versions)
 
     // MODULE: DEEPSIG
     DEEPSIG(
