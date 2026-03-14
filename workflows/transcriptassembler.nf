@@ -25,7 +25,8 @@ include { DEEPSIG                     } from '../modules/local/deepsig/main'
 include { COLABFOLD                   } from '../subworkflows/local/colabfold'
 include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
-include { PREPARE_COLABFOLD_DBS } from '../subworkflows/local/prepare_colabfold_dbs'
+include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_colabfold_dbs'
+include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -149,8 +150,32 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
     }
 
+    // MODULE: ORTHOFINDER
+    if (!params.skip_orthofinder){
+        // Create a channel for the reference fasta JUST FOR TESTING PURPOSES
+        // Create the reference file object
+        def reference_fasta = file(
+            params.orthofinder_reference_fasta,
+            checkIfExists: true
+            )
+
+        // Combine TRINITY's output fasta with the reference
+        ch_orthofinder_input = ch_protein
+            .map{meta, fasta ->
+                [
+                    [id: 'orthofinder_run'],  // Combined meta
+                    [fasta, reference_fasta]  // List of both files
+                ]
+            }
+        ORTHOFINDER(
+            ch_orthofinder_input,
+            [[], []] // generic meta and no prior run
+        )
+        ch_versions = ch_versions.mix(ORTHOFINDER.out.versions)
+    }
+
     // MODULE: COLABFOLD - Protein Structure Prediction
-    if (!params.skip_colabfold) {
+    if (params.run_colabfold) {
 
         /*
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

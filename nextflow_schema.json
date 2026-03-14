@@ -70,7 +70,8 @@
     ],
     "properties": {
         "use_gpu": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": true
         },
         "genome": {
             "type": "string"
@@ -199,10 +200,6 @@
             "type": "string",
             "default": "tsv"
         },
-        "skip_colabfold": {
-            "type": "boolean",
-            "default": true
-        },
         "colabfold_server": {
             "type": "string",
             "default": "webserver"
@@ -309,6 +306,16 @@
         },
         "fasta": {
             "type": "string"
+        },
+        "skip_orthofinder": {
+            "type": "boolean"
+        },
+        "orthofinder_reference_fasta": {
+            "type": "string",
+            "default": "assets/orthofinder_test_data/Mycoplasma_genitalium.faa"
+        },
+        "run_colabfold": {
+            "type": "boolean"
         }
     }
 }

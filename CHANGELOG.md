@@ -3,7 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.2.0dev - [2026-02-14]
+## v1.16.0dev - [2026-02-14]
+
+### Added
+
+- Added OrthoFinder module for orthologous gene group inference.
+
+### Notes
+
+- Versioning corrected to follow Semantic Versioning (semver) properly. Previous versions incorrectly bumped PATCH instead of MINOR when adding new modules. This release reflects the true version based on the number of functional modules added since v1.0.0dev.
+
+## v1.15.0dev - [2026-02-14]
 
 ### Updated
 
@@ -19,19 +29,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed UTILS_NFSCHEMA_PLUGIN call signature (3 args to 9 args) to match updated subworkflow.
 - Updated modules.json git_shas to match installed module/subworkflow versions.
 
-## v1.1.19dev - [2026-01-21]
+## v1.14.0dev - [2026-01-21]
 
 ### Added
 
 - Added BLASTP and BLASTN modules for functional annotation.
 
-## v1.0.19dev - [2025-11-8]
+## v1.13.0dev - [2025-11-08]
 
 ### Added
 
 - Added protein folding subworkflow (colabfold) based on nf-core/proteinfold.
 
-## v1.0.18dev - [2025-09-06]
+## v1.12.0dev - [2025-09-06]
 
 ### Added
 
@@ -41,138 +51,134 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed module `blast/blastn`
 
-## v.1.0.17dev - [2025-03-30]
+## v1.11.2dev - [2025-03-30]
 
-### `Added`
+### Added
 
-Improvements to the pipeline documentation, including a basic diagram.
+- Improvements to the pipeline documentation, including a basic diagram.
 
-## v.1.0.16dev - [2025-03-29]
+## v1.11.1dev - [2025-03-29]
 
-### `Fixed`
+### Fixed
 
-Star module fixed to accept compressed files
+- STAR module fixed to accept compressed files.
 
-## v.1.0.15dev - [2025-03-01]
+## v1.11.0dev - [2025-03-01]
 
-### `Added`
+### Added
 
-Deepsig to predict signal peptides
+- Added DeepSig to predict signal peptides.
 
-## v.1.0.14dev - [2025-02-19]
+## v1.10.1dev - [2025-02-19]
 
-### `Added`
+### Added
 
-Updated template
+- Updated template.
 
-### `Removed`
+### Removed
 
-STAR processes and WGET_GUNZIP_INFERNAL - need to investigate failures
+- STAR processes and WGET_GUNZIP_INFERNAL - need to investigate failures.
 
-### `Fixed`
+### Fixed
 
-Tests
+- Tests.
 
-## v.0.0.14dev - [2024-10-2]
+## v1.10.0dev - [2024-10-02]
 
-### `Added`
+### Added
 
-Added STAR mapping with the star-align subworkflow
+- Added STAR mapping with the star-align subworkflow.
 
-## v.0.0.13dev -[2024-10-19]
+## v1.9.0dev - [2024-10-19]
 
-### `Added`
+### Added
 
-Implemented subworkflow to run infernal search and classify RNAs.
+- Implemented subworkflow to run Infernal search and classify RNAs.
 
-## v.0.0.12dev -[2024-10-2]
+## v1.8.0dev - [2024-10-02]
 
-### `Added`
+### Added
 
-Implemented diamond/blastp module
+- Implemented diamond/blastp module.
 
-## v.0.0.11dev - [2024-08-6]
+## v1.7.1dev - [2024-08-06]
 
-### `Fixed`
+### Fixed
 
-Updated transdecoder conda and container versions.
+- Updated Transdecoder conda and container versions.
 
-## v.0.0.10dev - [2024-07-11]
+## v1.7.0dev - [2024-07-11]
 
-### `Added`
+### Added
 
-Implemented diamond_makedb module and added test dataset
+- Implemented diamond_makedb module and added test dataset.
 
-## v0.0.9dev - [2024-06-07]
+## v1.6.1dev - [2024-06-07]
 
-### `Added`
+### Added
 
-BUSCO test reduced dataset
-Updated nf-core template with `nf-core lint --fix files_unchanged` and fixed lint errors
+- BUSCO test reduced dataset.
+- Updated nf-core template with `nf-core lint --fix files_unchanged` and fixed lint errors.
 
-## v0.0.8dev - [2024-02-23]
+## v1.6.0dev - [2024-02-23]
 
-### `Added`
+### Added
 
-BUSCO
-Updated latest nf-core template
+- Added BUSCO.
+- Updated latest nf-core template.
 
-## v0.0.7dev - [2023-10-10]
+## v1.5.0dev - [2023-10-10]
 
-### `Added`
+### Added
 
-transdecoder predict
+- Added Transdecoder predict.
 
-## v0.0.6dev - [2023-09-07]
+## v1.4.0dev - [2023-09-07]
 
-### `Added`
+### Added
 
-transdecoder longorf
+- Added Transdecoder longorf.
 
-## v0.0.5dev - [2023-09-03]
+## v1.3.0dev - [2023-09-03]
 
-### `Added`
+### Added
 
-Trinity de-novo RNA assembler
+- Added Trinity de-novo RNA assembler.
 
-## v0.0.4dev - [2023-09-02]
+## v1.2.0dev - [2023-09-02]
 
-### `Added`
+### Added
 
-Generation of multiqc report
+- Added generation of MultiQC report.
 
-## v0.0.3dev - [2023-08-26]
+## v1.1.0dev - [2023-08-26]
 
-### `Added`
+### Added
 
-subworkflow from nf-core astq_fastqc_umitools_fastp
+- Added subworkflow from nf-core `fastq_fastqc_umitools_fastp`.
 
-## `Deprecated`
+### Deprecated
 
-fastqc and multiqc as independent modules
+- Standalone FastQC and MultiQC as independent modules.
 
-## v0.0.2dev - [2023-07-28]
+## v1.0.1dev - [2023-07-28]
 
-### `Added`
+### Added
 
-Additional test data
-Updated fastqc
-sync nf-core
+- Additional test data.
+- Updated FastQC.
+- Sync nf-core.
 
-## v0.0.1dev - [2023-06-17]
+## v1.0.0dev - [2023-06-17]
 
 Initial release of nf-core/transcriptassembler, created with the [nf-core](https://nf-co.re/) template.
 
-### `Added`
+### Added
 
-Minimal test data
-Custom samplesheet
-Documentation
+- Minimal test data.
+- Custom samplesheet.
+- Documentation.
 
-### `Fixed`
+### Fixed
 
-Removed requirement of a genome
-
-### `Dependencies`
-
-### `Deprecated`
+- Removed requirement of a genome.
