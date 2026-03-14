@@ -21,19 +21,56 @@ The pipeline is still under development. The plan is to incorporate the latest m
 
 ```mermaid
 graph TD;
-    Input_reads-->FASTQC;
-    FASTQC-->UMITOOLS;
-    UMITOOLS-->FASTP;
-    FASTP-->FASTQC_TRIM;
-    FASTQC_TRIM-->TRINITY;
-    TRINITY-->BUSCO;
-    TRINITY-->TRANSDECODER;
-    TRANSDECODER-->DEEPSIG;
-    TRANSDECODER-->ORTHOFINDER;
-    MAKEBLASTDB-->BLASTN;
-    MAKEBLASTDB-->BLASTP;
-    STAR_GENOMEGENERATE-->STAR_ALIGN;
-    FASTP-->STAR_ALIGN;
+    subgraph PRE["Preprocessing"]
+        direction TB
+        Input_reads --> FASTQC --> UMITOOLS --> FASTP --> FASTQC_TRIM
+    end
+
+    subgraph ASSEMBLY["Assembly"]
+        TRINITY
+    end
+
+    subgraph ANNOTATION["Annotation & ORF Prediction"]
+        TRANSDECODER
+        BUSCO
+    end
+
+    subgraph STRUCTURAL["Structural & Functional Analysis"]
+        DEEPSIG
+        ORTHOFINDER
+        COLABFOLD
+    end
+
+    subgraph HOMOLOGY["Homology Search"]
+        BLASTN
+        BLASTP
+    end
+
+    subgraph ALIGNMENT["Genome Alignment"]
+        STAR_GENOMEGENERATE --> STAR_ALIGN
+    end
+
+    subgraph DBS["Databases"]
+        MAKEBLASTDB
+        PREPARE_COLABFOLD_DBS
+    end
+
+    %% Cross-subgraph edges
+    FASTQC_TRIM --> TRINITY
+    FASTP --> STAR_ALIGN
+
+    TRINITY --> BUSCO
+    TRINITY --> TRANSDECODER
+    TRINITY --> BLASTN
+
+    TRANSDECODER --> DEEPSIG
+    TRANSDECODER --> ORTHOFINDER
+    TRANSDECODER --> BLASTP
+    TRANSDECODER --> COLABFOLD
+
+    MAKEBLASTDB --> BLASTN
+    MAKEBLASTDB --> BLASTP
+    PREPARE_COLABFOLD_DBS --> COLABFOLD
 ```
 
 ## Usage
