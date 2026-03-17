@@ -112,7 +112,6 @@
                 },
                 "busco_lineage_path": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/busco_test_data",
                     "description": "Path to a local directory containing BUSCO lineage datasets.",
                     "fa_icon": "fas fa-folder"
                 },
@@ -137,13 +136,11 @@
                 },
                 "blast_makeblastdb_prot_fasta": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/testdata/test_db.faa",
                     "description": "Path to protein FASTA used to build the BLASTP database.",
                     "fa_icon": "fas fa-file"
                 },
                 "blast_makeblastdb_nucl_fasta": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/testdata/test_db.fasta",
                     "description": "Path to nucleotide FASTA used to build the BLASTN database.",
                     "fa_icon": "fas fa-file"
                 },
@@ -185,7 +182,6 @@
                 },
                 "rfam_clanin_path": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/rfam_data/Rfam.clanin",
                     "description": "Path to the Rfam clan information file (Rfam.clanin), used by cmscan for clan competition.",
                     "fa_icon": "fas fa-file"
                 }
@@ -309,13 +305,11 @@
                 },
                 "star_genome_fasta": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/testdata/Sc_chr1.fasta",
                     "description": "Path to the reference genome FASTA for STAR index generation.",
                     "fa_icon": "fas fa-file"
                 },
                 "star_genome_gtf": {
                     "type": "string",
-                    "default": "/home/esteban/projects/transcriptassembler/assets/testdata/Sc_chr1.gff3",
                     "description": "Path to the reference genome annotation (GTF/GFF3) for STAR index generation.",
                     "fa_icon": "fas fa-file"
                 },
