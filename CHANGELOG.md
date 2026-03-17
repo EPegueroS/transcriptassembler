@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `SPLIT_CODING_NONCODING` module to separate TransDecoder output into coding and non-coding transcripts.
 - Connected Infernal (`WGET_GUNZIP_INFERNAL` subworkflow) to annotate non-coding transcripts.
+- Added `FILTER_BLASTP_CODING` module to subset existing LongORF BLASTP results to predicted coding ORFs, avoiding a redundant BLASTP run.
 
 ### Updated
 
 - BLASTP now runs on `TRANSDECODER_LONGORF` peptide output to provide homology evidence to `TRANSDECODER_PREDICT` via `--retain_blastp_hits`.
-- Updated pipeline diagram in README to reflect coding/non-coding split and Infernal integration.
+- Updated pipeline diagram in README to reflect coding/non-coding split, Infernal integration, and `FILTER_BLASTP_CODING`.
 
 ## v1.16.0dev - [2026-02-14]
 

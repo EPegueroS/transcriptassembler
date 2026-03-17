@@ -1,0 +1,43 @@
+name: filter_blastp_coding
+description: |
+  Filters a BLASTP TSV output to retain only hits for ORFs predicted as
+  coding by TransDecoder. Uses the TransDecoder BED output (column 4) to
+  identify predicted coding ORF IDs, then subsets the BLASTP results
+  accordingly.
+keywords:
+  - blast
+  - blastp
+  - filter
+  - transdecoder
+  - coding
+tools:
+  - seqkit:
+      description: A cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
+      homepage: https://bioinf.shenwei.me/seqkit/
+      licence: ["MIT"]
+input:
+  - meta:
+      type: map
+      description: Groovy map containing sample information, e.g. [ id:'sample1' ]
+  - blastp_tsv:
+      type: file
+      description: BLASTP tabular output (outfmt 6/7) from a run on TransDecoder LongORF peptides.
+      pattern: "*.tsv"
+  - bed:
+      type: file
+      description: TransDecoder BED file. Column 4 contains predicted coding ORF IDs.
+      pattern: "*.bed"
+output:
+  - meta:
+      type: map
+      description: Groovy map containing sample information.
+  - tsv:
+      type: file
+      description: Filtered BLASTP TSV containing only hits for predicted coding ORFs.
+      pattern: "*_coding_blastp.tsv"
+  - versions:
+      type: file
+      description: File containing software versions.
+      pattern: "versions.yml"
+authors:
+  - "@EPegueroS"

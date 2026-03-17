@@ -20,6 +20,7 @@ include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegene
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_PROT } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_NUCL } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/main'
+include { FILTER_BLASTP_CODING        } from '../modules/local/filter_blastp_coding/main'
 include { BLAST_BLASTN                } from '../modules/nf-core/blast/blastn/main'
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
@@ -156,6 +157,15 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_protein  = TRANSDECODER_PREDICT.out.pep
     ch_versions = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
+
+    // MODULE: FILTER_BLASTP_CODING - subset existing BLASTP results to predicted coding ORFs
+    if (!params.skip_blast_blastp) {
+        ch_filter_input = BLAST_BLASTP.out.tsv
+            .join(TRANSDECODER_PREDICT.out.bed)
+
+        FILTER_BLASTP_CODING(ch_filter_input)
+        ch_versions = ch_versions.mix(FILTER_BLASTP_CODING.out.versions)
+    }
 
     // MODULE: SPLIT_CODING_NONCODING
     ch_split_input = TRANSDECODER_PREDICT.out.fasta

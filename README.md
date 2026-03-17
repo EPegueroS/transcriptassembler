@@ -36,6 +36,8 @@ graph TD;
         TRANSDECODER_LONGORF --> BLASTP
         BLASTP -->|homology evidence| TRANSDECODER_PREDICT
         TRANSDECODER_LONGORF --> TRANSDECODER_PREDICT
+        BLASTP --> FILTER_BLASTP_CODING
+        TRANSDECODER_PREDICT -->|bed| FILTER_BLASTP_CODING
     end
 
     subgraph SPLIT["Coding / Non-coding Split"]
