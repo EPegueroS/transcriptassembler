@@ -28,14 +28,27 @@ graph TD;
 
     subgraph ASSEMBLY["Assembly"]
         TRINITY
-    end
-
-    subgraph ANNOTATION["Annotation & ORF Prediction"]
-        TRANSDECODER
         BUSCO
+        TRINITY --> BUSCO
     end
 
-    subgraph STRUCTURAL["Structural & Functional Analysis"]
+    subgraph ORF["ORF Prediction"]
+        TRANSDECODER_LONGORF --> BLASTP
+        BLASTP -->|homology evidence| TRANSDECODER_PREDICT
+        TRANSDECODER_LONGORF --> TRANSDECODER_PREDICT
+        BLASTP --> FILTER_BLASTP_CODING
+        TRANSDECODER_PREDICT -->|bed| FILTER_BLASTP_CODING
+    end
+
+    subgraph SPLIT["Coding / Non-coding Split"]
+        SPLIT_CODING_NONCODING
+    end
+
+    subgraph NCRNA["ncRNA Annotation"]
+        INFERNAL
+    end
+
+    subgraph CODING["Coding Transcript Analysis"]
         DEEPSIG
         ORTHOFINDER
         COLABFOLD
@@ -43,7 +56,6 @@ graph TD;
 
     subgraph HOMOLOGY["Homology Search"]
         BLASTN
-        BLASTP
     end
 
     subgraph ALIGNMENT["Genome Alignment"]
@@ -51,7 +63,8 @@ graph TD;
     end
 
     subgraph DBS["Databases"]
-        MAKEBLASTDB
+        MAKEBLASTDB_PROT
+        MAKEBLASTDB_NUCL
         PREPARE_COLABFOLD_DBS
     end
 
@@ -59,17 +72,20 @@ graph TD;
     FASTQC_TRIM --> TRINITY
     FASTP --> STAR_ALIGN
 
+    TRINITY --> TRANSDECODER_LONGORF
     TRINITY --> BUSCO
-    TRINITY --> TRANSDECODER
     TRINITY --> BLASTN
 
-    TRANSDECODER --> DEEPSIG
-    TRANSDECODER --> ORTHOFINDER
-    TRANSDECODER --> BLASTP
-    TRANSDECODER --> COLABFOLD
+    MAKEBLASTDB_PROT --> BLASTP
+    MAKEBLASTDB_NUCL --> BLASTN
 
-    MAKEBLASTDB --> BLASTN
-    MAKEBLASTDB --> BLASTP
+    TRANSDECODER_PREDICT --> SPLIT_CODING_NONCODING
+    TRANSDECODER_PREDICT --> DEEPSIG
+    TRANSDECODER_PREDICT --> ORTHOFINDER
+    TRANSDECODER_PREDICT --> COLABFOLD
+
+    SPLIT_CODING_NONCODING -->|noncoding| INFERNAL
+
     PREPARE_COLABFOLD_DBS --> COLABFOLD
 ```
 

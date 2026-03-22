@@ -12,12 +12,15 @@ include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
 include { BUSCO                      } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { TRANSDECODER                } from '../modules/local/transdecoder/main'
+include { TRANSDECODER_LONGORF         } from '../modules/nf-core/transdecoder/longorf/main'
+include { TRANSDECODER_PREDICT         } from '../modules/local/transdecoder_predict/main'
+include { SPLIT_CODING_NONCODING     } from '../modules/local/split_coding_noncoding/main'
 include { TRINITY                     } from '../modules/nf-core/trinity/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_PROT } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_NUCL } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/main'
+include { FILTER_BLASTP_CODING        } from '../modules/local/filter_blastp_coding/main'
 include { BLAST_BLASTN                } from '../modules/nf-core/blast/blastn/main'
 include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
@@ -98,12 +101,6 @@ workflow TRANSCRIPTASSEMBLER {
     ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
     ch_versions                    = ch_versions.mix(TRINITY.out.versions)
 
-    // TODO nf-core: Investigate failure EPS 2025-03-19
-    //WGET_GUNZIP_INFERNAL (
-    //    ch_assembled_transcript_fasta
-    //)
-    //infernal_ch = WGET_GUNZIP_INFERNAL.out
-
     // MODULE: BUSCO
     if (!params.skip_busco) {
         BUSCO(
@@ -116,13 +113,75 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions                    = ch_versions.mix(BUSCO.out.versions)
     }
 
-    // MODULE: TRANSDECODER
-    TRANSDECODER (
+    // MODULE: BLAST_MAKEBLASTDB
+    // Protein database (for BLASTP) and Nucleotide database (for BLASTN)
+    if (!params.skip_blast_makeblastdb) {
+        MAKEBLASTDB_PROT(
+            [[id:'prot_db'], params.blast_makeblastdb_prot_fasta]
+        )
+        ch_versions = ch_versions.mix(MAKEBLASTDB_PROT.out.versions)
+
+        MAKEBLASTDB_NUCL(
+            [[id:'nucl_db'], params.blast_makeblastdb_nucl_fasta]
+        )
+        ch_versions = ch_versions.mix(MAKEBLASTDB_NUCL.out.versions)
+    }
+
+    // MODULE: TRANSDECODER_LONGORF
+    TRANSDECODER_LONGORF (
         ch_assembled_transcript_fasta
     )
-        ch_gff      = TRANSDECODER.out.gff
-        ch_protein  = TRANSDECODER.out.pep
-        ch_versions = ch_versions.mix(TRANSDECODER.out.versions)
+    ch_versions = ch_versions.mix(TRANSDECODER_LONGORF.out.versions)
+
+    // MODULE: BLAST_BLASTP on longest_orfs.pep (homology evidence for TransDecoder)
+    if (!params.skip_blast_blastp) {
+        BLAST_BLASTP(
+            TRANSDECODER_LONGORF.out.pep,
+            MAKEBLASTDB_PROT.out.db,
+            params.blast_blastp_outext
+        )
+        ch_versions = ch_versions.mix(BLAST_BLASTP.out.versions)
+
+        ch_predict_input = ch_assembled_transcript_fasta
+            .join(TRANSDECODER_LONGORF.out.folder)
+            .join(BLAST_BLASTP.out.tsv)
+    } else {
+        ch_predict_input = ch_assembled_transcript_fasta
+            .join(TRANSDECODER_LONGORF.out.folder)
+            .map { meta, fasta, folder -> [meta, fasta, folder, []] }
+    }
+
+    // MODULE: TRANSDECODER_PREDICT (with optional --retain_blastp_hits)
+    TRANSDECODER_PREDICT (
+        ch_predict_input
+    )
+    ch_protein  = TRANSDECODER_PREDICT.out.pep
+    ch_versions = ch_versions.mix(TRANSDECODER_PREDICT.out.versions)
+
+    // MODULE: FILTER_BLASTP_CODING - subset existing BLASTP results to predicted coding ORFs
+    if (!params.skip_blast_blastp) {
+        ch_filter_input = BLAST_BLASTP.out.tsv
+            .join(TRANSDECODER_PREDICT.out.bed)
+
+        FILTER_BLASTP_CODING(ch_filter_input)
+        ch_versions = ch_versions.mix(FILTER_BLASTP_CODING.out.versions)
+    }
+
+    // MODULE: SPLIT_CODING_NONCODING
+    ch_split_input = TRANSDECODER_PREDICT.out.fasta
+        .join(TRANSDECODER_PREDICT.out.bed)
+        .map { meta, fasta, bed -> [ meta, fasta, bed ] }
+
+    SPLIT_CODING_NONCODING (
+        ch_split_input
+    )
+    ch_versions = ch_versions.mix(SPLIT_CODING_NONCODING.out.versions)
+
+    // SUBWORKFLOW: INFERNAL - ncRNA annotation on non-coding transcripts
+    WGET_GUNZIP_INFERNAL (
+        SPLIT_CODING_NONCODING.out.noncoding
+    )
+    ch_versions = ch_versions.mix(WGET_GUNZIP_INFERNAL.out.versions)
 
     // MODULE: DEEPSIG
     DEEPSIG(
@@ -216,30 +275,6 @@ workflow TRANSCRIPTASSEMBLER {
             params.num_recycles ?: 3
         )
         ch_versions = ch_versions.mix(COLABFOLD.out.versions)
-    }
-
-    // MODULE: BLAST_MAKEBLASTDB
-    // Protein database (for BLASTP)
-    if (!params.skip_blast_makeblastdb) {
-        MAKEBLASTDB_PROT(
-            [[id:'prot_db'], params.blast_makeblastdb_prot_fasta]
-        )
-        ch_versions = ch_versions.mix(MAKEBLASTDB_PROT.out.versions)
-    // Nucleotide database (for BLASTN)
-        MAKEBLASTDB_NUCL(
-            [[id:'nucl_db'], params.blast_makeblastdb_nucl_fasta]
-        )
-        ch_versions = ch_versions.mix(MAKEBLASTDB_NUCL.out.versions)
-    }
-
-    // MODULE: BLAST_BLASTP
-    if (!params.skip_blast_blastp) {
-        BLAST_BLASTP(
-            ch_protein,
-            MAKEBLASTDB_PROT.out.db,
-            params.blast_blastp_outext
-        )
-        ch_versions = ch_versions.mix(BLAST_BLASTP.out.versions)
     }
 
     // MODULE: BLAST_BLASTN

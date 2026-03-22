@@ -31,6 +31,317 @@
                 }
             }
         },
+        "preprocessing_options": {
+            "title": "Preprocessing options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options for read QC and trimming (FastQC, UMI-tools, fastp).",
+            "properties": {
+                "with_umi": {
+                    "type": "boolean",
+                    "description": "Enable UMI-based read deduplication.",
+                    "fa_icon": "fas fa-barcode"
+                },
+                "skip_umi_extract": {
+                    "type": "boolean",
+                    "description": "Skip UMI extraction step.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "umi_discard_read": {
+                    "type": "string",
+                    "description": "Discard R1 or R2 after UMI extraction (1 or 2).",
+                    "fa_icon": "fas fa-trash"
+                },
+                "min_trimmed_reads": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Minimum number of reads required after trimming to continue downstream analysis.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "save_trimmed": {
+                    "type": "boolean",
+                    "description": "Save trimmed FastQ files to output directory.",
+                    "fa_icon": "fas fa-save"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Skip adapter and quality trimming with fastp.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_qc": {
+                    "type": "boolean",
+                    "description": "Skip all QC steps.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "skip_fastqc": {
+                    "type": "boolean",
+                    "description": "Skip FastQC.",
+                    "fa_icon": "fas fa-forward"
+                }
+            }
+        },
+        "assembly_options": {
+            "title": "Assembly options",
+            "type": "object",
+            "fa_icon": "fas fa-project-diagram",
+            "description": "Options for de novo transcriptome assembly (Trinity) and completeness assessment (BUSCO).",
+            "properties": {
+                "trinity_mem": {
+                    "type": "string",
+                    "default": "6.GB",
+                    "description": "Maximum memory allocated to Trinity.",
+                    "fa_icon": "fas fa-memory"
+                },
+                "skip_busco": {
+                    "type": "boolean",
+                    "description": "Skip BUSCO completeness assessment.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "busco_mode": {
+                    "type": "string",
+                    "default": "transcriptome",
+                    "description": "BUSCO assessment mode (genome, transcriptome, or proteins).",
+                    "fa_icon": "fas fa-dna"
+                },
+                "busco_lineage": {
+                    "type": "string",
+                    "default": "saccharomycetes_odb10",
+                    "description": "BUSCO lineage dataset to use for assessment.",
+                    "fa_icon": "fas fa-sitemap"
+                },
+                "busco_lineage_path": {
+                    "type": "string",
+                    "description": "Path to a local directory containing BUSCO lineage datasets.",
+                    "fa_icon": "fas fa-folder"
+                },
+                "busco_config": {
+                    "type": "string",
+                    "default": "[]",
+                    "description": "Path to a BUSCO config file.",
+                    "fa_icon": "fas fa-cog"
+                }
+            }
+        },
+        "orf_prediction_options": {
+            "title": "ORF prediction options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Options for ORF prediction with TransDecoder, optionally informed by BLASTP homology evidence.",
+            "properties": {
+                "skip_blast_makeblastdb": {
+                    "type": "boolean",
+                    "description": "Skip BLAST database construction. Both protein (BLASTP) and nucleotide (BLASTN) databases will be skipped.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "blast_makeblastdb_prot_fasta": {
+                    "type": "string",
+                    "description": "Path to protein FASTA used to build the BLASTP database.",
+                    "fa_icon": "fas fa-file"
+                },
+                "blast_makeblastdb_nucl_fasta": {
+                    "type": "string",
+                    "description": "Path to nucleotide FASTA used to build the BLASTN database.",
+                    "fa_icon": "fas fa-file"
+                },
+                "skip_blast_blastp": {
+                    "type": "boolean",
+                    "description": "Skip BLASTP homology search. When skipped, TransDecoder.Predict runs without homology evidence.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "blast_blastp_outext": {
+                    "type": "string",
+                    "default": "tsv",
+                    "description": "Output format extension for BLASTP results.",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "skip_blast_blastn": {
+                    "type": "boolean",
+                    "description": "Skip BLASTN homology search against assembled transcripts.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "blast_blastn_outext": {
+                    "type": "string",
+                    "default": "tsv",
+                    "description": "Output format extension for BLASTN results.",
+                    "fa_icon": "fas fa-file-alt"
+                }
+            }
+        },
+        "ncrna_annotation_options": {
+            "title": "ncRNA annotation options",
+            "type": "object",
+            "fa_icon": "fas fa-search",
+            "description": "Options for ncRNA annotation of non-coding transcripts using Infernal and the Rfam covariance model database.",
+            "properties": {
+                "rfam_cm_path": {
+                    "type": "string",
+                    "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz",
+                    "description": "URL or path to the Rfam covariance model file (Rfam.cm.gz). Downloaded automatically if a URL is provided.",
+                    "fa_icon": "fas fa-cloud-download-alt"
+                },
+                "rfam_clanin_path": {
+                    "type": "string",
+                    "description": "Path to the Rfam clan information file (Rfam.clanin), used by cmscan for clan competition.",
+                    "fa_icon": "fas fa-file"
+                }
+            }
+        },
+        "coding_analysis_options": {
+            "title": "Coding transcript analysis options",
+            "type": "object",
+            "fa_icon": "fas fa-microscope",
+            "description": "Options for functional annotation and structural prediction of coding transcripts (DeepSig, OrthoFinder, ColabFold).",
+            "properties": {
+                "use_gpu": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable GPU acceleration for supported tools (e.g. DeepSig, ColabFold).",
+                    "fa_icon": "fas fa-microchip"
+                },
+                "skip_orthofinder": {
+                    "type": "boolean",
+                    "description": "Skip OrthoFinder orthologous group inference.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "orthofinder_reference_fasta": {
+                    "type": "string",
+                    "default": "assets/orthofinder_test_data/Mycoplasma_genitalium.faa",
+                    "description": "Path to reference protein FASTA for OrthoFinder comparison.",
+                    "fa_icon": "fas fa-file"
+                },
+                "run_colabfold": {
+                    "type": "boolean",
+                    "description": "Run ColabFold for protein structure prediction.",
+                    "fa_icon": "fas fa-atom"
+                },
+                "colabfold_server": {
+                    "type": "string",
+                    "default": "webserver",
+                    "description": "ColabFold server mode (webserver or local).",
+                    "fa_icon": "fas fa-server"
+                },
+                "colabfold_model_preset": {
+                    "type": "string",
+                    "default": "alphafold2_ptm",
+                    "description": "ColabFold model preset to use.",
+                    "fa_icon": "fas fa-cog"
+                },
+                "num_recycles": {
+                    "type": "integer",
+                    "default": 3,
+                    "description": "Number of recycling iterations for ColabFold structure prediction.",
+                    "fa_icon": "fas fa-redo"
+                },
+                "use_amber": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run AMBER relaxation after structure prediction.",
+                    "fa_icon": "fas fa-flask"
+                },
+                "colabfold_db": {
+                    "type": "string",
+                    "description": "ColabFold database to use for MSA search.",
+                    "fa_icon": "fas fa-database"
+                },
+                "db_load_mode": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Database load mode for ColabFold (0=load on demand, 2=preload).",
+                    "fa_icon": "fas fa-cog"
+                },
+                "host_url": {
+                    "type": "string",
+                    "description": "URL of the ColabFold server when using local server mode.",
+                    "fa_icon": "fas fa-link"
+                },
+                "use_templates": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Use structural templates in ColabFold prediction.",
+                    "fa_icon": "fas fa-layer-group"
+                },
+                "create_colabfold_index": {
+                    "type": "boolean",
+                    "description": "Create a ColabFold index from the database.",
+                    "fa_icon": "fas fa-list"
+                },
+                "colabfold_db_link": {
+                    "type": "string",
+                    "default": "http://wwwuser.gwdg.de/~compbiol/colabfold/colabfold_envdb_202108.tar.gz",
+                    "description": "Download URL for the ColabFold environment database.",
+                    "fa_icon": "fas fa-cloud-download-alt"
+                },
+                "colabfold_uniref30_link": {
+                    "type": "string",
+                    "default": "https://wwwuser.gwdg.de/~compbiol/colabfold/uniref30_2302.tar.gz",
+                    "description": "Download URL for the UniRef30 database used by ColabFold.",
+                    "fa_icon": "fas fa-cloud-download-alt"
+                },
+                "colabfold_db_path": {
+                    "type": "string",
+                    "default": "null/colabfold_envdb_202108",
+                    "description": "Local path to the ColabFold environment database.",
+                    "fa_icon": "fas fa-folder"
+                },
+                "colabfold_uniref30_path": {
+                    "type": "string",
+                    "default": "null/uniref30_2302",
+                    "description": "Local path to the UniRef30 database.",
+                    "fa_icon": "fas fa-folder"
+                }
+            }
+        },
+        "alignment_options": {
+            "title": "Genome alignment options",
+            "type": "object",
+            "fa_icon": "fas fa-align-center",
+            "description": "Options for genome-guided alignment with STAR.",
+            "properties": {
+                "skip_star": {
+                    "type": "boolean",
+                    "description": "Skip STAR genome alignment.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "star_genome_fasta": {
+                    "type": "string",
+                    "description": "Path to the reference genome FASTA for STAR index generation.",
+                    "fa_icon": "fas fa-file"
+                },
+                "star_genome_gtf": {
+                    "type": "string",
+                    "description": "Path to the reference genome annotation (GTF/GFF3) for STAR index generation.",
+                    "fa_icon": "fas fa-file"
+                },
+                "star_gzip_fastas": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Gzip input FASTAs before passing to STAR.",
+                    "fa_icon": "fas fa-compress"
+                },
+                "skip_fastq_align_star": {
+                    "type": "boolean",
+                    "description": "Skip read alignment step with STAR.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "star_ignore_sjdbgtf": {
+                    "type": "boolean",
+                    "description": "Ignore the GTF file when aligning reads with STAR.",
+                    "fa_icon": "fas fa-ban"
+                },
+                "star_seq_platform": {
+                    "type": "string",
+                    "default": "ILLUMINA",
+                    "description": "Sequencing platform to annotate in the STAR BAM output.",
+                    "fa_icon": "fas fa-tag"
+                },
+                "star_seq_center": {
+                    "type": "string",
+                    "description": "Sequencing center to annotate in the STAR BAM output.",
+                    "fa_icon": "fas fa-building"
+                }
+            }
+        },
         "generic_options": {
             "title": "Generic options",
             "type": "object",
@@ -38,6 +349,144 @@
             "description": "Less common options for the pipeline, typically set in a config file.",
             "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
             "properties": {
+                "genome": {
+                    "type": "string",
+                    "description": "Name of iGenomes reference.",
+                    "fa_icon": "fas fa-book",
+                    "hidden": true
+                },
+                "igenomes_base": {
+                    "type": "string",
+                    "default": "s3://ngi-igenomes/igenomes",
+                    "description": "Directory / URL base for iGenomes references.",
+                    "fa_icon": "fas fa-cloud-download-alt",
+                    "hidden": true
+                },
+                "igenomes_ignore": {
+                    "type": "boolean",
+                    "description": "Do not load the iGenomes reference config.",
+                    "fa_icon": "fas fa-ban",
+                    "hidden": true
+                },
+                "fasta": {
+                    "type": "string",
+                    "description": "Path to a reference FASTA file.",
+                    "fa_icon": "fas fa-file",
+                    "hidden": true
+                },
+                "skip_multiqc": {
+                    "type": "boolean",
+                    "description": "Skip MultiQC report generation.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "multiqc_config": {
+                    "type": "string",
+                    "description": "Custom config file to supply to MultiQC.",
+                    "fa_icon": "fas fa-cog"
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "Custom title for the MultiQC report.",
+                    "fa_icon": "fas fa-heading"
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC.",
+                    "fa_icon": "fas fa-image"
+                },
+                "max_multiqc_email_size": {
+                    "type": "string",
+                    "default": "25.MB",
+                    "description": "File size limit when attaching the MultiQC report to an email.",
+                    "fa_icon": "fas fa-file-archive"
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom methods description for the MultiQC report.",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "fa_icon": "fas fa-copy",
+                    "hidden": true
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "hidden": true
+                },
+                "email_on_fail": {
+                    "type": "string",
+                    "description": "Email address for completion summary, only when pipeline fails.",
+                    "fa_icon": "fas fa-exclamation-triangle",
+                    "hidden": true
+                },
+                "plaintext_email": {
+                    "type": "boolean",
+                    "description": "Send plain-text email instead of HTML.",
+                    "fa_icon": "fas fa-remove-format",
+                    "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Do not use coloured log outputs.",
+                    "fa_icon": "fas fa-palette",
+                    "hidden": true
+                },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service.",
+                    "fa_icon": "fas fa-people-group",
+                    "hidden": true
+                },
+                "pipelines_testdata_base_path": {
+                    "type": "string",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "description": "Base URL or local path for pipeline test datasets.",
+                    "fa_icon": "fas fa-flask",
+                    "hidden": true
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config profile name.",
+                    "fa_icon": "fas fa-users-cog",
+                    "hidden": true
+                },
+                "config_profile_description": {
+                    "type": "string",
+                    "description": "Institutional config profile description.",
+                    "fa_icon": "fas fa-address-card",
+                    "hidden": true
+                },
+                "custom_config_version": {
+                    "type": "string",
+                    "default": "master",
+                    "description": "Git commit id for Institutional configs.",
+                    "fa_icon": "fas fa-history",
+                    "hidden": true
+                },
+                "custom_config_base": {
+                    "type": "string",
+                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "description": "Base directory for Institutional configs.",
+                    "fa_icon": "fas fa-cogs",
+                    "hidden": true
+                },
+                "config_profile_contact": {
+                    "type": "string",
+                    "description": "Institutional config profile contact information.",
+                    "fa_icon": "fas fa-id-card",
+                    "hidden": true
+                },
+                "config_profile_url": {
+                    "type": "string",
+                    "description": "Institutional config profile URL.",
+                    "fa_icon": "fas fa-globe",
+                    "hidden": true
+                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
@@ -65,257 +514,25 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
+            "$ref": "#/$defs/preprocessing_options"
+        },
+        {
+            "$ref": "#/$defs/assembly_options"
+        },
+        {
+            "$ref": "#/$defs/orf_prediction_options"
+        },
+        {
+            "$ref": "#/$defs/ncrna_annotation_options"
+        },
+        {
+            "$ref": "#/$defs/coding_analysis_options"
+        },
+        {
+            "$ref": "#/$defs/alignment_options"
+        },
+        {
             "$ref": "#/$defs/generic_options"
         }
-    ],
-    "properties": {
-        "use_gpu": {
-            "type": "boolean",
-            "default": true
-        },
-        "genome": {
-            "type": "string"
-        },
-        "igenomes_base": {
-            "type": "string",
-            "default": "s3://ngi-igenomes/igenomes"
-        },
-        "igenomes_ignore": {
-            "type": "boolean"
-        },
-        "with_umi": {
-            "type": "boolean"
-        },
-        "skip_umi_extract": {
-            "type": "boolean"
-        },
-        "umi_discard_read": {
-            "type": "string"
-        },
-        "min_trimmed_reads": {
-            "type": "integer",
-            "default": 10000
-        },
-        "save_trimmed": {
-            "type": "boolean"
-        },
-        "skip_trimming": {
-            "type": "boolean",
-            "default": true
-        },
-        "skip_multiqc": {
-            "type": "boolean"
-        },
-        "skip_qc": {
-            "type": "boolean"
-        },
-        "skip_fastqc": {
-            "type": "boolean"
-        },
-        "busco_mode": {
-            "type": "string",
-            "default": "transcriptome"
-        },
-        "busco_lineage": {
-            "type": "string",
-            "default": "saccharomycetes_odb10"
-        },
-        "busco_lineage_path": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/busco_test_data"
-        },
-        "busco_config": {
-            "type": "string",
-            "default": "[]"
-        },
-        "skip_busco": {
-            "type": "boolean"
-        },
-        "multiqc_config": {
-            "type": "string"
-        },
-        "multiqc_title": {
-            "type": "string"
-        },
-        "multiqc_logo": {
-            "type": "string"
-        },
-        "max_multiqc_email_size": {
-            "type": "string",
-            "default": "25.MB"
-        },
-        "multiqc_methods_description": {
-            "type": "string"
-        },
-        "skip_star": {
-            "type": "boolean"
-        },
-        "star_genome_fasta": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/testdata/Sc_chr1.fasta"
-        },
-        "star_genome_gtf": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/testdata/Sc_chr1.gff3"
-        },
-        "star_gzip_fastas": {
-            "type": "boolean",
-            "default": true
-        },
-        "skip_fastq_align_star": {
-            "type": "boolean"
-        },
-        "star_ignore_sjdbgtf": {
-            "type": "boolean"
-        },
-        "star_seq_platform": {
-            "type": "string",
-            "default": "ILLUMINA"
-        },
-        "star_seq_center": {
-            "type": "string"
-        },
-        "skip_blast_makeblastdb": {
-            "type": "boolean"
-        },
-        "blast_makeblastdb_prot_fasta": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/testdata/test_db.faa"
-        },
-        "blast_makeblastdb_nucl_fasta": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/testdata/test_db.fasta"
-        },
-        "skip_blast_blastp": {
-            "type": "boolean"
-        },
-        "blast_blastp_outext": {
-            "type": "string",
-            "default": "tsv"
-        },
-        "skip_blast_blastn": {
-            "type": "boolean"
-        },
-        "blast_blastn_outext": {
-            "type": "string",
-            "default": "tsv"
-        },
-        "colabfold_server": {
-            "type": "string",
-            "default": "webserver"
-        },
-        "colabfold_model_preset": {
-            "type": "string",
-            "default": "alphafold2_ptm"
-        },
-        "num_recycles": {
-            "type": "integer",
-            "default": 3
-        },
-        "use_amber": {
-            "type": "boolean",
-            "default": true
-        },
-        "colabfold_db": {
-            "type": "string"
-        },
-        "db_load_mode": {
-            "type": "integer",
-            "default": 0
-        },
-        "host_url": {
-            "type": "string"
-        },
-        "use_templates": {
-            "type": "boolean",
-            "default": true
-        },
-        "create_colabfold_index": {
-            "type": "boolean"
-        },
-        "colabfold_db_link": {
-            "type": "string",
-            "default": "http://wwwuser.gwdg.de/~compbiol/colabfold/colabfold_envdb_202108.tar.gz"
-        },
-        "colabfold_uniref30_link": {
-            "type": "string",
-            "default": "https://wwwuser.gwdg.de/~compbiol/colabfold/uniref30_2302.tar.gz"
-        },
-        "colabfold_db_path": {
-            "type": "string",
-            "default": "null/colabfold_envdb_202108"
-        },
-        "colabfold_uniref30_path": {
-            "type": "string",
-            "default": "null/uniref30_2302"
-        },
-        "trinity_mem": {
-            "type": "string",
-            "default": "6.GB"
-        },
-        "rfam_cm_path": {
-            "type": "string",
-            "default": "https://ftp.ebi.ac.uk/pub/databases/Rfam/14.10/Rfam.cm.gz"
-        },
-        "rfam_clanin_path": {
-            "type": "string",
-            "default": "/home/esteban/projects/transcriptassembler/assets/rfam_data/Rfam.clanin"
-        },
-        "publish_dir_mode": {
-            "type": "string",
-            "default": "copy"
-        },
-        "email": {
-            "type": "string"
-        },
-        "email_on_fail": {
-            "type": "string"
-        },
-        "plaintext_email": {
-            "type": "boolean"
-        },
-        "monochrome_logs": {
-            "type": "boolean"
-        },
-        "hook_url": {
-            "type": "string"
-        },
-        "pipelines_testdata_base_path": {
-            "type": "string",
-            "default": "https://raw.githubusercontent.com/nf-core/test-datasets/"
-        },
-        "config_profile_name": {
-            "type": "string"
-        },
-        "config_profile_description": {
-            "type": "string"
-        },
-        "custom_config_version": {
-            "type": "string",
-            "default": "master"
-        },
-        "custom_config_base": {
-            "type": "string",
-            "default": "https://raw.githubusercontent.com/nf-core/configs/master"
-        },
-        "config_profile_contact": {
-            "type": "string"
-        },
-        "config_profile_url": {
-            "type": "string"
-        },
-        "fasta": {
-            "type": "string"
-        },
-        "skip_orthofinder": {
-            "type": "boolean"
-        },
-        "orthofinder_reference_fasta": {
-            "type": "string",
-            "default": "assets/orthofinder_test_data/Mycoplasma_genitalium.faa"
-        },
-        "run_colabfold": {
-            "type": "boolean"
-        }
-    }
+    ]
 }

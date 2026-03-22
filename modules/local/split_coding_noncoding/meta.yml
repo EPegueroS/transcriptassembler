@@ -1,0 +1,38 @@
+name: SPLIT_CODING_NONCODING
+description: Separates transcripts into coding and non-coding FASTA files based on TransDecoder BED predictions
+keywords:
+  - transcripts
+  - coding
+  - noncoding
+  - seqkit
+  - filtering
+input:
+  - meta:
+      type: map
+      description: Groovy Map containing sample information
+  - fasta:
+      type: file
+      description: Input transcript FASTA file
+      pattern: "*.{fa,fasta,fna}"
+  - bed:
+      type: file
+      description: TransDecoder BED file with predicted coding regions
+      pattern: "*.bed"
+output:
+  - meta:
+      type: map
+      description: Groovy Map containing sample information
+  - coding:
+      type: file
+      description: FASTA file containing coding transcripts (those with predicted ORFs)
+      pattern: "*_coding.fa"
+  - noncoding:
+      type: file
+      description: FASTA file containing non-coding transcripts (those without predicted ORFs)
+      pattern: "*_noncoding.fa"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@danilodileo"
