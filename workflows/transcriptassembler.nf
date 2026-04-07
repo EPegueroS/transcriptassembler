@@ -30,6 +30,8 @@ include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_n
 include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_colabfold_dbs'
 include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
+include { STRINGTIE_STRINGTIE         } from '../modules/nf-core/stringtie/stringtie/main'
+include { STRINGTIE_MERGE             } from '../modules/nf-core/stringtie/merge/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -207,6 +209,25 @@ workflow TRANSCRIPTASSEMBLER {
             params.star_seq_center
         )
         ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
+        ch_star_sorted_bam              = STAR_ALIGN.out.bam_sorted
+    }
+
+    // MODULE: STRINGTIE_STRINGTIE
+    if (!params.skip_stringtie_stringtie) {
+        STRINGTIE_STRINGTIE(
+            ch_star_sorted_bam, // STAR sorted BAM
+            params.stringtie_annotation_gtf
+        )
+        ch_versions                    = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
+    }
+
+    // MODULE: STRINGTIE_MERGE
+    if (!params.skip_stringtie_merge) {
+        STRINGTIE_MERGE(
+            STRINGTIE_STRINGTIE.out.transcript_gtf, // List of GTFs from each sample's StringTie run
+            params.stringtie_annotation_gtf // Optional reference annotation GTF for guiding the merge
+        )
+        ch_versions                    = ch_versions.mix(STRINGTIE_MERGE.out.versions)
     }
 
     // MODULE: ORTHOFINDER

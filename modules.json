@@ -107,12 +107,12 @@
                     },
                     "stringtie/merge": {
                         "branch": "master",
-                        "git_sha": "3e44e51c24ff88dbe266fd6b49098c27e83f2e1e",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "stringtie/stringtie": {
                         "branch": "master",
-                        "git_sha": "4cfbd65a8dbdcfd1bb2736c4e8c5c12ac61d3281",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "transdecoder/longorf": {
