@@ -224,7 +224,8 @@ workflow TRANSCRIPTASSEMBLER {
     // MODULE: STRINGTIE_MERGE
     if (!params.skip_stringtie_merge) {
         STRINGTIE_MERGE(
-            STRINGTIE_STRINGTIE.out.transcript_gtf, // List of GTFs from each sample's StringTie run
+            // List of GTFs from each sample's StringTie run
+            STRINGTIE_STRINGTIE.out.transcript_gtf.map { meta, gtf -> gtf }.collect(), // STRINGTIE_MERGE only expects the GTF path, not the meta
             params.stringtie_annotation_gtf // Optional reference annotation GTF for guiding the merge
         )
         ch_versions                    = ch_versions.mix(STRINGTIE_MERGE.out.versions)
