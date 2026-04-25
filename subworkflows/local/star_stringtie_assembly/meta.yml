@@ -1,0 +1,102 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "star_stringtie_assembly"
+description: Genome-guided transcriptome assembly using STAR for alignment and StringTie for transcript quantification and merging
+keywords:
+  - alignment
+  - assembly
+  - transcriptome
+  - star
+  - stringtie
+  - rna-seq
+components:
+  - star/genomegenerate
+  - star/align
+  - stringtie/stringtie
+  - stringtie/merge
+input:
+  - ch_reads:
+      type: file
+      description: |
+        Per-sample FASTQ reads
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+  - ch_fasta:
+      type: file
+      description: |
+        Reference genome FASTA file
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fa,fasta,fa.gz,fasta.gz}"
+  - ch_gtf:
+      type: file
+      description: |
+        Reference annotation GTF file
+        Structure: [ val(meta2), path(gtf) ]
+      pattern: "*.gtf"
+  - val_star_ignore_sjdbgtf:
+      type: boolean
+      description: Skip re-extracting splice junctions from GTF when using a pre-built STAR index
+  - val_seq_platform:
+      type: string
+      description: Sequencing platform to include in BAM RG header (e.g. ILLUMINA)
+  - val_seq_center:
+      type: string
+      description: Sequencing center to include in BAM RG header
+output:
+  - star_index:
+      type: directory
+      description: |
+        STAR genome index directory
+        Structure: [ val(meta), path(index) ]
+      pattern: "star/"
+  - bam:
+      type: file
+      description: |
+        Unsorted BAM file from STAR alignment
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.bam"
+  - bam_sorted:
+      type: file
+      description: |
+        Coordinate-sorted BAM file from STAR alignment (requires --outSAMtype BAM SortedByCoordinate in ext.args)
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*sortedByCoord.out.bam"
+  - log_final:
+      type: file
+      description: |
+        STAR final alignment log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*Log.final.out"
+  - log_out:
+      type: file
+      description: |
+        STAR main log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*Log.out"
+  - transcript_gtf:
+      type: file
+      description: |
+        Per-sample StringTie transcript GTF
+        Structure: [ val(meta), path(gtf) ]
+      pattern: "*.transcripts.gtf"
+  - abundance:
+      type: file
+      description: |
+        Per-sample StringTie gene abundance estimates
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*.abundance.txt"
+  - merged_gtf:
+      type: file
+      description: |
+        Merged StringTie GTF across all samples
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mosotelo"
+maintainers:
+  - "@mosotelo"
