@@ -32,6 +32,7 @@ include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_cola
 include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
 include { STRINGTIE_STRINGTIE         } from '../modules/nf-core/stringtie/stringtie/main'
 include { STRINGTIE_MERGE             } from '../modules/nf-core/stringtie/merge/main'
+include { STAR_STRINGTIE_ASSEMBLY      } from '../subworkflows/local/star_stringtie_assembly/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -191,44 +192,16 @@ workflow TRANSCRIPTASSEMBLER {
     )
     ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
 
-    // MODULE: STAR GENOMEGENERATE
-
-    if (!params.skip_star){
-        STAR_GENOMEGENERATE(
-            [[id:'test'],params.star_genome_fasta], // generic meta
-            [[id:'test'],params.star_genome_gtf] // generic meta
-        )
-        ch_versions                    = ch_versions.mix(STAR_GENOMEGENERATE.out.versions)
-
-        STAR_ALIGN(
+    // SUBWORKFLOW: STAR AND STRINGTIE ASSEMBLY - reference-guided assembly
+    if(params.reference_guided_assembly) {
+        STAR_STRINGTIE_ASSEMBLY(
             ch_filtered_reads,
-            STAR_GENOMEGENERATE.out.index,
-            [[id:'test'],params.star_genome_gtf], // generic meta
+            Channel.of([[id:'test'],params.star_genome_fasta]), // generic meta
+            Channel.of([[id:'test'],params.star_genome_gtf]), // generic meta
             params.star_ignore_sjdbgtf,
             params.star_seq_platform,
             params.star_seq_center
         )
-        ch_versions                    = ch_versions.mix(STAR_ALIGN.out.versions)
-        ch_star_sorted_bam              = STAR_ALIGN.out.bam_sorted
-    }
-
-    // MODULE: STRINGTIE_STRINGTIE
-    if (!params.skip_stringtie_stringtie) {
-        STRINGTIE_STRINGTIE(
-            ch_star_sorted_bam, // STAR sorted BAM
-            params.stringtie_annotation_gtf
-        )
-        ch_versions                    = ch_versions.mix(STRINGTIE_STRINGTIE.out.versions)
-    }
-
-    // MODULE: STRINGTIE_MERGE
-    if (!params.skip_stringtie_merge) {
-        STRINGTIE_MERGE(
-            // List of GTFs from each sample's StringTie run
-            STRINGTIE_STRINGTIE.out.transcript_gtf.map { meta, gtf -> gtf }.collect(), // STRINGTIE_MERGE only expects the GTF path, not the meta
-            params.stringtie_annotation_gtf // Optional reference annotation GTF for guiding the merge
-        )
-        ch_versions                    = ch_versions.mix(STRINGTIE_MERGE.out.versions)
     }
 
     // MODULE: ORTHOFINDER
