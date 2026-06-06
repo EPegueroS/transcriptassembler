@@ -29,6 +29,7 @@ graph TD;
     subgraph ASSEMBLY["Assembly"]
         TRINITY
         BUSCO
+        STRINGTIE
         TRINITY --> BUSCO
     end
 
@@ -60,6 +61,7 @@ graph TD;
 
     subgraph ALIGNMENT["Genome Alignment"]
         STAR_GENOMEGENERATE --> STAR_ALIGN
+        STAR_ALIGN --> STRINGTIE
     end
 
     subgraph DBS["Databases"]
