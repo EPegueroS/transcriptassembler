@@ -507,6 +507,24 @@
                     "hidden": true
                 }
             }
+        },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "stringtie_annotation_gtf": {
+                    "type": "string",
+                    "default": "[]"
+                },
+                "skip_stringtie_merge": {
+                    "type": "boolean"
+                },
+                "skip_stringtie_stringtie": {
+                    "type": "boolean"
+                }
+            }
         }
     },
     "allOf": [
@@ -533,6 +551,9 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/new_group_1"
         }
     ]
 }
