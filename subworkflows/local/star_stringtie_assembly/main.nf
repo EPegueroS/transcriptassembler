@@ -2,6 +2,7 @@ include { STAR_GENOMEGENERATE } from '../../../modules/nf-core/star/genomegenera
 include { STAR_ALIGN          } from '../../../modules/nf-core/star/align/main'
 include { STRINGTIE_STRINGTIE } from '../../../modules/nf-core/stringtie/stringtie/main'
 include { STRINGTIE_MERGE     } from '../../../modules/nf-core/stringtie/merge/main'
+include { GFFREAD             } from '../../../modules/nf-core/gffread/main'
 
 workflow STAR_STRINGTIE_ASSEMBLY {
 
@@ -52,14 +53,28 @@ workflow STAR_STRINGTIE_ASSEMBLY {
         )
     ch_versions = ch_versions.mix(STRINGTIE_MERGE.out.versions)
 
+    // MODULE: GFFREAD - extract spliced transcript FASTA from the merged annotation
+    // so downstream coding/non-coding annotation steps have a transcript FASTA to consume,
+    // mirroring de novo assembly's output.
+    ch_merged_gtf = STRINGTIE_MERGE.out.gtf.map { gtf -> [ [id: 'merged'], gtf ] }
+
+    GFFREAD (
+        ch_merged_gtf,
+        ch_fasta.map { _meta, fasta -> fasta }
+    )
+    // Note: GFFREAD reports its version via a topic channel (`versions_gffread`), not the
+    // classic versions.yml path emitted by the other modules here, so it isn't mixed into
+    // ch_versions yet.
+
     emit:
-    star_index     = STAR_GENOMEGENERATE.out.index          // channel: [ val(meta), path(index) ]
-    bam            = STAR_ALIGN.out.bam                     // channel: [ val(meta), path(bam) ]
-    bam_sorted     = STAR_ALIGN.out.bam_sorted              // channel: [ val(meta), path(bam) ]
-    log_final      = STAR_ALIGN.out.log_final               // channel: [ val(meta), path(log_final) ]
-    log_out        = STAR_ALIGN.out.log_out                 // channel: [ val(meta), path(log_out) ]
-    transcript_gtf = STRINGTIE_STRINGTIE.out.transcript_gtf // channel: [ val(meta), path(gtf) ]
-    abundance      = STRINGTIE_STRINGTIE.out.abundance      // channel: [ val(meta), path(abundance) ]
-    merged_gtf     = STRINGTIE_MERGE.out.gtf                // channel: [ path(gtf) ]
-    versions       = ch_versions                            // channel: [ path(versions.yml) ]
+    star_index       = STAR_GENOMEGENERATE.out.index          // channel: [ val(meta), path(index) ]
+    bam              = STAR_ALIGN.out.bam                     // channel: [ val(meta), path(bam) ]
+    bam_sorted       = STAR_ALIGN.out.bam_sorted              // channel: [ val(meta), path(bam) ]
+    log_final        = STAR_ALIGN.out.log_final               // channel: [ val(meta), path(log_final) ]
+    log_out          = STAR_ALIGN.out.log_out                 // channel: [ val(meta), path(log_out) ]
+    transcript_gtf   = STRINGTIE_STRINGTIE.out.transcript_gtf // channel: [ val(meta), path(gtf) ]
+    abundance        = STRINGTIE_STRINGTIE.out.abundance      // channel: [ val(meta), path(abundance) ]
+    merged_gtf       = STRINGTIE_MERGE.out.gtf                // channel: [ path(gtf) ]
+    transcript_fasta = GFFREAD.out.gffread_fasta               // channel: [ val(meta), path(fasta) ]
+    versions         = ch_versions                            // channel: [ path(versions.yml) ]
 }

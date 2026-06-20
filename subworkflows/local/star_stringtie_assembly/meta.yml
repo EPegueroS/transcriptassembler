@@ -13,6 +13,7 @@ components:
   - star/align
   - stringtie/stringtie
   - stringtie/merge
+  - gffread
 input:
   - ch_reads:
       type: file
@@ -90,6 +91,12 @@ output:
         Merged StringTie GTF across all samples
         Structure: [ path(gtf) ]
       pattern: "stringtie.merged.gtf"
+  - transcript_fasta:
+      type: file
+      description: |
+        Spliced transcript FASTA extracted from the merged GTF and reference genome via gffread
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.fasta"
   - versions:
       type: file
       description: |

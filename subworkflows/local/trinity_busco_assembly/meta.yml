@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "trinity_busco_assembly"
+description: De novo transcriptome assembly using Trinity, with optional BUSCO completeness assessment
+keywords:
+  - assembly
+  - transcriptome
+  - de novo
+  - trinity
+  - busco
+  - rna-seq
+components:
+  - trinity
+  - busco
+input:
+  - ch_reads:
+      type: file
+      description: |
+        Per-sample FASTQ reads
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+  - val_skip_busco:
+      type: boolean
+      description: Skip BUSCO completeness assessment
+  - val_busco_mode:
+      type: string
+      description: BUSCO mode - one of genome, proteins, or transcriptome
+  - val_busco_lineage:
+      type: string
+      description: BUSCO lineage dataset to check against, or 'auto' to enable auto-lineage detection
+  - busco_lineage_path:
+      type: directory
+      description: Path to BUSCO lineages directory - downloaded automatically if not set
+      pattern: "*/"
+  - busco_config:
+      type: file
+      description: Optional BUSCO configuration file
+      pattern: "*.{ini,cfg}"
+output:
+  - transcript_fasta:
+      type: file
+      description: |
+        Assembled de novo transcript FASTA
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.fa.gz"
+  - busco_batch_summary:
+      type: file
+      description: |
+        BUSCO batch summary
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*-busco.batch_summary.txt"
+  - busco_short_summaries_txt:
+      type: file
+      description: |
+        BUSCO short summary (text)
+        Structure: [ val(meta), path(txt) ]
+      pattern: "short_summary.*.txt"
+  - busco_short_summaries_json:
+      type: file
+      description: |
+        BUSCO short summary (JSON)
+        Structure: [ val(meta), path(json) ]
+      pattern: "short_summary.*.json"
+  - busco_dir:
+      type: directory
+      description: |
+        Full BUSCO output directory
+        Structure: [ val(meta), path(dir) ]
+      pattern: "*-busco"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mosotelo"
+maintainers:
+  - "@mosotelo"

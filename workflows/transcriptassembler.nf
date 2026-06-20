@@ -10,19 +10,15 @@ include { paramsSummaryMultiqc        } from '../subworkflows/nf-core/utils_nfco
 include { softwareVersionsToYAML      } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText      } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { WGET_GUNZIP_INFERNAL        } from '../subworkflows/local/wget_gunzip_infernal'
-include { BUSCO                      } from '../modules/nf-core/busco/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { TRANSDECODER_LONGORF         } from '../modules/nf-core/transdecoder/longorf/main'
 include { TRANSDECODER_PREDICT         } from '../modules/local/transdecoder_predict/main'
 include { SPLIT_CODING_NONCODING     } from '../modules/local/split_coding_noncoding/main'
-include { TRINITY                     } from '../modules/nf-core/trinity/main'
-include { STAR_GENOMEGENERATE         } from '../modules/nf-core/star/genomegenerate/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_PROT } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_MAKEBLASTDB as MAKEBLASTDB_NUCL } from '../modules/nf-core/blast/makeblastdb/main'
 include { BLAST_BLASTP                } from '../modules/nf-core/blast/blastp/main'
 include { FILTER_BLASTP_CODING        } from '../modules/local/filter_blastp_coding/main'
 include { BLAST_BLASTN                } from '../modules/nf-core/blast/blastn/main'
-include { STAR_ALIGN                  } from '../modules/nf-core/star/align/main'
 include { FASTQ_FASTQC_UMITOOLS_FASTP } from '../subworkflows/nf-core/fastq_fastqc_umitools_fastp'
 include { DEEPSIG                     } from '../modules/local/deepsig/main'
 include { COLABFOLD                   } from '../subworkflows/local/colabfold'
@@ -30,9 +26,8 @@ include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_n
 include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_colabfold_dbs'
 include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
-include { STRINGTIE_STRINGTIE         } from '../modules/nf-core/stringtie/stringtie/main'
-include { STRINGTIE_MERGE             } from '../modules/nf-core/stringtie/merge/main'
 include { STAR_STRINGTIE_ASSEMBLY      } from '../subworkflows/local/star_stringtie_assembly/main'
+include { TRINITY_BUSCO_ASSEMBLY       } from '../subworkflows/local/trinity_busco_assembly/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -96,26 +91,6 @@ workflow TRANSCRIPTASSEMBLER {
         }
         .set { ch_fail_trimming_multiqc }
 
-    // MODULE: TRINITY
-    //
-    TRINITY (
-        ch_filtered_reads
-    )
-    ch_assembled_transcript_fasta  = TRINITY.out.transcript_fasta
-    ch_versions                    = ch_versions.mix(TRINITY.out.versions)
-
-    // MODULE: BUSCO
-    if (!params.skip_busco) {
-        BUSCO(
-            ch_assembled_transcript_fasta,
-            params.busco_mode,
-            params.busco_lineage,
-            params.busco_lineage_path,
-            params.busco_config,
-        )
-        ch_versions                    = ch_versions.mix(BUSCO.out.versions)
-    }
-
     // MODULE: BLAST_MAKEBLASTDB
     // Protein database (for BLASTP) and Nucleotide database (for BLASTN)
     if (!params.skip_blast_makeblastdb) {
@@ -128,6 +103,34 @@ workflow TRANSCRIPTASSEMBLER {
             [[id:'nucl_db'], params.blast_makeblastdb_nucl_fasta]
         )
         ch_versions = ch_versions.mix(MAKEBLASTDB_NUCL.out.versions)
+    }
+
+    // SUBWORKFLOW: Assembly - reference-guided (STAR+StringTie+gffread) or de novo (Trinity+BUSCO).
+    // Mutually exclusive: only one assembly strategy runs per execution. Both yield a
+    // ch_assembled_transcript_fasta consumed by the shared annotation steps below.
+    if (params.reference_guided_assembly) {
+        STAR_STRINGTIE_ASSEMBLY(
+            ch_filtered_reads,
+            Channel.of([[id:'test'],params.star_genome_fasta]), // generic meta
+            Channel.of([[id:'test'],params.star_genome_gtf]), // generic meta
+            params.star_ignore_sjdbgtf,
+            params.star_seq_platform,
+            params.star_seq_center
+        )
+        ch_assembled_transcript_fasta = STAR_STRINGTIE_ASSEMBLY.out.transcript_fasta
+        ch_versions                   = ch_versions.mix(STAR_STRINGTIE_ASSEMBLY.out.versions)
+    } else {
+        // SUBWORKFLOW: TRINITY_BUSCO_ASSEMBLY - de novo assembly
+        TRINITY_BUSCO_ASSEMBLY(
+            ch_filtered_reads,
+            params.skip_busco,
+            params.busco_mode,
+            params.busco_lineage,
+            params.busco_lineage_path,
+            params.busco_config
+        )
+        ch_assembled_transcript_fasta = TRINITY_BUSCO_ASSEMBLY.out.transcript_fasta
+        ch_versions                   = ch_versions.mix(TRINITY_BUSCO_ASSEMBLY.out.versions)
     }
 
     // MODULE: TRANSDECODER_LONGORF
@@ -190,19 +193,7 @@ workflow TRANSCRIPTASSEMBLER {
     DEEPSIG(
         ch_protein
     )
-    ch_versions                    = ch_versions.mix(DEEPSIG.out.versions)
-
-    // SUBWORKFLOW: STAR AND STRINGTIE ASSEMBLY - reference-guided assembly
-    if(params.reference_guided_assembly) {
-        STAR_STRINGTIE_ASSEMBLY(
-            ch_filtered_reads,
-            Channel.of([[id:'test'],params.star_genome_fasta]), // generic meta
-            Channel.of([[id:'test'],params.star_genome_gtf]), // generic meta
-            params.star_ignore_sjdbgtf,
-            params.star_seq_platform,
-            params.star_seq_center
-        )
-    }
+    ch_versions = ch_versions.mix(DEEPSIG.out.versions)
 
     // MODULE: ORTHOFINDER
     if (!params.skip_orthofinder){
