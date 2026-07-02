@@ -26,10 +26,9 @@ graph TD;
         Input_reads --> FASTQC --> UMITOOLS --> FASTP --> FASTQC_TRIM
     end
 
-    subgraph ASSEMBLY["Assembly"]
+    subgraph DENOVOASSEMBLY["De Novo Assembly"]
         TRINITY
         BUSCO
-        STRINGTIE
         TRINITY --> BUSCO
     end
 
@@ -59,9 +58,10 @@ graph TD;
         BLASTN
     end
 
-    subgraph ALIGNMENT["Genome Alignment"]
+    subgraph GUIDED_ASSEMBLY["Reference-guided assembly"]
         STAR_GENOMEGENERATE --> STAR_ALIGN
         STAR_ALIGN --> STRINGTIE
+        STRINGTIE --> TRANSDECODER_LONGORF
     end
 
     subgraph DBS["Databases"]
