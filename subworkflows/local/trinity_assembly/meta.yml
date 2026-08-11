@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "trinity_assembly"
+description: De novo transcriptome assembly using Trinity, with reads realigned to the assembly via STAR and StringTie to produce a GTF annotation relative to Trinity contig coordinates.
+keywords:
+  - de novo
+  - assembly
+  - transcriptome
+  - trinity
+  - star
+  - stringtie
+  - rna-seq
+components:
+  - trinity
+  - star/genomegenerate
+  - star_stringtie_unguided
+input:
+  - ch_reads:
+      type: file
+      description: |
+        Per-sample FASTQ reads
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+  - val_seq_platform:
+      type: string
+      description: Sequencing platform to include in BAM RG header (e.g. ILLUMINA)
+  - val_seq_center:
+      type: string
+      description: Sequencing center to include in BAM RG header
+output:
+  - transcript_fasta:
+      type: file
+      description: |
+        De novo assembled transcript FASTA from Trinity
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.fa.gz"
+  - merged_gtf:
+      type: file
+      description: |
+        Merged StringTie GTF annotation relative to Trinity contig coordinates
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mosotelo"
+maintainers:
+  - "@mosotelo"

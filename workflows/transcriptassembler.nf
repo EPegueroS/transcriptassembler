@@ -26,8 +26,9 @@ include { getColabfoldAlphafold2Params     } from '../subworkflows/local/utils_n
 include { getColabfoldAlphafold2ParamsPath } from '../subworkflows/local/utils_nfcore_transcriptassembler_pipeline'
 include { PREPARE_COLABFOLD_DBS       } from '../subworkflows/local/prepare_colabfold_dbs'
 include { ORTHOFINDER                 } from '../modules/nf-core/orthofinder/main'
-include { STAR_STRINGTIE_ASSEMBLY      } from '../subworkflows/local/star_stringtie_assembly/main'
-include { TRINITY_BUSCO_ASSEMBLY       } from '../subworkflows/local/trinity_busco_assembly/main'
+include { STAR_STRINGTIE_ASSEMBLY } from '../subworkflows/local/star_stringtie_assembly/main'
+include { TRINITY_ASSEMBLY        } from '../subworkflows/local/trinity_assembly/main'
+include { BUSCO                   } from '../modules/nf-core/busco/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -52,8 +53,12 @@ workflow TRANSCRIPTASSEMBLER {
                     return [ meta, fastqs.flatten() ]
         }
 
+    // CONDICIONAL
+    // SI fastqs.size() == 1, entonces ch_fastq.single
+    // SI fastqs.size() > 1, entonces ch_fastq.multiple
+
     FASTQ_FASTQC_UMITOOLS_FASTP (
-        ch_fastq.multiple,
+        ch_fastq.single,
         params.skip_fastqc || params.skip_qc,
         params.with_umi,
         params.skip_umi_extract,
@@ -105,32 +110,39 @@ workflow TRANSCRIPTASSEMBLER {
         ch_versions = ch_versions.mix(MAKEBLASTDB_NUCL.out.versions)
     }
 
-    // SUBWORKFLOW: Assembly - reference-guided (STAR+StringTie+gffread) or de novo (Trinity+BUSCO).
-    // Mutually exclusive: only one assembly strategy runs per execution. Both yield a
-    // ch_assembled_transcript_fasta consumed by the shared annotation steps below.
+    // SUBWORKFLOW: Assembly — reference-guided (2-pass STAR+StringTie+gffread) or de novo
+    // (Trinity+STAR+StringTie). Mutually exclusive: only one strategy runs per execution.
+    // Both yield ch_assembled_transcript_fasta consumed by the shared annotation steps below.
     if (params.reference_guided_assembly) {
         STAR_STRINGTIE_ASSEMBLY(
             ch_filtered_reads,
-            Channel.of([[id:'test'],params.star_genome_fasta]), // generic meta
-            Channel.of([[id:'test'],params.star_genome_gtf]), // generic meta
-            params.star_ignore_sjdbgtf,
+            Channel.of([[id:'genome'], params.star_genome_fasta]),
+            Channel.of([[id:'genome'], params.star_genome_gtf]),
             params.star_seq_platform,
             params.star_seq_center
         )
         ch_assembled_transcript_fasta = STAR_STRINGTIE_ASSEMBLY.out.transcript_fasta
         ch_versions                   = ch_versions.mix(STAR_STRINGTIE_ASSEMBLY.out.versions)
     } else {
-        // SUBWORKFLOW: TRINITY_BUSCO_ASSEMBLY - de novo assembly
-        TRINITY_BUSCO_ASSEMBLY(
+        TRINITY_ASSEMBLY(
             ch_filtered_reads,
-            params.skip_busco,
+            params.star_seq_platform,
+            params.star_seq_center
+        )
+        ch_assembled_transcript_fasta = TRINITY_ASSEMBLY.out.transcript_fasta
+        ch_versions                   = ch_versions.mix(TRINITY_ASSEMBLY.out.versions)
+    }
+
+    // QC: assess transcriptome completeness after assembly (both modes)
+    if (!params.skip_busco) {
+        BUSCO(
+            ch_assembled_transcript_fasta,
             params.busco_mode,
             params.busco_lineage,
             params.busco_lineage_path,
             params.busco_config
         )
-        ch_assembled_transcript_fasta = TRINITY_BUSCO_ASSEMBLY.out.transcript_fasta
-        ch_versions                   = ch_versions.mix(TRINITY_BUSCO_ASSEMBLY.out.versions)
+        ch_versions = ch_versions.mix(BUSCO.out.versions)
     }
 
     // MODULE: TRANSDECODER_LONGORF

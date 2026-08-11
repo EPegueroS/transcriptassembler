@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "star_stringtie_assembly"
-description: Genome-guided transcriptome assembly using STAR for alignment and StringTie for transcript quantification and merging
+description: Two-pass reference-guided transcriptome assembly. Pass 1 aligns reads without annotation to discover splice junctions; StringTie builds transcript models; Pass 2 realigns with StringTie-derived splice sites for improved alignments and final transcript models. GFFREAD extracts a spliced transcript FASTA from the final annotation.
 keywords:
   - alignment
   - assembly
@@ -8,8 +8,12 @@ keywords:
   - star
   - stringtie
   - rna-seq
+  - reference-guided
+  - two-pass
+  - gffread
 components:
   - star/genomegenerate
+  - star_stringtie_unguided
   - star/align
   - stringtie/stringtie
   - stringtie/merge
@@ -30,12 +34,9 @@ input:
   - ch_gtf:
       type: file
       description: |
-        Reference annotation GTF file
+        Reference annotation GTF/GFF3 file used to build the STAR genome index
         Structure: [ val(meta2), path(gtf) ]
-      pattern: "*.gtf"
-  - val_star_ignore_sjdbgtf:
-      type: boolean
-      description: Skip re-extracting splice junctions from GTF when using a pre-built STAR index
+      pattern: "*.{gtf,gff,gff3}"
   - val_seq_platform:
       type: string
       description: Sequencing platform to include in BAM RG header (e.g. ILLUMINA)
@@ -49,52 +50,64 @@ output:
         STAR genome index directory
         Structure: [ val(meta), path(index) ]
       pattern: "star/"
+  - bam_pass1:
+      type: file
+      description: |
+        Coordinate-sorted BAM from STAR pass 1 (unguided)
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.pass1.sortedByCoord.out.bam"
+  - per_sample_gtf_pass1:
+      type: file
+      description: |
+        Per-sample StringTie transcript GTF from pass 1
+        Structure: [ val(meta), path(gtf) ]
+      pattern: "*.pass1.transcripts.gtf"
+  - merged_gtf_pass1:
+      type: file
+      description: |
+        Merged StringTie GTF from pass 1 (used as splice junction guide for STAR pass 2)
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
   - bam:
       type: file
       description: |
-        Unsorted BAM file from STAR alignment
+        Coordinate-sorted BAM from STAR pass 2 (StringTie-guided realignment)
         Structure: [ val(meta), path(bam) ]
-      pattern: "*.bam"
-  - bam_sorted:
-      type: file
-      description: |
-        Coordinate-sorted BAM file from STAR alignment (requires --outSAMtype BAM SortedByCoordinate in ext.args)
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*sortedByCoord.out.bam"
+      pattern: "*.pass2.sortedByCoord.out.bam"
   - log_final:
       type: file
       description: |
-        STAR final alignment log
+        STAR pass 2 final alignment log
         Structure: [ val(meta), path(log) ]
-      pattern: "*Log.final.out"
+      pattern: "*.pass2.Log.final.out"
   - log_out:
       type: file
       description: |
-        STAR main log
+        STAR pass 2 main log
         Structure: [ val(meta), path(log) ]
-      pattern: "*Log.out"
-  - transcript_gtf:
+      pattern: "*.pass2.Log.out"
+  - per_sample_gtf:
       type: file
       description: |
-        Per-sample StringTie transcript GTF
+        Per-sample StringTie transcript GTF from pass 2
         Structure: [ val(meta), path(gtf) ]
-      pattern: "*.transcripts.gtf"
+      pattern: "*.pass2.transcripts.gtf"
   - abundance:
       type: file
       description: |
-        Per-sample StringTie gene abundance estimates
+        Per-sample StringTie gene abundance estimates from pass 2
         Structure: [ val(meta), path(txt) ]
-      pattern: "*.abundance.txt"
+      pattern: "*.pass2.abundance.txt"
   - merged_gtf:
       type: file
       description: |
-        Merged StringTie GTF across all samples
+        Final merged StringTie GTF from pass 2 — the well-annotated transcript assembly
         Structure: [ path(gtf) ]
       pattern: "stringtie.merged.gtf"
   - transcript_fasta:
       type: file
       description: |
-        Spliced transcript FASTA extracted from the merged GTF and reference genome via gffread
+        Spliced transcript FASTA extracted from the final merged GTF and reference genome via gffread
         Structure: [ val(meta), path(fasta) ]
       pattern: "*.fasta"
   - versions:

@@ -1,0 +1,14 @@
+nextflow_workflow {
+
+    name "Test workflow STAR_STRINGTIE_UNGUIDED"
+    script "../main.nf"
+    workflow "STAR_STRINGTIE_UNGUIDED"
+
+    // TODO: Add test cases with real test data
+    // Expected inputs:
+    //   - ch_reads: [ [id:'test', single_end:false], [reads_1.fastq.gz, reads_2.fastq.gz] ]
+    //   - ch_star_index: [ [id:'test'], star_index/ ]
+    //   - val_seq_platform: 'ILLUMINA'
+    //   - val_seq_center: ''
+
+}
