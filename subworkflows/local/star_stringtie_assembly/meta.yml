@@ -1,0 +1,122 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "star_stringtie_assembly"
+description: Two-pass reference-guided transcriptome assembly. Pass 1 aligns reads without annotation to discover splice junctions; StringTie builds transcript models; Pass 2 realigns with StringTie-derived splice sites for improved alignments and final transcript models. GFFREAD extracts a spliced transcript FASTA from the final annotation.
+keywords:
+  - alignment
+  - assembly
+  - transcriptome
+  - star
+  - stringtie
+  - rna-seq
+  - reference-guided
+  - two-pass
+  - gffread
+components:
+  - star/genomegenerate
+  - star_stringtie_unguided
+  - star/align
+  - stringtie/stringtie
+  - stringtie/merge
+  - gffread
+input:
+  - ch_reads:
+      type: file
+      description: |
+        Per-sample FASTQ reads
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+  - ch_fasta:
+      type: file
+      description: |
+        Reference genome FASTA file
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fa,fasta,fa.gz,fasta.gz}"
+  - ch_gtf:
+      type: file
+      description: |
+        Reference annotation GTF/GFF3 file used to build the STAR genome index
+        Structure: [ val(meta2), path(gtf) ]
+      pattern: "*.{gtf,gff,gff3}"
+  - val_seq_platform:
+      type: string
+      description: Sequencing platform to include in BAM RG header (e.g. ILLUMINA)
+  - val_seq_center:
+      type: string
+      description: Sequencing center to include in BAM RG header
+output:
+  - star_index:
+      type: directory
+      description: |
+        STAR genome index directory
+        Structure: [ val(meta), path(index) ]
+      pattern: "star/"
+  - bam_pass1:
+      type: file
+      description: |
+        Coordinate-sorted BAM from STAR pass 1 (unguided)
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.pass1.sortedByCoord.out.bam"
+  - per_sample_gtf_pass1:
+      type: file
+      description: |
+        Per-sample StringTie transcript GTF from pass 1
+        Structure: [ val(meta), path(gtf) ]
+      pattern: "*.pass1.transcripts.gtf"
+  - merged_gtf_pass1:
+      type: file
+      description: |
+        Merged StringTie GTF from pass 1 (used as splice junction guide for STAR pass 2)
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
+  - bam:
+      type: file
+      description: |
+        Coordinate-sorted BAM from STAR pass 2 (StringTie-guided realignment)
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.pass2.sortedByCoord.out.bam"
+  - log_final:
+      type: file
+      description: |
+        STAR pass 2 final alignment log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*.pass2.Log.final.out"
+  - log_out:
+      type: file
+      description: |
+        STAR pass 2 main log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*.pass2.Log.out"
+  - per_sample_gtf:
+      type: file
+      description: |
+        Per-sample StringTie transcript GTF from pass 2
+        Structure: [ val(meta), path(gtf) ]
+      pattern: "*.pass2.transcripts.gtf"
+  - abundance:
+      type: file
+      description: |
+        Per-sample StringTie gene abundance estimates from pass 2
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*.pass2.abundance.txt"
+  - merged_gtf:
+      type: file
+      description: |
+        Final merged StringTie GTF from pass 2 — the well-annotated transcript assembly
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
+  - transcript_fasta:
+      type: file
+      description: |
+        Spliced transcript FASTA extracted from the final merged GTF and reference genome via gffread
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.fasta"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mosotelo"
+maintainers:
+  - "@mosotelo"

@@ -21,16 +21,47 @@ The pipeline is still under development. The plan is to incorporate the latest m
 
 ```mermaid
 graph TD;
+
     subgraph PRE["Preprocessing"]
         direction TB
         Input_reads --> FASTQC --> UMITOOLS --> FASTP --> FASTQC_TRIM
     end
 
-    subgraph ASSEMBLY["Assembly"]
+    subgraph GUIDED["Reference-guided Assembly"]
+        direction TB
+        GENOME["Reference Genome + GTF"]
+        STAR_GG[STAR_GENOMEGENERATE]
+        STAR1["STAR align (pass 1)"]
+        ST1["STRINGTIE (pass 1)"]
+        STM1["STRINGTIE_MERGE (pass 1)"]
+        STAR2["STAR align (pass 2)"]
+        ST2["STRINGTIE (pass 2)"]
+        STM2["STRINGTIE_MERGE (pass 2)"]
+        GFFREAD
+        BUSCO_G[BUSCO]
+
+        GENOME --> STAR_GG --> STAR1 --> ST1 --> STM1
+        STM1 -->|splice junctions| STAR2
+        STAR2 --> ST2 --> STM2 --> GFFREAD
+        GENOME --> GFFREAD
+        GFFREAD --> BUSCO_G
+    end
+
+    subgraph DENOVO["De Novo Assembly"]
+        direction TB
         TRINITY
-        BUSCO
-        STRINGTIE
-        TRINITY --> BUSCO
+        BUSCO_DN[BUSCO]
+        STAR_GG_DN[STAR_GENOMEGENERATE]
+        STAR_DN["STAR align"]
+        ST_DN[STRINGTIE]
+        STM_DN[STRINGTIE_MERGE]
+
+        TRINITY --> BUSCO_DN
+        TRINITY --> STAR_GG_DN --> STAR_DN --> ST_DN --> STM_DN
+    end
+
+    subgraph HOMOLOGY["Homology Search"]
+        BLASTN
     end
 
     subgraph ORF["ORF Prediction"]
@@ -55,39 +86,34 @@ graph TD;
         COLABFOLD
     end
 
-    subgraph HOMOLOGY["Homology Search"]
-        BLASTN
-    end
-
-    subgraph ALIGNMENT["Genome Alignment"]
-        STAR_GENOMEGENERATE --> STAR_ALIGN
-        STAR_ALIGN --> STRINGTIE
-    end
-
     subgraph DBS["Databases"]
         MAKEBLASTDB_PROT
         MAKEBLASTDB_NUCL
         PREPARE_COLABFOLD_DBS
     end
 
-    %% Cross-subgraph edges
-    FASTQC_TRIM --> TRINITY
-    FASTP --> STAR_ALIGN
+    %% Preprocessing to assembly
+    FASTP --> STAR1
+    FASTP --> TRINITY
+    FASTP --> STAR_DN
 
-    TRINITY --> TRANSDECODER_LONGORF
-    TRINITY --> BUSCO
-    TRINITY --> BLASTN
+    %% Assembly outputs to shared downstream
+    GFFREAD -->|transcript FASTA| BLASTN
+    GFFREAD -->|transcript FASTA| TRANSDECODER_LONGORF
+    TRINITY -->|transcript FASTA| BLASTN
+    TRINITY -->|transcript FASTA| TRANSDECODER_LONGORF
 
+    %% Databases
     MAKEBLASTDB_PROT --> BLASTP
     MAKEBLASTDB_NUCL --> BLASTN
 
+    %% ORF to downstream
     TRANSDECODER_PREDICT --> SPLIT_CODING_NONCODING
     TRANSDECODER_PREDICT --> DEEPSIG
     TRANSDECODER_PREDICT --> ORTHOFINDER
     TRANSDECODER_PREDICT --> COLABFOLD
 
     SPLIT_CODING_NONCODING -->|noncoding| INFERNAL
-
     PREPARE_COLABFOLD_DBS --> COLABFOLD
 ```
 

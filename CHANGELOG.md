@@ -3,6 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.20.0dev - [2026-06-20]
+
+### Added
+
+- Added `TRINITY_BUSCO_ASSEMBLY` local subworkflow for de novo transcript assembly, bundling `TRINITY` and `BUSCO`.
+- Added `GFFREAD` to `STAR_STRINGTIE_ASSEMBLY` to extract a spliced transcript FASTA from the merged GTF and reference genome, so reference-guided runs produce a transcript FASTA for downstream annotation steps to consume (same shape as de novo's Trinity output).
+
+### Changed
+
+- `reference_guided_assembly` now selects between two mutually exclusive assembly modes: reference-guided (`STAR_STRINGTIE_ASSEMBLY`) or de novo (`TRINITY_BUSCO_ASSEMBLY`), instead of running Trinity unconditionally with StringTie running additively alongside it.
+- TransDecoder/BLAST/DeepSig/OrthoFinder/ColabFold now run for both assembly modes, since both now produce a transcript FASTA.
+
+## v1.19.0dev - [2026-06-05]
+
+### Added
+
+- Added `STAR_STRINGTIE_ASSEMBLY` local subworkflow for reference-guided transcript aseembly. This subworkflow replaces `STAR` and `STRINGTIE` independent runs on `transcriptassembler.nf`.
+
 ## v1.18.0dev - [2026-04-24]
 
 ### Added

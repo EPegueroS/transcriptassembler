@@ -1,0 +1,13 @@
+nextflow_workflow {
+
+    name "Test workflow TRINITY_ASSEMBLY"
+    script "../main.nf"
+    workflow "TRINITY_ASSEMBLY"
+
+    // TODO: Add test cases with real test data
+    // Expected inputs:
+    //   - ch_reads: [ [id:'test', single_end:false], [reads_1.fastq.gz, reads_2.fastq.gz] ]
+    //   - val_seq_platform: 'ILLUMINA'
+    //   - val_seq_center: ''
+
+}

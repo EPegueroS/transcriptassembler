@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "star_stringtie_unguided"
+description: Unguided alignment and transcript assembly using STAR and StringTie without an annotation GTF. Used as the first pass in reference-guided mode and as the sole STAR+StringTie pass in de novo mode.
+keywords:
+  - alignment
+  - assembly
+  - transcriptome
+  - star
+  - stringtie
+  - rna-seq
+  - unguided
+components:
+  - star/align
+  - stringtie/stringtie
+  - stringtie/merge
+input:
+  - ch_reads:
+      type: file
+      description: |
+        Per-sample FASTQ reads
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+  - ch_star_index:
+      type: directory
+      description: |
+        Pre-built STAR genome index directory (broadcast to all samples via .first())
+        Structure: [ val(meta), path(index) ]
+      pattern: "star/"
+  - val_seq_platform:
+      type: string
+      description: Sequencing platform to include in BAM RG header (e.g. ILLUMINA)
+  - val_seq_center:
+      type: string
+      description: Sequencing center to include in BAM RG header
+output:
+  - bam_sorted:
+      type: file
+      description: |
+        Coordinate-sorted BAM file from STAR alignment
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.pass1.sortedByCoord.out.bam"
+  - log_final:
+      type: file
+      description: |
+        STAR final alignment log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*.pass1.Log.final.out"
+  - log_out:
+      type: file
+      description: |
+        STAR main log
+        Structure: [ val(meta), path(log) ]
+      pattern: "*.pass1.Log.out"
+  - per_sample_gtf:
+      type: file
+      description: |
+        Per-sample StringTie transcript GTF (unguided)
+        Structure: [ val(meta), path(gtf) ]
+      pattern: "*.pass1.transcripts.gtf"
+  - merged_gtf:
+      type: file
+      description: |
+        Merged StringTie GTF across all samples (no reference annotation)
+        Structure: [ path(gtf) ]
+      pattern: "stringtie.merged.gtf"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@mosotelo"
+maintainers:
+  - "@mosotelo"

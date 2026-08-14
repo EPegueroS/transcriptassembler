@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2
+drosophila,../reference_transcriptomes/Drosophila_melanogaster/SRR1197414_1.fastq.gz,../reference_transcriptomes/Drosophila_melanogaster/SRR1197414_2.fastq.gz
