@@ -58,7 +58,7 @@ workflow TRANSCRIPTASSEMBLER {
     // SI fastqs.size() > 1, entonces ch_fastq.multiple
 
     FASTQ_FASTQC_UMITOOLS_FASTP (
-        ch_fastq.single,
+        ch_fastq.single.mix(ch_fastq.multiple),
         params.skip_fastqc || params.skip_qc,
         params.with_umi,
         params.skip_umi_extract,
